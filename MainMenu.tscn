@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://crut3els17oyu"]
+
+[ext_resource type="Script" uid="uid://beq40p6tpk3eg" path="res://menuScript.gd" id="1_eiy7p"]
+[ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://retropix.ttf" id="2_h7a2f"]
+
+[sub_resource type="Environment" id="Environment_qoqlk"]
+
+[node name="Control" type="Control" unique_id=2090936071]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_eiy7p")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=78453140]
+environment = SubResource("Environment_qoqlk")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="WorldEnvironment" unique_id=1579463629]
+position = Vector2(74, 132)
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1339038236]
+layout_mode = 0
+offset_top = -5.0
+offset_right = 1150.0
+offset_bottom = 640.0
+color = Color(0.14509805, 0.039215688, 0.039215688, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=714803578]
+layout_mode = 0
+offset_left = 1.0
+offset_top = -2.0
+offset_right = 1150.0
+offset_bottom = 645.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=109556379]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+size_flags_stretch_ratio = 3.11
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=2144363653]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8156863, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_h7a2f")
+theme_override_font_sizes/font_size = 53
+text = "MOTODEFEND"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer" unique_id=753254339]
+layout_mode = 2
+text = "Tu bedzie subtitle"
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="." unique_id=958807481]
+layout_mode = 0
+offset_left = 264.0
+offset_top = 348.0
+offset_right = 870.0
+offset_bottom = 550.0
+alignment = 1
+
+[node name="StartButton" type="Button" parent="ButtonsContainer" unique_id=1137376996]
+layout_mode = 2
+text = "Start"
+
+[node name="Button3" type="Button" parent="ButtonsContainer" unique_id=1792085087]
+layout_mode = 2
+text = "Ustawienia"
+
+[node name="Button2" type="Button" parent="ButtonsContainer" unique_id=435584949]
+layout_mode = 2
+text = "Wyjscie"
