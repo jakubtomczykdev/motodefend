@@ -1,5 +1,17 @@
 [gd_scene format=3 uid="uid://cghukutcvshv1"]
 
+[ext_resource type="Shader" uid="uid://dfrrjtrlc4mmk" path="res://matrix.gdshader" id="1_mx4kw"]
+[ext_resource type="Texture2D" uid="uid://u7e10csgef6y" path="res://icon_tex.png" id="2_37a8j"]
+[ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://retropix.ttf" id="3_sfvul"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_blqn1"]
+shader = ExtResource("1_mx4kw")
+shader_parameter/icon_tex = ExtResource("2_37a8j")
+shader_parameter/speed = 0.2
+shader_parameter/columns = 18.0
+shader_parameter/intensity = 1.0
+shader_parameter/glitch_strength = 0.02
+
 [node name="Control" type="Control" unique_id=577379260]
 layout_mode = 3
 anchors_preset = 15
@@ -10,5 +22,64 @@ grow_vertical = 2
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=312971810]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1920.0
+offset_bottom = 1082.0
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=2012339470]
+material = SubResource("ShaderMaterial_blqn1")
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1079.0
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect" unique_id=776396644]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -692.5
+offset_right = 692.5
+offset_bottom = 647.0
+grow_horizontal = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer" unique_id=1732795331]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+size_flags_stretch_ratio = 3.11
+
+[node name="Label" type="Label" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=1320940679]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8156863, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_sfvul")
+theme_override_font_sizes/font_size = 150
+text = "USTAWIENIA"
+horizontal_alignment = 1
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="ColorRect" unique_id=2047951871]
+custom_minimum_size = Vector2(500, 400)
+layout_mode = 0
+offset_left = 267.0
+offset_top = 560.0
+offset_right = 1705.0
+offset_bottom = 960.0
+alignment = 1
+
+[node name="StartButton" type="Button" parent="ColorRect/ButtonsContainer" unique_id=1871658217]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/line_spacing = 0
+theme_override_font_sizes/font_size = 60
+text = "Grafika"
+
+[node name="Button3" type="Button" parent="ColorRect/ButtonsContainer" unique_id=176954668]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 60
+text = "Muzyka"
+
+[node name="Button2" type="Button" parent="ColorRect/ButtonsContainer" unique_id=1010321856]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 60
+text = "Sterowanie"

@@ -4,6 +4,7 @@
 [ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://retropix.ttf" id="2_h7a2f"]
 [ext_resource type="Shader" uid="uid://dfrrjtrlc4mmk" path="res://matrix.gdshader" id="2_qoqlk"]
 [ext_resource type="Texture2D" uid="uid://u7e10csgef6y" path="res://icon_tex.png" id="3_iwfq2"]
+[ext_resource type="Script" uid="uid://hgguioxtj01u" path="res://btnSettingsMainMenu.gd" id="5_iwfq2"]
 
 [sub_resource type="Environment" id="Environment_qoqlk"]
 
@@ -50,11 +51,14 @@ grow_vertical = 2
 color = Color(0.14509805, 0.039215688, 0.039215688, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=714803578]
-layout_mode = 0
-offset_left = 267.0
-offset_top = -5.0
-offset_right = 1652.0
-offset_bottom = 642.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -692.5
+offset_right = 692.5
+offset_bottom = 647.0
+grow_horizontal = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=109556379]
 layout_mode = 2
@@ -72,11 +76,18 @@ horizontal_alignment = 1
 
 [node name="ButtonsContainer" type="VBoxContainer" parent="." unique_id=958807481]
 custom_minimum_size = Vector2(500, 400)
-layout_mode = 0
-offset_left = 227.0
-offset_top = 583.0
-offset_right = 1665.0
-offset_bottom = 983.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -717.0
+offset_top = -496.0
+offset_right = 721.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 0
 alignment = 1
 
 [node name="StartButton" type="Button" parent="ButtonsContainer" unique_id=1137376996]
@@ -87,14 +98,17 @@ theme_override_constants/line_spacing = 0
 theme_override_font_sizes/font_size = 60
 text = "Start"
 
-[node name="Button3" type="Button" parent="ButtonsContainer" unique_id=1792085087]
+[node name="settingsBtn" type="Button" parent="ButtonsContainer" unique_id=1792085087]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 60
 text = "Ustawienia"
+script = ExtResource("5_iwfq2")
 
 [node name="Button2" type="Button" parent="ButtonsContainer" unique_id=435584949]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 60
 text = "Wyjscie"
+
+[connection signal="pressed" from="ButtonsContainer/settingsBtn" to="." method="_on_settings_btn_pressed"]
