@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://bbohq175i5fyw"]
+
+[ext_resource type="Texture2D" uid="uid://b81fj5ewmgyrv" path="res://shopkeer.png" id="1_jcja1"]
+
+[node name="Node2D" type="Node2D" unique_id=720583781]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=153396784]
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="Shopkeeper" type="Area2D" parent="ColorRect" unique_id=1060012083]
+
+[node name="Sprite2D" type="Sprite2D" parent="ColorRect/Shopkeeper" unique_id=1720058210]
+position = Vector2(1806, 186.00003)
+scale = Vector2(0.412, 0.42)
+texture = ExtResource("1_jcja1")

@@ -91,6 +91,7 @@ grow_vertical = 0
 alignment = 1
 
 [node name="StartButton" type="Button" parent="ButtonsContainer" unique_id=1137376996]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 size_flags_vertical = 3
@@ -111,4 +112,5 @@ size_flags_vertical = 3
 theme_override_font_sizes/font_size = 60
 text = "Wyjscie"
 
+[connection signal="pressed" from="ButtonsContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="ButtonsContainer/settingsBtn" to="." method="_on_settings_btn_pressed"]
