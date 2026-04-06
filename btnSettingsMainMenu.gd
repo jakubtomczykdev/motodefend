@@ -11,4 +11,4 @@ func _process(delta: float) -> void:
 	pass
 
 func _on_settings_btn_pressed():
-	get_tree().change_scene_to_file("res://Settings.tscn")
+	get_tree().change_scene_to_file("res://scenes/Settings.tscn")
