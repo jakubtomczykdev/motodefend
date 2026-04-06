@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://bbohq175i5fyw"]
 
-[ext_resource type="TileSet" uid="uid://bcsoxffk1gs3v" path="res://Tilesets/testTileSet.tres" id="1_jcja1"]
+[ext_resource type="TileSet" uid="uid://bcsoxffk1gs3v" path="res://Tilesets/testTileSet.tres" id="1_nhact"]
+[ext_resource type="PackedScene" uid="uid://dxqcwr5onpo55" path="res://scenes/playerScene.tscn" id="2_bml70"]
 
 [node name="Node2D" type="Node2D" unique_id=720583781]
 metadata/logic_bricks_graph = {
@@ -13,7 +14,7 @@ metadata/logic_bricks_frames = []
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1689030207]
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -25,7 +26,7 @@ metadata/logic_bricks_frames = []
 position = Vector2(591.99994, 0)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -37,7 +38,7 @@ metadata/logic_bricks_frames = []
 position = Vector2(1182.9999, 0.99999994)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -49,7 +50,7 @@ metadata/logic_bricks_frames = []
 position = Vector2(1775, 0.00012207031)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -61,7 +62,7 @@ metadata/logic_bricks_frames = []
 position = Vector2(-0.99999994, 397.99997)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -73,7 +74,7 @@ metadata/logic_bricks_frames = []
 position = Vector2(590.99994, 397.99997)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -85,7 +86,7 @@ metadata/logic_bricks_frames = []
 position = Vector2(1181.9999, 398.99997)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -97,7 +98,7 @@ metadata/logic_bricks_frames = []
 position = Vector2(1774, 398.0001)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -109,7 +110,7 @@ metadata/logic_bricks_frames = []
 position = Vector2(-0.99999994, 793.99994)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -121,7 +122,7 @@ metadata/logic_bricks_frames = []
 position = Vector2(590.99994, 793.99994)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -133,7 +134,7 @@ metadata/logic_bricks_frames = []
 position = Vector2(1181.9999, 794.99994)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -145,10 +146,13 @@ metadata/logic_bricks_frames = []
 position = Vector2(1774, 794.00006)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
-tile_set = ExtResource("1_jcja1")
+tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
 "nodes": []
 }
 metadata/logic_bricks_frames = []
+
+[node name="Player" parent="." unique_id=654260357 instance=ExtResource("2_bml70")]
+position = Vector2(1001, 592)
