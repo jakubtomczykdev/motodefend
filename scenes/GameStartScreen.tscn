@@ -5,6 +5,8 @@
 [ext_resource type="Script" uid="uid://6d8rcd4fqmg6" path="res://scenes/player_scene.gd" id="3_bml70"]
 [ext_resource type="PackedScene" uid="uid://116jl6uig251" path="res://scenes/shopkeeper.tscn" id="4_4klen"]
 [ext_resource type="Script" uid="uid://cg1y2d2yir0eq" path="res://Scripts/shopkeeper.gd" id="5_com1t"]
+[ext_resource type="PackedScene" uid="uid://tjeubeg1cp6j" path="res://scenes/cybersecurity_expert.tscn" id="6_7s0oi"]
+[ext_resource type="Script" uid="uid://c0k55lc55dpyb" path="res://Scripts/cybersecurity_expert.gd" id="7_vjy5m"]
 
 [node name="Node2D" type="Node2D" unique_id=720583781]
 metadata/logic_bricks_graph = {
@@ -164,3 +166,7 @@ script = ExtResource("3_bml70")
 [node name="SellingMashine" parent="." unique_id=889363064 instance=ExtResource("4_4klen")]
 position = Vector2(322, 275)
 script = ExtResource("5_com1t")
+
+[node name="CybersecurityExpert" parent="." unique_id=594552917 instance=ExtResource("6_7s0oi")]
+position = Vector2(101, 913)
+script = ExtResource("7_vjy5m")
