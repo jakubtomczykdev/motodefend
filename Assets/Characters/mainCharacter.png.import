@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b81fj5ewmgyrv"
-path="res://.godot/imported/shopkeer.png-950384685841f5bfc5d013bbbeea0263.ctex"
+uid="uid://cc04d2af0ytl5"
+path="res://.godot/imported/mainCharacter.png-2a7a6aad3fbfcc2ba0de718fb41d9b82.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://shopkeer.png"
-dest_files=["res://.godot/imported/shopkeer.png-950384685841f5bfc5d013bbbeea0263.ctex"]
+source_file="res://Assets/Characters/mainCharacter.png"
+dest_files=["res://.godot/imported/mainCharacter.png-2a7a6aad3fbfcc2ba0de718fb41d9b82.ctex"]
 
 [params]
 

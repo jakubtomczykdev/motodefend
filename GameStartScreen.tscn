@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://bbohq175i5fyw"]
+[gd_scene format=4 uid="uid://bbohq175i5fyw"]
 
-[ext_resource type="Texture2D" uid="uid://b81fj5ewmgyrv" path="res://shopkeer.png" id="1_jcja1"]
+[ext_resource type="TileSet" uid="uid://bcsoxffk1gs3v" path="res://Tilesets/testTileSet.tres" id="1_jcja1"]
 
 [node name="Node2D" type="Node2D" unique_id=720583781]
 metadata/logic_bricks_graph = {
@@ -10,9 +10,10 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=153396784]
-offset_right = 1920.0
-offset_bottom = 1080.0
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1689030207]
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -20,7 +21,11 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="Shopkeeper" type="Area2D" parent="ColorRect" unique_id=1060012083]
+[node name="TileMapLayer2" type="TileMapLayer" parent="." unique_id=1856350456]
+position = Vector2(591.99994, 0)
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -28,7 +33,122 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="Sprite2D" type="Sprite2D" parent="ColorRect/Shopkeeper" unique_id=1720058210]
-position = Vector2(1806, 186.00003)
-scale = Vector2(0.412, 0.42)
-texture = ExtResource("1_jcja1")
+[node name="TileMapLayer3" type="TileMapLayer" parent="." unique_id=1975893436]
+position = Vector2(1182.9999, 0.99999994)
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="TileMapLayer5" type="TileMapLayer" parent="." unique_id=1645527113]
+position = Vector2(1775, 0.00012207031)
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="TileMapLayer4" type="TileMapLayer" parent="." unique_id=666042503]
+position = Vector2(-0.99999994, 397.99997)
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="TileMapLayer6" type="TileMapLayer" parent="." unique_id=31828010]
+position = Vector2(590.99994, 397.99997)
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="TileMapLayer7" type="TileMapLayer" parent="." unique_id=1037001726]
+position = Vector2(1181.9999, 398.99997)
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="TileMapLayer8" type="TileMapLayer" parent="." unique_id=662621147]
+position = Vector2(1774, 398.0001)
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="TileMapLayer9" type="TileMapLayer" parent="." unique_id=1720274238]
+position = Vector2(-0.99999994, 793.99994)
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="TileMapLayer10" type="TileMapLayer" parent="." unique_id=539735445]
+position = Vector2(590.99994, 793.99994)
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="TileMapLayer11" type="TileMapLayer" parent="." unique_id=1616574545]
+position = Vector2(1181.9999, 794.99994)
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="TileMapLayer12" type="TileMapLayer" parent="." unique_id=2100550389]
+position = Vector2(1774, 794.00006)
+scale = Vector2(0.2, 0.2)
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_set = ExtResource("1_jcja1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []

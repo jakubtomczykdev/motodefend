@@ -17,6 +17,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1477036557]
 material = SubResource("ShaderMaterial_xfpod")
@@ -30,7 +36,7 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="Label" type="Label" parent="." unique_id=1825623478]
+[node name="Label" type="Label" parent="ColorRect" unique_id=1825623478]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -49,8 +55,3 @@ metadata/logic_bricks_graph = {
 "nodes": []
 }
 metadata/logic_bricks_frames = []
-
-[node name="Button" type="Button" parent="." unique_id=198886945]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0

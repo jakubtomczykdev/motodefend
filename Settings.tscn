@@ -19,6 +19,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=312971810]
 layout_mode = 0
@@ -29,7 +35,7 @@ offset_bottom = 1082.0
 material = SubResource("ShaderMaterial_blqn1")
 layout_mode = 0
 offset_right = 1920.0
-offset_bottom = 1079.0
+offset_bottom = 1080.0
 
 [node name="MarginContainer" type="MarginContainer" parent="ColorRect" unique_id=776396644]
 layout_mode = 1
