@@ -83,7 +83,8 @@ metadata/logic_bricks_frames = []
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=450965022]
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_u8vrl")
-animation = &"front"
+animation = &"right"
+frame_progress = 0.65243375
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,

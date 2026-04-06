@@ -3,6 +3,8 @@
 [ext_resource type="TileSet" uid="uid://bcsoxffk1gs3v" path="res://Tilesets/testTileSet.tres" id="1_nhact"]
 [ext_resource type="PackedScene" uid="uid://dxqcwr5onpo55" path="res://scenes/playerScene.tscn" id="2_bml70"]
 [ext_resource type="Script" uid="uid://6d8rcd4fqmg6" path="res://scenes/player_scene.gd" id="3_bml70"]
+[ext_resource type="PackedScene" uid="uid://116jl6uig251" path="res://scenes/shopkeeper.tscn" id="4_4klen"]
+[ext_resource type="Script" uid="uid://cg1y2d2yir0eq" path="res://Scripts/shopkeeper.gd" id="5_com1t"]
 
 [node name="Node2D" type="Node2D" unique_id=720583781]
 metadata/logic_bricks_graph = {
@@ -158,3 +160,7 @@ metadata/logic_bricks_frames = []
 [node name="Player" parent="." unique_id=654260357 instance=ExtResource("2_bml70")]
 position = Vector2(1001, 592)
 script = ExtResource("3_bml70")
+
+[node name="SellingMashine" parent="." unique_id=889363064 instance=ExtResource("4_4klen")]
+position = Vector2(322, 275)
+script = ExtResource("5_com1t")

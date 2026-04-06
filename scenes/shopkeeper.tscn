@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://116jl6uig251"]
+
+[ext_resource type="Texture2D" uid="uid://bri46awusfrli" path="res://Assets/Characters/shopMashine.png" id="1_r2fug"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_axi3u"]
+atlas = ExtResource("1_r2fug")
+region = Rect2(0, 0, 640, 349)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uguoe"]
+atlas = ExtResource("1_r2fug")
+region = Rect2(640, 0, 640, 349)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mun5w"]
+atlas = ExtResource("1_r2fug")
+region = Rect2(0, 349, 640, 349)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4d5tc"]
+atlas = ExtResource("1_r2fug")
+region = Rect2(640, 349, 640, 349)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_601d7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_axi3u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uguoe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mun5w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4d5tc")
+}],
+"loop": true,
+"name": &"MashineAnimation",
+"speed": 0.4
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cqxkv"]
+size = Vector2(614, 355)
+
+[node name="SellingMashine" type="CharacterBody2D" unique_id=889363064]
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=902937345]
+sprite_frames = SubResource("SpriteFrames_601d7")
+animation = &"MashineAnimation"
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1013052398]
+position = Vector2(-13, 1.5)
+shape = SubResource("RectangleShape2D_cqxkv")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
