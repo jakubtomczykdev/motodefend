@@ -3,12 +3,30 @@
 [ext_resource type="Texture2D" uid="uid://b81fj5ewmgyrv" path="res://shopkeer.png" id="1_jcja1"]
 
 [node name="Node2D" type="Node2D" unique_id=720583781]
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=153396784]
 offset_right = 1920.0
 offset_bottom = 1080.0
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
 
 [node name="Shopkeeper" type="Area2D" parent="ColorRect" unique_id=1060012083]
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
 
 [node name="Sprite2D" type="Sprite2D" parent="ColorRect/Shopkeeper" unique_id=1720058210]
 position = Vector2(1806, 186.00003)
