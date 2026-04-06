@@ -16,7 +16,7 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1689030207]
+[node name="Grass" type="TileMapLayer" parent="." unique_id=1689030207]
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
@@ -27,8 +27,8 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer2" type="TileMapLayer" parent="." unique_id=1856350456]
-position = Vector2(591.99994, 0)
+[node name="Grass2" type="TileMapLayer" parent="." unique_id=187641357]
+position = Vector2(1181.9999, 0)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
@@ -39,8 +39,8 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer3" type="TileMapLayer" parent="." unique_id=1975893436]
-position = Vector2(1182.9999, 0.99999994)
+[node name="Grass3" type="TileMapLayer" parent="." unique_id=1615372323]
+position = Vector2(1773.0001, 0)
 scale = Vector2(0.2, 0.2)
 tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
@@ -51,10 +51,10 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer5" type="TileMapLayer" parent="." unique_id=1645527113]
-position = Vector2(1775, 0.00012207031)
+[node name="Grass4" type="TileMapLayer" parent="." unique_id=1020047617]
+position = Vector2(590.99994, 0)
 scale = Vector2(0.2, 0.2)
-tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAQAAAAAAAACaAF0AAQAAAAAAAAAfAFwAAQAAAAAAAABcAF4AAQAAAAAAAACZAB8AAQAAAAAAAABdAB8AAQAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
@@ -63,10 +63,10 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer4" type="TileMapLayer" parent="." unique_id=666042503]
-position = Vector2(-0.99999994, 397.99997)
+[node name="straightPath" type="TileMapLayer" parent="." unique_id=1096630150]
+position = Vector2(0, 396.99997)
 scale = Vector2(0.2, 0.2)
-tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAfAB8AAQAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAQAAAAAAAACaAF0AAAAAAAAAAABdAB8AAQAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
@@ -75,10 +75,10 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer6" type="TileMapLayer" parent="." unique_id=31828010]
-position = Vector2(590.99994, 397.99997)
+[node name="straightPath2" type="TileMapLayer" parent="." unique_id=1921856522]
+position = Vector2(590.99994, 395)
 scale = Vector2(0.2, 0.2)
-tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAfAB8AAQAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAQAAAAAAAACaAF0AAAAAAAAAAABdAB8AAQAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
@@ -87,10 +87,10 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer7" type="TileMapLayer" parent="." unique_id=1037001726]
-position = Vector2(1181.9999, 398.99997)
+[node name="straightPath3" type="TileMapLayer" parent="." unique_id=1916862535]
+position = Vector2(1180.9999, 395)
 scale = Vector2(0.2, 0.2)
-tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAfAB8AAQAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAQAAAAAAAABcAF0AAAAAAAAAAACaAB8AAQAAAAAAAACaAF0AAAAAAAAAAABdAB8AAQAAAAAAAAAgAF0AAQAAAAAAAAAgAF4AAQAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
@@ -99,10 +99,10 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer8" type="TileMapLayer" parent="." unique_id=662621147]
-position = Vector2(1774, 398.0001)
+[node name="straightPath4" type="TileMapLayer" parent="." unique_id=1330294634]
+position = Vector2(1774.9999, 395)
 scale = Vector2(0.2, 0.2)
-tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAfAB8AAQAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAQAAAAAAAACaAF0AAAAAAAAAAABdAB8AAQAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
@@ -111,10 +111,10 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer9" type="TileMapLayer" parent="." unique_id=1720274238]
-position = Vector2(-0.99999994, 793.99994)
+[node name="straightPath5" type="TileMapLayer" parent="." unique_id=1435082061]
+position = Vector2(0, 793)
 scale = Vector2(0.2, 0.2)
-tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAfAB8AAQAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAQAAAAAAAACaAF0AAAAAAAAAAABdAB8AAQAAAAAAAADYAB8AAQAAAAAAAADYAOH/AQAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
@@ -123,10 +123,10 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer10" type="TileMapLayer" parent="." unique_id=539735445]
-position = Vector2(590.99994, 793.99994)
+[node name="Grass5" type="TileMapLayer" parent="." unique_id=171826259]
+position = Vector2(590.00006, 793)
 scale = Vector2(0.2, 0.2)
-tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAfAB8AAQAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
@@ -135,10 +135,10 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer11" type="TileMapLayer" parent="." unique_id=1616574545]
-position = Vector2(1181.9999, 794.99994)
+[node name="straightPath6" type="TileMapLayer" parent="." unique_id=1505519018]
+position = Vector2(1181.9999, 793)
 scale = Vector2(0.2, 0.2)
-tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAfAB8AAQAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAQAAAAAAAACaAF0AAAAAAAAAAABdAB8AAQAAAAAAAADXAB8AAQAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
@@ -147,10 +147,10 @@ metadata/logic_bricks_graph = {
 }
 metadata/logic_bricks_frames = []
 
-[node name="TileMapLayer12" type="TileMapLayer" parent="." unique_id=2100550389]
-position = Vector2(1774, 794.00006)
+[node name="Grass7" type="TileMapLayer" parent="." unique_id=845992149]
+position = Vector2(1774.0001, 793)
 scale = Vector2(0.2, 0.2)
-tile_map_data = PackedByteArray("AAAfAB8AAAAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAfAB8AAQAAAAAAAABcAB8AAAAAAAAAAAAfAF0AAAAAAAAAAABcAF0AAAAAAAAAAACaAB8AAAAAAAAAAACaAF0AAAAAAAAAAAA=")
 tile_set = ExtResource("1_nhact")
 metadata/logic_bricks_graph = {
 "connections": [],
@@ -160,13 +160,13 @@ metadata/logic_bricks_graph = {
 metadata/logic_bricks_frames = []
 
 [node name="Player" parent="." unique_id=654260357 instance=ExtResource("2_bml70")]
-position = Vector2(1001, 592)
+position = Vector2(987, 122)
 script = ExtResource("3_bml70")
 
 [node name="SellingMashine" parent="." unique_id=889363064 instance=ExtResource("4_4klen")]
-position = Vector2(322, 275)
+position = Vector2(325, 174)
 script = ExtResource("5_com1t")
 
 [node name="CybersecurityExpert" parent="." unique_id=594552917 instance=ExtResource("6_7s0oi")]
-position = Vector2(101, 913)
+position = Vector2(114, 802)
 script = ExtResource("7_vjy5m")
