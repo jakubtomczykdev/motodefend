@@ -20,12 +20,12 @@ func _create_buses() -> void:
 	var has_ui := false
 
 	for i in bus_count:
-		var name := AudioServer.get_bus_name(i)
-		if name == MUSIC_BUS:
+		var bus_name := AudioServer.get_bus_name(i)
+		if bus_name == MUSIC_BUS:
 			has_music = true
-		elif name == SFX_BUS:
+		elif bus_name == SFX_BUS:
 			has_sfx = true
-		elif name == UI_BUS:
+		elif bus_name == UI_BUS:
 			has_ui = true
 
 	if not has_music:

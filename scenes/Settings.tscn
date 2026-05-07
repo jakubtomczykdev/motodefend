@@ -74,7 +74,8 @@ theme_override_font_sizes/font_size = 35
 text = "Glowna"
 custom_minimum_size = Vector2(200, 0)
 
-[node name="MasterSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/MasterRow" unique_id=441109 unique_name_in_owner=true]
+[node name="MasterSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/MasterRow" unique_id=441109]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 custom_minimum_size = Vector2(400, 0)
@@ -83,7 +84,8 @@ max_value = 100.0
 step = 1.0
 value = 100.0
 
-[node name="MasterLabel" type="Label" parent="ScrollContainer/VBoxContainer/MasterRow" unique_id=441110 unique_name_in_owner=true]
+[node name="MasterLabel" type="Label" parent="ScrollContainer/VBoxContainer/MasterRow" unique_id=441110]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.816, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4")
@@ -103,7 +105,8 @@ theme_override_font_sizes/font_size = 35
 text = "Muzyka"
 custom_minimum_size = Vector2(200, 0)
 
-[node name="MusicSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/MusicRow" unique_id=441113 unique_name_in_owner=true]
+[node name="MusicSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/MusicRow" unique_id=441113]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 custom_minimum_size = Vector2(400, 0)
@@ -112,7 +115,8 @@ max_value = 100.0
 step = 1.0
 value = 80.0
 
-[node name="MusicLabel" type="Label" parent="ScrollContainer/VBoxContainer/MusicRow" unique_id=441114 unique_name_in_owner=true]
+[node name="MusicLabel" type="Label" parent="ScrollContainer/VBoxContainer/MusicRow" unique_id=441114]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.816, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4")
@@ -132,7 +136,8 @@ theme_override_font_sizes/font_size = 35
 text = "Efekty (SFX)"
 custom_minimum_size = Vector2(200, 0)
 
-[node name="SfxSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/SfxRow" unique_id=441117 unique_name_in_owner=true]
+[node name="SfxSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/SfxRow" unique_id=441117]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 custom_minimum_size = Vector2(400, 0)
@@ -141,7 +146,8 @@ max_value = 100.0
 step = 1.0
 value = 100.0
 
-[node name="SfxLabel" type="Label" parent="ScrollContainer/VBoxContainer/SfxRow" unique_id=441118 unique_name_in_owner=true]
+[node name="SfxLabel" type="Label" parent="ScrollContainer/VBoxContainer/SfxRow" unique_id=441118]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.816, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4")
@@ -161,7 +167,8 @@ theme_override_font_sizes/font_size = 35
 text = "Interfejs (UI)"
 custom_minimum_size = Vector2(200, 0)
 
-[node name="UiSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/UiRow" unique_id=441121 unique_name_in_owner=true]
+[node name="UiSlider" type="HSlider" parent="ScrollContainer/VBoxContainer/UiRow" unique_id=441121]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 custom_minimum_size = Vector2(400, 0)
@@ -170,7 +177,8 @@ max_value = 100.0
 step = 1.0
 value = 100.0
 
-[node name="UiLabel" type="Label" parent="ScrollContainer/VBoxContainer/UiRow" unique_id=441122 unique_name_in_owner=true]
+[node name="UiLabel" type="Label" parent="ScrollContainer/VBoxContainer/UiRow" unique_id=441122]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.816, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4")
@@ -201,7 +209,8 @@ theme_override_font_sizes/font_size = 35
 text = "Rozdzielczosc"
 custom_minimum_size = Vector2(200, 0)
 
-[node name="ResolutionDropdown" type="OptionButton" parent="ScrollContainer/VBoxContainer/ResolutionRow" unique_id=441127 unique_name_in_owner=true]
+[node name="ResolutionDropdown" type="OptionButton" parent="ScrollContainer/VBoxContainer/ResolutionRow" unique_id=441127]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 custom_minimum_size = Vector2(400, 0)
@@ -220,7 +229,8 @@ theme_override_font_sizes/font_size = 35
 text = "Pelny ekran"
 custom_minimum_size = Vector2(200, 0)
 
-[node name="FullscreenCheckBox" type="CheckBox" parent="ScrollContainer/VBoxContainer/FullscreenRow" unique_id=441130 unique_name_in_owner=true]
+[node name="FullscreenCheckBox" type="CheckBox" parent="ScrollContainer/VBoxContainer/FullscreenRow" unique_id=441130]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("4")
@@ -238,7 +248,8 @@ theme_override_font_sizes/font_size = 35
 text = "V-Sync"
 custom_minimum_size = Vector2(200, 0)
 
-[node name="VsyncCheckBox" type="CheckBox" parent="ScrollContainer/VBoxContainer/VsyncRow" unique_id=441133 unique_name_in_owner=true]
+[node name="VsyncCheckBox" type="CheckBox" parent="ScrollContainer/VBoxContainer/VsyncRow" unique_id=441133]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("4")
@@ -252,21 +263,24 @@ layout_mode = 2
 alignment = 1
 theme_override_constants/separation = 30
 
-[node name="ApplyButton" type="Button" parent="ScrollContainer/VBoxContainer/ButtonsRow" unique_id=441136 unique_name_in_owner=true]
+[node name="ApplyButton" type="Button" parent="ScrollContainer/VBoxContainer/ButtonsRow" unique_id=441136]
+unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(250, 70)
 theme_override_fonts/font = ExtResource("4")
 theme_override_font_sizes/font_size = 40
 text = "Zastosuj"
 
-[node name="ResetButton" type="Button" parent="ScrollContainer/VBoxContainer/ButtonsRow" unique_id=441137 unique_name_in_owner=true]
+[node name="ResetButton" type="Button" parent="ScrollContainer/VBoxContainer/ButtonsRow" unique_id=441137]
+unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(300, 70)
 theme_override_fonts/font = ExtResource("4")
 theme_override_font_sizes/font_size = 40
 text = "Domyslne"
 
-[node name="BackButton" type="Button" parent="ScrollContainer/VBoxContainer/ButtonsRow" unique_id=441138 unique_name_in_owner=true]
+[node name="BackButton" type="Button" parent="ScrollContainer/VBoxContainer/ButtonsRow" unique_id=441138]
+unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(250, 70)
 theme_override_fonts/font = ExtResource("4")
