@@ -59,18 +59,14 @@ layer = 10
 
 [node name="EndScreen" parent="." instance=ExtResource("8_end")]
 
-[node name="SpawnTopLeft" type="Marker2D" parent="."]
+[node name="SpawnTopLeft" type="Marker2D" parent="." groups=["SpawnPoints"]]
 position = Vector2(100, 100)
-add_to_group = "SpawnPoints"
 
-[node name="SpawnTopRight" type="Marker2D" parent="."]
+[node name="SpawnTopRight" type="Marker2D" parent="." groups=["SpawnPoints"]]
 position = Vector2(1820, 100)
-add_to_group = "SpawnPoints"
 
-[node name="SpawnBottomLeft" type="Marker2D" parent="."]
+[node name="SpawnBottomLeft" type="Marker2D" parent="." groups=["SpawnPoints"]]
 position = Vector2(100, 980)
-add_to_group = "SpawnPoints"
 
-[node name="SpawnBottomRight" type="Marker2D" parent="."]
+[node name="SpawnBottomRight" type="Marker2D" parent="." groups=["SpawnPoints"]]
 position = Vector2(1820, 980)
-add_to_group = "SpawnPoints"

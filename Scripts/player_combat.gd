@@ -58,7 +58,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	update_animation()
 
-func handle_input(delta: float) -> void:
+func handle_input(_delta: float) -> void:
 	var direction := Vector2.ZERO
 
 	if Input.is_action_pressed("walk_up"):

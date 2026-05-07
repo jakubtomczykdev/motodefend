@@ -38,6 +38,20 @@ var educational_content: Dictionary = {
 		"impact": "APT może działać miesiącami lub latami w systemie ofiary, kradnąc tajemnice państwowe, technologie i dane strategiczne. Często atakuje krytyczną infrastrukturę.",
 		"prevention": "Ochrona: zaawansowany monitoring, threat hunting, segmentacja sieci, edukacja, współpraca z służbami.",
 		"real_world": "Przykład: APT29 (Cozy Bear) - rosyjska grupa odpowiedzialna za ataki na rządy i organizacje na całym świecie."
+	},
+	"phishing": {
+		"title": "PHISHING - WYŁUDZANIE DANYCH",
+		"description": "Phishing to metoda oszustwa, w której przestępca podszywa się pod inną osobę lub instytucję w celu wyłudzenia poufnych informacji (np. haseł, danych kart płatniczych).",
+		"impact": "Może prowadzić do kradzieży tożsamości, utraty pieniędzy i nieautoryzowanego dostępu do kont firmowych.",
+		"prevention": "Ochrona: sprawdzaj adresy e-mail nadawców, nie klikaj w podejrzane linki, używaj uwierzytelniania dwuskładnikowego (2FA).",
+		"real_world": "Przykład: Masowe kampanie SMS podszywające się pod firmy kurierskie lub banki."
+	},
+	"sql": {
+		"title": "SQL INJECTION - WSTRZYKIWANIE KODU",
+		"description": "SQL Injection to atak polegający na wstrzyknięciu złośliwego kodu SQL do zapytania bazy danych poprzez luki w aplikacjach (np. pola formularzy).",
+		"impact": "Pozwala atakującym na odczytanie wrażliwych danych, ich modyfikację lub usunięcie, a czasem nawet na przejęcie pełnej kontroli nad serwerem bazy danych.",
+		"prevention": "Ochrona: stosowanie zapytań parametrycznych, walidacja danych wejściowych, ograniczanie uprawnień bazy danych.",
+		"real_world": "Przykład: Atak na vBulletin (2019), gdzie hakerzy uzyskali dostęp do danych milionów użytkowników."
 	}
 }
 
@@ -81,19 +95,19 @@ func show_education(enemy_type: String) -> void:
 		education_completed.emit()
 		return
 
-	var content: Dictionary = educational_content[enemy_type] as Dictionary
+	var content: Dictionary = educational_content[enemy_type]
 
 	# Ustaw teksty
 	if title_label:
-		title_label.text = content["title"] as String
+		title_label.text = str(content.get("title", ""))
 	if description_label:
-		description_label.text = "OPIS:\n" + (content["description"] as String)
+		description_label.text = "OPIS:\n" + str(content.get("description", ""))
 	if impact_label:
-		impact_label.text = "WPŁYW:\n" + (content["impact"] as String)
+		impact_label.text = "WPŁYW:\n" + str(content.get("impact", ""))
 	if prevention_label:
-		prevention_label.text = "OCHRONA:\n" + (content["prevention"] as String)
+		prevention_label.text = "OCHRONA:\n" + str(content.get("prevention", ""))
 	if real_world_label:
-		real_world_label.text = "PRZYKŁAD Z RZECZYWISTOŚCI:\n" + (content["real_world"] as String)
+		real_world_label.text = "PRZYKŁAD Z RZECZYWISTOŚCI:\n" + str(content.get("real_world", ""))
 	
 	if continue_button:
 		continue_button.text = "KONTYNUUJ"
@@ -141,9 +155,9 @@ func show_wave_info(wave_number: int) -> void:
 	if title_label:
 		title_label.text = "FALA %d" % wave_number
 	if description_label:
-		description_label.text = wave_info["description"] as String
+		description_label.text = str(wave_info.get("description", ""))
 	if impact_label:
-		impact_label.text = wave_info["enemies"] as String
+		impact_label.text = str(wave_info.get("enemies", ""))
 	if prevention_label:
 		prevention_label.text = "Przygotuj się!"
 	if real_world_label:

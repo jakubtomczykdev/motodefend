@@ -34,6 +34,7 @@ var enemy_scenes: Dictionary = {
 }
 
 func _ready() -> void:
+	add_to_group("WaveManager")
 	# Znajdź węzły UI bezpiecznie
 	if has_node("WaveUI"):
 		wave_ui = $WaveUI
@@ -44,6 +45,11 @@ func _ready() -> void:
 
 	_find_player()
 	_find_spawn_points()
+	update_ui()
+
+func register_extra_enemy() -> void:
+	enemies_remaining += 1
+	enemies_in_wave += 1
 	update_ui()
 
 func _process(delta: float) -> void:
@@ -116,24 +122,37 @@ func _get_wave_config(wave: int) -> Dictionary:
 	# Określ typy wrogów
 	config.enemy_types = []
 
-	# Waves 1-5: tylko Worm
-	if wave <= 5:
+	# Waves 1-3: tylko Worm i Phishing
+	if wave <= 3:
 		config.enemy_types.append("worm")
+		config.enemy_types.append("phishing")
 
-	# Waves 6-10: Worm + Trojan
-	elif wave <= 10:
+	# Waves 4-7: Worm + Phishing + SQL
+	elif wave <= 7:
 		config.enemy_types.append("worm")
+		config.enemy_types.append("phishing")
+		config.enemy_types.append("sql")
+
+	# Waves 8-12: Poprzednie + Trojan
+	elif wave <= 12:
+		config.enemy_types.append("worm")
+		config.enemy_types.append("phishing")
+		config.enemy_types.append("sql")
 		config.enemy_types.append("trojan")
 
-	# Waves 11-15: Worm + Trojan + Ransomware
-	elif wave <= 15:
+	# Waves 13-18: Poprzednie + Ransomware
+	elif wave <= 18:
 		config.enemy_types.append("worm")
+		config.enemy_types.append("phishing")
+		config.enemy_types.append("sql")
 		config.enemy_types.append("trojan")
 		config.enemy_types.append("ransomware")
 
-	# Waves 16+: wszystkie podstawowe typy
+	# Waves 19+: wszystkie typy
 	else:
 		config.enemy_types.append("worm")
+		config.enemy_types.append("phishing")
+		config.enemy_types.append("sql")
 		config.enemy_types.append("trojan")
 		config.enemy_types.append("ransomware")
 		config.enemy_types.append("spyware")
@@ -160,8 +179,8 @@ func _spawn_wave(config: Dictionary) -> void:
 		_boss_spawned = true
 
 func _spawn_enemy(enemy_type: String) -> void:
-	var scene_path: String = enemy_scenes.get(enemy_type) as String
-	if not scene_path:
+	var scene_path: String = str(enemy_scenes.get(enemy_type, ""))
+	if scene_path == "":
 		push_warning("Brak sceny dla wroga: " + enemy_type)
 		return
 
@@ -179,7 +198,10 @@ func _spawn_enemy(enemy_type: String) -> void:
 		enemy.global_position = Vector2.ZERO
 
 	enemy.connect("died", _on_enemy_died)
-	get_tree().current_scene.add_child(enemy)
+	
+	# Dodaj do sceny - preferujemy nadrzędny węzeł MainGame
+	var target_parent = get_parent() if get_parent() is Node2D else get_tree().current_scene
+	target_parent.add_child(enemy)
 
 func _on_enemy_died() -> void:
 	enemies_remaining -= 1
