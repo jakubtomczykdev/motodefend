@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://dxqcwr5onpo55"]
 
+[ext_resource type="Script" path="res://Scripts/player_combat.gd" id="1_combat"]
 [ext_resource type="Texture2D" uid="uid://c7qjp7et4tekb" path="res://Assets/Characters/Player/mainCharacterSprites-Photoroom.png" id="1_2q0pg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ps2cl"]
@@ -76,6 +77,8 @@ size = Vector2(88, 204)
 size = Vector2(150, 260)
 
 [node name="Player" type="CharacterBody2D" unique_id=654260357]
+script = ExtResource("1_combat")
+add_to_group = "Player"
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
@@ -120,4 +123,7 @@ offset_right = 60.0
 offset_bottom = -117.0
 horizontal_alignment = 1
 text = "[E] Interakcja"
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(20, 0)
 

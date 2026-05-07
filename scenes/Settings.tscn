@@ -95,6 +95,7 @@ custom_minimum_size = Vector2(80, 0)
 
 [node name="MusicRow" type="HBoxContainer" parent="ScrollContainer/VBoxContainer" unique_id=441111]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="MusicText" type="Label" parent="ScrollContainer/VBoxContainer/MusicRow" unique_id=441112]
 layout_mode = 2
@@ -126,6 +127,7 @@ custom_minimum_size = Vector2(80, 0)
 
 [node name="SfxRow" type="HBoxContainer" parent="ScrollContainer/VBoxContainer" unique_id=441115]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="SfxText" type="Label" parent="ScrollContainer/VBoxContainer/SfxRow" unique_id=441116]
 layout_mode = 2
@@ -157,6 +159,7 @@ custom_minimum_size = Vector2(80, 0)
 
 [node name="UiRow" type="HBoxContainer" parent="ScrollContainer/VBoxContainer" unique_id=441119]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="UiText" type="Label" parent="ScrollContainer/VBoxContainer/UiRow" unique_id=441120]
 layout_mode = 2
@@ -199,6 +202,7 @@ horizontal_alignment = 1
 
 [node name="ResolutionRow" type="HBoxContainer" parent="ScrollContainer/VBoxContainer" unique_id=441125]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="ResolutionText" type="Label" parent="ScrollContainer/VBoxContainer/ResolutionRow" unique_id=441126]
 layout_mode = 2
@@ -219,6 +223,7 @@ theme_override_font_sizes/font_size = 30
 
 [node name="FullscreenRow" type="HBoxContainer" parent="ScrollContainer/VBoxContainer" unique_id=441128]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="FullscreenLabel" type="Label" parent="ScrollContainer/VBoxContainer/FullscreenRow" unique_id=441129]
 layout_mode = 2
@@ -238,6 +243,7 @@ theme_override_font_sizes/font_size = 35
 
 [node name="VsyncRow" type="HBoxContainer" parent="ScrollContainer/VBoxContainer" unique_id=441131]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="VsyncLabel" type="Label" parent="ScrollContainer/VBoxContainer/VsyncRow" unique_id=441132]
 layout_mode = 2

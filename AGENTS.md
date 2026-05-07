@@ -51,12 +51,12 @@ extends CharacterBody2D  # lub StaticBody2D / Node2D
 @export var npc_name: String = "Nazwa Obiektu"
 
 func _ready() -> void:
-    $AnimatedSprite2D.play("default_animation")
-    $InteractArea.add_to_group("Interactable")
+	$AnimatedSprite2D.play("default_animation")
+	$InteractArea.add_to_group("Interactable")
 
 func interact() -> void:
-    print("Interakcja z: " + npc_name)
-    # TODO: otwórz dialog / sklep / animację
+	print("Interakcja z: " + npc_name)
+	# TODO: otwórz dialog / sklep / animację
 ```
 
 ## Warstwy kolizji ( Collision Layers )
@@ -102,7 +102,7 @@ Aktualnie skonfigurowany jest serwer **Context7** (dokumentacja Godot / API).
 ```
 Scripts/
   audio/
-    audio_manager.gd     – AudioManager (autoload)
+	audio_manager.gd     – AudioManager (autoload)
   combat/               – system walki
   dialogue/             – system dialogów
   enemies/              – AI przeciwników

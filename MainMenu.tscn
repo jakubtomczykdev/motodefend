@@ -4,7 +4,6 @@
 [ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://retropix.ttf" id="2_h7a2f"]
 [ext_resource type="Shader" uid="uid://dfrrjtrlc4mmk" path="res://matrix.gdshader" id="2_qoqlk"]
 [ext_resource type="Texture2D" uid="uid://u7e10csgef6y" path="res://icon_tex.png" id="3_iwfq2"]
-[ext_resource type="Script" uid="uid://hgguioxtj01u" path="res://btnSettingsMainMenu.gd" id="5_iwfq2"]
 
 [sub_resource type="Environment" id="Environment_qoqlk"]
 
@@ -104,7 +103,6 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 60
 text = "Ustawienia"
-script = ExtResource("5_iwfq2")
 
 [node name="Button2" type="Button" parent="ButtonsContainer" unique_id=435584949]
 layout_mode = 2

@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://main_game_scene"]
+
+[ext_resource type="Script" path="res://Scripts/main_game_controller.gd" id="1_main"]
+[ext_resource type="PackedScene" uid="uid://dxqcwr5onpo55" path="res://scenes/playerScene.tscn" id="2_player"]
+[ext_resource type="Script" path="res://Scripts/wave_manager.gd" id="3_wave"]
+[ext_resource type="Script" path="res://Scripts/build_system.gd" id="4_build"]
+[ext_resource type="Script" path="res://Scripts/item_manager.gd" id="5_item"]
+[ext_resource type="PackedScene" uid="uid://shop_scene" path="res://Scenes/Shop.tscn" id="6_shop"]
+[ext_resource type="PackedScene" uid="uid://educational_popup" path="res://Scenes/EducationalPopup.tscn" id="7_edu"]
+[ext_resource type="PackedScene" uid="uid://end_screen" path="res://Scenes/EndScreen.tscn" id="8_end"]
+
+[node name="MainGame" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(960, 540)
+
+[node name="WaveManager" type="Node" parent="."]
+script = ExtResource("3_wave")
+
+[node name="WaveUI" type="Label" parent="WaveManager"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 200.0
+offset_bottom = 60.0
+theme_override_font_sizes/font_size = 24
+text = "FALA: 1"
+
+[node name="EnemiesUI" type="Label" parent="WaveManager"]
+offset_left = 20.0
+offset_top = 70.0
+offset_right = 200.0
+offset_bottom = 110.0
+theme_override_font_sizes/font_size = 24
+text = "WRÓGÓW: 0"
+
+[node name="TimerUI" type="Label" parent="WaveManager"]
+offset_left = 20.0
+offset_top = 120.0
+offset_right = 300.0
+offset_bottom = 160.0
+theme_override_font_sizes/font_size = 24
+text = "NASTĘPNA FALA: 10.0"
+
+[node name="BuildSystem" type="Node" parent="."]
+script = ExtResource("4_build")
+
+[node name="ItemManager" type="Node" parent="."]
+script = ExtResource("5_item")
+
+[node name="ShopSystem" parent="." instance=ExtResource("6_shop")]
+
+[node name="EducationalSystem" parent="." instance=ExtResource("7_edu")]
+
+[node name="EndScreen" parent="." instance=ExtResource("8_end")]
+
+[node name="SpawnTopLeft" type="Marker2D" parent="."]
+position = Vector2(100, 100)
+add_to_group = "SpawnPoints"
+
+[node name="SpawnTopRight" type="Marker2D" parent="."]
+position = Vector2(1820, 100)
+add_to_group = "SpawnPoints"
+
+[node name="SpawnBottomLeft" type="Marker2D" parent="."]
+position = Vector2(100, 980)
+add_to_group = "SpawnPoints"
+
+[node name="SpawnBottomRight" type="Marker2D" parent="."]
+position = Vector2(1820, 980)
+add_to_group = "SpawnPoints"
