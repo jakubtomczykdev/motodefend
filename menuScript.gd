@@ -1,7 +1,7 @@
 extends Control
 
 # Ścieżki do scen (dostosowane do Twojego projektu)
-@export var game_scene_path : String = "res://Scenes/MainGame.tscn"
+@export var game_scene_path : String = "res://scenes/GameStartScreen.tscn"
 @export var settings_scene_path : String = "res://scenes/Settings.tscn"
 
 # Używamy unikalnej nazwy (%), żeby Godot sam znalazł przycisk, 

@@ -21,7 +21,7 @@ var interaction_area: Area2D
 var interaction_prompt: Label
 var muzzle: Marker2D # punkt wylotu pocisku
 
-var projectile_scene: PackedScene = preload("res://Scenes/Projectile.tscn")
+var projectile_scene: PackedScene = preload("res://scenes/Projectile.tscn")
 
 func _ready() -> void:
 	# Znajdź węzły bezpiecznie
@@ -76,7 +76,7 @@ func handle_input(delta: float) -> void:
 	if Input.is_action_pressed("attack") and can_shoot:
 		shoot()
 
-func handle_movement(delta: float) -> void:
+func handle_movement(_delta: float) -> void:
 	# Ruch jest już w handle_input, tutaj można dodać physics
 	pass
 

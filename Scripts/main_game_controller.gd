@@ -12,6 +12,7 @@ var item_manager: Node
 var shop_system: Control
 var educational_system: Control
 var end_screen: Control
+var playtime_label: Label
 
 var game_state: String = "menu" # menu, playing, paused, shop, education, game_over, victory
 var score: int = 0
@@ -28,13 +29,35 @@ func _ready() -> void:
 	build_system = get_node_or_null("BuildSystem")
 	item_manager = get_node_or_null("ItemManager")
 	shop_system = get_node_or_null("ShopSystem")
-	educational_system = get_node_or_null("EducationalSystem")
+	educational_system = get_node_or_null("EducationalLayer/EducationalSystem")
 	end_screen = get_node_or_null("EndScreen")
+	playtime_label = get_node_or_null("HUD/PlaytimeUI")
 
 	_connect_signals()
 
 	if shop_system: shop_system.visible = false
 	if educational_system: educational_system.visible = false
+
+	# Rozpocznij grę automatycznie po załadowaniu sceny
+	start_game()
+
+@export var max_game_time: float = 600.0 # 10 minut w sekundach
+var game_elapsed_time: float = 0.0
+
+func _process(delta: float) -> void:
+	if game_state == "playing" and playtime_label:
+		game_elapsed_time += delta
+		var remaining: float = max_game_time - game_elapsed_time
+		
+		if remaining <= 0:
+			remaining = 0
+			playtime_label.text = "CZAS MINĄŁ!"
+			_on_menu_requested()
+			return
+			
+		var minutes: int = int(remaining) / 60
+		var seconds: int = int(remaining) % 60
+		playtime_label.text = "POZOSTAŁO: %02d:%02d" % [minutes, seconds]
 
 func _connect_signals() -> void:
 	if wave_manager:
@@ -59,7 +82,6 @@ func _connect_signals() -> void:
 		end_screen.menu_requested.connect(_on_menu_requested)
 
 func start_game() -> void:
-	game_state = "playing"
 	if build_system: build_system.clear_build()
 	if shop_system: shop_system.add_gold(gold)
 	if player and player.has_method("heal"):
@@ -68,24 +90,43 @@ func start_game() -> void:
 	score = 0
 	gold = 100
 	items_collected.clear()
-	game_start_time = Time.get_unix_time_from_system()
+	game_elapsed_time = 0.0
 
-	if educational_system: educational_system.show_intro()
+	if educational_system: 
+		game_state = "education_intro"
+		educational_system.show_intro()
+	else:
+		game_state = "playing"
+		if wave_manager: wave_manager.start_game()
+		
 	game_started.emit()
 
 func _on_education_completed() -> void:
-	if game_state == "menu":
-		if wave_manager: wave_manager.start_game()
+	if game_state == "education_intro":
 		game_state = "playing"
+		get_tree().paused = false
+		if wave_manager: wave_manager.start_game()
 	elif game_state == "education":
 		game_state = "playing"
 		get_tree().paused = false
 
 func _on_wave_started(wave_number: int) -> void:
-	if wave_number == 1 or wave_number % 5 == 0:
-		if educational_system:
+	if educational_system:
+		if wave_number == 1:
 			game_state = "education"
-			educational_system.show_wave_info(wave_number)
+			educational_system.show_education("worm")
+		elif wave_number == 5:
+			game_state = "education"
+			educational_system.show_education("apt_boss")
+		elif wave_number == 6:
+			game_state = "education"
+			educational_system.show_education("trojan")
+		elif wave_number == 11:
+			game_state = "education"
+			educational_system.show_education("ransomware")
+		elif wave_number == 16:
+			game_state = "education"
+			educational_system.show_education("spyware")
 
 func _on_wave_ended(wave_number: int) -> void:
 	var wave_gold := wave_number * 50
@@ -104,9 +145,13 @@ func _open_shop() -> void:
 
 	if shop_system:
 		shop_system.open_shop(shop_items, build_system, item_manager)
+		get_tree().paused = true
 
 func _on_shop_closed() -> void:
 	game_state = "playing"
+	get_tree().paused = false
+	if wave_manager:
+		wave_manager.start_next_wave()
 
 func _on_item_purchased(item: ItemBase) -> void:
 	items_collected.append(item)

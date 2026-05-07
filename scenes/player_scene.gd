@@ -27,7 +27,10 @@ func _physics_process(_delta):
 	update_animations(direction)
 	
 	if Input.is_action_just_pressed("interact") and current_interactable != null:
-		current_interactable.interact()
+		if current_interactable.has_method("interact"):
+			current_interactable.interact()
+		elif current_interactable.get_parent().has_method("interact"):
+			current_interactable.get_parent().interact()
 
 func update_animations(direction):
 	if direction.x > 0:

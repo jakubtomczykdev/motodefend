@@ -52,19 +52,24 @@ var real_world_label: Label
 var continue_button: Button
 
 func _ready() -> void:
-	# Znajdź węzły bezpiecznie
-	if has_node("Panel/VBoxContainer/TitleLabel"):
-		title_label = $Panel/VBoxContainer/TitleLabel
-	if has_node("Panel/VBoxContainer/DescriptionLabel"):
-		description_label = $Panel/VBoxContainer/DescriptionLabel
-	if has_node("Panel/VBoxContainer/ImpactLabel"):
-		impact_label = $Panel/VBoxContainer/ImpactLabel
-	if has_node("Panel/VBoxContainer/PreventionLabel"):
-		prevention_label = $Panel/VBoxContainer/PreventionLabel
-	if has_node("Panel/VBoxContainer/RealWorldLabel"):
-		real_world_label = $Panel/VBoxContainer/RealWorldLabel
-	if has_node("Panel/VBoxContainer/ContinueButton"):
-		continue_button = $Panel/VBoxContainer/ContinueButton
+	# Nowe ścieżki po przebudowie układu
+	var base_path = "MainContainer/Panel/MarginContainer/VBoxContainer/"
+	
+	if has_node(base_path + "TitleLabel"):
+		title_label = get_node(base_path + "TitleLabel")
+	
+	var content_path = base_path + "ScrollContainer/ContentBox/"
+	if has_node(content_path + "DescriptionLabel"):
+		description_label = get_node(content_path + "DescriptionLabel")
+	if has_node(content_path + "ImpactLabel"):
+		impact_label = get_node(content_path + "ImpactLabel")
+	if has_node(content_path + "PreventionLabel"):
+		prevention_label = get_node(content_path + "PreventionLabel")
+	if has_node(content_path + "RealWorldLabel"):
+		real_world_label = get_node(content_path + "RealWorldLabel")
+		
+	if has_node(base_path + "ContinueButton"):
+		continue_button = get_node(base_path + "ContinueButton")
 		continue_button.pressed.connect(_on_continue_pressed)
 
 	visible = false
@@ -89,6 +94,9 @@ func show_education(enemy_type: String) -> void:
 		prevention_label.text = "OCHRONA:\n" + (content["prevention"] as String)
 	if real_world_label:
 		real_world_label.text = "PRZYKŁAD Z RZECZYWISTOŚCI:\n" + (content["real_world"] as String)
+	
+	if continue_button:
+		continue_button.text = "KONTYNUUJ"
 
 	# Pauzuj grę
 	is_paused = true
@@ -119,6 +127,9 @@ func show_intro() -> void:
 		prevention_label.text = "Walcz z wrogami, ucz się mechanizmów ataków i buduj systemy obrony!"
 	if real_world_label:
 		real_world_label.text = "Współpracuj z ekspertami i sprzętem Motorola Solutions."
+	
+	if continue_button:
+		continue_button.text = "ROZPOCZNIJ GRĘ"
 
 	is_paused = true
 	get_tree().paused = true

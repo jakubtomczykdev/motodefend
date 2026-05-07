@@ -10,4 +10,5 @@ func _ready() -> void:
 
 func interact():
 	print("Interakcja z: " + npc_name)
-	# Tutaj można dodać dialog, porady lub inne akcje.
+	# Rozpoczynamy właściwą grę
+	get_tree().change_scene_to_file("res://scenes/MainGame.tscn")

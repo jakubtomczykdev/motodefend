@@ -14,17 +14,21 @@ var item_manager: Node
 var gold_label: Label
 var items_container: VBoxContainer
 var close_button: Button
-var item_scene: PackedScene = preload("res://Scenes/ShopItem.tscn")
+var shopkeeper_image: TextureRect
+var item_scene: PackedScene = preload("res://scenes/ShopItem.tscn")
 
 func _ready() -> void:
 	# Znajdź węzły bezpiecznie
-	if has_node("GoldLabel"):
-		gold_label = $GoldLabel
-	if has_node("ItemsContainer"):
-		items_container = $ItemsContainer
-	if has_node("CloseButton"):
-		close_button = $CloseButton
+	if has_node("VBoxContainer/GoldLabel"):
+		gold_label = $VBoxContainer/GoldLabel
+	if has_node("VBoxContainer/ScrollContainer/ItemsContainer"):
+		items_container = $VBoxContainer/ScrollContainer/ItemsContainer
+	if has_node("VBoxContainer/CloseButton"):
+		close_button = $VBoxContainer/CloseButton
 		close_button.pressed.connect(_on_close_pressed)
+	if has_node("VBoxContainer/HeaderBox/ShopkeeperImage"):
+		shopkeeper_image = $VBoxContainer/HeaderBox/ShopkeeperImage
+		shopkeeper_image.texture = load("res://Assets/Characters/MotoMachineSelling.png")
 
 	current_gold = starting_gold
 

@@ -15,17 +15,17 @@ func _initialize_all_items() -> void:
 	all_items.clear()
 
 	# Motorola items
-	all_items.append(CrossPatchItem.new())
-	all_items.append(PSTAItem.new())
-	all_items.append(RadioAPXItem.new())
-	all_items.append(CommandCentralItem.new())
-	all_items.append(BodyCameraItem.new())
-	all_items.append(SolutionHubItem.new())
-	all_items.append(RaveItem.new())
-	all_items.append(LPRIItem.new())
-	all_items.append(PremierOneItem.new())
-	all_items.append(VB400Item.new())
-	all_items.append(FuntionItem.new())
+	all_items.append(MotorolaItems.CrossPatchItem.new())
+	all_items.append(MotorolaItems.PSTAItem.new())
+	all_items.append(MotorolaItems.RadioAPXItem.new())
+	all_items.append(MotorolaItems.CommandCentralItem.new())
+	all_items.append(MotorolaItems.BodyCameraItem.new())
+	all_items.append(MotorolaItems.SolutionHubItem.new())
+	all_items.append(MotorolaItems.RaveItem.new())
+	all_items.append(MotorolaItems.LPRIItem.new())
+	all_items.append(MotorolaItems.PremierOneItem.new())
+	all_items.append(MotorolaItems.VB400Item.new())
+	all_items.append(MotorolaItems.FuntionItem.new())
 
 func get_random_item(min_rarity: String = "common") -> ItemBase:
 	var available_items: Array[ItemBase] = all_items.filter(func(item: ItemBase): return _is_rarity_at_least(item.rarity, min_rarity))

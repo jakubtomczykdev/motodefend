@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://cg1y2d2yir0eq" path="res://Scripts/shopkeeper.gd" id="5_com1t"]
 [ext_resource type="PackedScene" uid="uid://tjeubeg1cp6j" path="res://scenes/cybersecurity_expert.tscn" id="6_7s0oi"]
 [ext_resource type="Script" uid="uid://c0k55lc55dpyb" path="res://Scripts/cybersecurity_expert.gd" id="7_vjy5m"]
+[ext_resource type="Script" path="res://Scripts/game_start_hub.gd" id="8_hub"]
+[ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://retropix.ttf" id="9_font"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vjy5m"]
 texture = ExtResource("1_7s0oi")
@@ -4948,12 +4950,29 @@ texture_region_size = Vector2i(32, 32)
 sources/2 = SubResource("TileSetAtlasSource_vjy5m")
 
 [node name="Node2D" type="Node2D" unique_id=720583781]
-metadata/logic_bricks_graph = {
-"connections": [],
-"next_id": 0,
-"nodes": []
-}
-metadata/logic_bricks_frames = []
+script = ExtResource("8_hub")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -80.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="StartGameButton" type="Button" parent="CanvasLayer/MarginContainer"]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 24
+text = "ROZPOCZNIJ GRĘ"
 
 [node name="TileMap" type="TileMap" parent="." unique_id=451115166]
 tile_set = SubResource("TileSet_vf0oy")
@@ -4976,3 +4995,6 @@ script = ExtResource("5_com1t")
 [node name="CybersecurityExpert" parent="." unique_id=594552917 instance=ExtResource("6_7s0oi")]
 position = Vector2(114, 802)
 script = ExtResource("7_vjy5m")
+
+[connection signal="pressed" from="CanvasLayer/MarginContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]
+

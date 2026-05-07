@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/shop_system.gd" id="1"]
 
 [node name="Shop" type="Control"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,7 +33,17 @@ offset_top = -300.0
 offset_right = 400.0
 offset_bottom = 300.0
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+[node name="HeaderBox" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ShopkeeperImage" type="TextureRect" parent="VBoxContainer/HeaderBox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer/HeaderBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "SKLEP MOTOROLA"

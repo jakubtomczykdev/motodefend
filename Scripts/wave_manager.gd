@@ -26,11 +26,11 @@ var timer_ui: Label
 
 # Sceny wrogów
 var enemy_scenes: Dictionary = {
-	"worm": "res://Scenes/Enemies/Worm.tscn",
-	"trojan": "res://Scenes/Enemies/Trojan.tscn",
-	"ransomware": "res://Scenes/Enemies/Ransomware.tscn",
-	"spyware": "res://Scenes/Enemies/Spyware.tscn",
-	"apt_boss": "res://Scenes/Enemies/APTBoss.tscn"
+	"worm": "res://scenes/Enemies/Worm.tscn",
+	"trojan": "res://scenes/Enemies/Trojan.tscn",
+	"ransomware": "res://scenes/Enemies/Ransomware.tscn",
+	"spyware": "res://scenes/Enemies/Spyware.tscn",
+	"apt_boss": "res://scenes/Enemies/APTBoss.tscn"
 }
 
 func _ready() -> void:
@@ -148,7 +148,7 @@ func _get_wave_config(wave: int) -> Dictionary:
 
 func _spawn_wave(config: Dictionary) -> void:
 	# Spawnuj normalnych wrogów
-	var boss_spawned := false
+	var _boss_spawned := false
 
 	for i in range(config.enemy_count):
 		var enemy_type: String = config.enemy_types.pick_random()
@@ -157,7 +157,7 @@ func _spawn_wave(config: Dictionary) -> void:
 	# Dodaj bossa jeśli wymagane
 	if config.has_boss:
 		_spawn_enemy("apt_boss")
-		boss_spawned = true
+		_boss_spawned = true
 
 func _spawn_enemy(enemy_type: String) -> void:
 	var scene_path: String = enemy_scenes.get(enemy_type) as String
@@ -191,7 +191,7 @@ func _on_enemy_died() -> void:
 func end_wave() -> void:
 	is_wave_active = false
 	is_between_waves = true
-	wave_timer = time_between_waves
+	wave_timer = 0.0 # timer usunięty, sklep przejmuje kontrolę
 
 	wave_ended.emit(current_wave)
 	update_ui()
@@ -220,3 +220,11 @@ func get_wave_progress() -> float:
 func get_total_progress() -> float:
 	# Opcjonalnie: zwróć postęp całej gry
 	return 0.0
+
+# Wywoływane, gdy gra powinna się zakończyć
+func trigger_game_over() -> void:
+	game_over.emit()
+
+# Wywoływane po przejściu wszystkich fal
+func trigger_all_waves_completed() -> void:
+	all_waves_completed.emit()
