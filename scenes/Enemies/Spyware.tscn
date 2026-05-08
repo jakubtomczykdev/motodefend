@@ -12,8 +12,8 @@ radius = 300.0
 radius = 30.0
 
 [node name="Spyware" type="CharacterBody2D" unique_id=1767592810]
-script = ExtResource("1")
 scale = Vector2(0.25, 0.25)
+script = ExtResource("1")
 max_health = 30
 move_speed = 180.0
 detection_range = 300.0
@@ -58,6 +58,12 @@ metadata/logic_bricks_graph = {
 metadata/logic_bricks_frames = []
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=65767708]
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=1219007975]
 shape = SubResource("CircleShape2D_2")

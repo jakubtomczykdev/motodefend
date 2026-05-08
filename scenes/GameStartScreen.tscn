@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://bbohq175i5fyw"]
 
-[ext_resource type="Texture2D" uid="uid://56o40q8ftwsl" path="res://Assets/grassBg.png" id="1_7s0oi"]
 [ext_resource type="PackedScene" uid="uid://dxqcwr5onpo55" path="res://scenes/playerScene.tscn" id="2_bml70"]
 [ext_resource type="Script" uid="uid://6d8rcd4fqmg6" path="res://scenes/player_scene.gd" id="3_bml70"]
 [ext_resource type="PackedScene" uid="uid://116jl6uig251" path="res://scenes/shopkeeper.tscn" id="4_4klen"]
@@ -13,10 +12,16 @@
 [node name="Node2D" type="Node2D" unique_id=720583781]
 script = ExtResource("8_hub")
 
-[node name="Background" type="Sprite2D" parent="."]
-texture = ExtResource("1_7s0oi")
-centered = false
-z_index = -1
+[node name="BackgroundLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="ColorRect" type="ColorRect" parent="BackgroundLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.12, 0.28, 1)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
