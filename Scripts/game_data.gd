@@ -24,6 +24,8 @@ var screen_shake: bool = true
 var custom_inputs: Dictionary = {}
 
 # Dane gry
+var current_wave: int = 0
+var score: int = 0
 var gold: int = 0
 var player_hp: int = 100
 var player_max_hp: int = 100

@@ -8,8 +8,18 @@ extends Control
 # niezależnie od tego w ilu kontenerach jest schowany.
 @onready var start_button: Button = %StartButton
 
-func _ready():
-	# Ustawia fokus na przycisku "Start" po włączeniu menu
+func _ready() -> void:
+	# Zapewnij widoczność kursora myszy w menu
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+	# Ustaw filtr myszy na korzeniu, żeby przepuszczał zdarzenia do dzieci
+	mouse_filter = Control.MOUSE_FILTER_STOP
+
+	# Ustaw filtr IGNORE na tle ColorRect, żeby nie blokowało kliknięć
+	var bg := get_node_or_null("ColorRect")
+	if bg:
+		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 	start_button.grab_focus()
 
 # --- PRZYCISK: START ---

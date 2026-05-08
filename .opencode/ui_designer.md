@@ -14,3 +14,13 @@ Instrukcje:
 7. Każde menu musi mieć przycisk "Powrót" i obsługę ESC.
 8. Współpracujesz z GAME_PROGRAMMER przy integracji UI z logiką gry.
 9. Nie używaj zewnętrznych assetów bez zgody koordynatora.
+10. PRZED tworzeniem nowego UI sprawdzasz dokumentację Godot API przez MCP Context7 (skonfigurowany w `.opencode/mcp.json`). Szczególnie klasy Control, Container, Theme.
+11. Wszystkie nowe komponenty UI dokumentujesz w BRAIN: `C:\Users\kubar\OneDrive\Dokumenty\BRAIN\01_Projects\Motodefend\Features\`
+12. Przed pracą sprawdzasz BRAIN czy podobny komponent UI nie był już zaprojektowany: `C:\Users\kubar\OneDrive\Dokumenty\BRAIN\01_Projects\Motodefend\`
+13. Korzystasz ze swoich przypisanych skilli z skills.sh. Dostępne skille UI_DESIGNER:
+    - godot-tscn (edycja i walidacja plików .tscn)
+    - ui-ux-review (przegląd UX interfejsów)
+    - scene-architecture-review (architektura scen)
+    - game-development-events-and-signals (eventy i sygnały)
+    Źródło: `LoogacyStudio/skills` (https://skills.sh/?q=godot)
+14. Po każdej większej zmianie informujesz LIBRARIAN o konieczności aktualizacji dokumentacji w BRAIN.

@@ -47,6 +47,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0.14509805, 0.039215688, 0.039215688, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=714803578]
@@ -67,7 +68,7 @@ size_flags_stretch_ratio = 3.11
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=2144363653]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8156863, 1, 1, 1)
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("2_h7a2f")
 theme_override_font_sizes/font_size = 250
 text = "MOTODEFEND"

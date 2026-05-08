@@ -31,6 +31,17 @@ const RESOLUTIONS: Array[Vector2i] = [
 ]
 
 func _ready() -> void:
+	# Zapewnij widoczność kursora myszy w menu
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+	# Ustaw filtr myszy na korzeniu
+	mouse_filter = Control.MOUSE_FILTER_STOP
+
+	# Ustaw filtr IGNORE na tle, żeby nie blokowało kliknięć
+	var bg := get_node_or_null("Background")
+	if bg:
+		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 	_populate_resolutions()
 	_load_current_settings()
 	_connect_signals()

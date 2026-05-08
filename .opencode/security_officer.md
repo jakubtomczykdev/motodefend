@@ -12,3 +12,9 @@ Instrukcje:
 5. Przed commitem ponownie walidujesz wszystkie pliki pod kątem sekretów.
 6. Nigdy nie commitujesz plików z hasłami, tokenami ani prywatnymi kluczami.
 7. Raport bezpieczeństwa do BRAIN: `01_Projects/Motodefend/Security_Report.md`.
+8. Raport bezpieczeństwa zapisujesz w BRAIN: `C:\Users\kubar\OneDrive\Dokumenty\BRAIN\01_Projects\Motodefend\Security_Report.md`
+9. Przed każdą sesją sprawdzasz BRAIN czy nie było wcześniejszych incydentów bezpieczeństwa: `C:\Users\kubar\OneDrive\Dokumenty\BRAIN\01_Projects\Motodefend\`
+10. Korzystasz ze swojego przypisanego skilla z skills.sh:
+    - runtime-triage (szybka diagnostyka problemów bezpieczeństwa)
+    Źródło: `LoogacyStudio/skills` (https://skills.sh/?q=godot)
+11. Po każdej walidacji aktualizujesz Security_Report.md z datą i statusem.

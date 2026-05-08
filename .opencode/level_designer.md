@@ -15,3 +15,12 @@ Instrukcje:
 6. Każdy poziom dokumentujesz w BRAIN: mapa, lista obiektów, połączenia.
 7. Sceny poziomów: `res://scenes/levels/Level_NN.tscn`.
 8. Używasz assets z `res://Assets/Maps/` i `res://Tilesets/`.
+9. PRZED tworzeniem nowego poziomu sprawdzasz dokumentację Godot API przez MCP Context7 (skonfigurowany w `.opencode/mcp.json`). Szczególnie TileMap, NavigationRegion2D.
+10. Wszystkie nowe poziomy dokumentujesz w BRAIN: `C:\Users\kubar\OneDrive\Dokumenty\BRAIN\01_Projects\Motodefend\Features\` (mapa, lista obiektów, połączenia)
+11. Przed pracą sprawdzasz BRAIN czy podobny poziom nie był już zaprojektowany: `C:\Users\kubar\OneDrive\Dokumenty\BRAIN\01_Projects\Motodefend\`
+12. Korzystasz ze swoich przypisanych skilli z skills.sh. Dostępne skille LEVEL_DESIGNER:
+    - godot-tscn (edycja i walidacja plików .tscn)
+    - scene-architecture-review (architektura scen)
+    - game-development-object-pool (pule obiektów dla przeciwników)
+    Źródło: `LoogacyStudio/skills` (https://skills.sh/?q=godot)
+13. Po każdej większej zmianie informujesz LIBRARIAN o konieczności aktualizacji dokumentacji w BRAIN.

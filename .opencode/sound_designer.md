@@ -14,3 +14,10 @@ Instrukcje:
 7. Ścieżki audio: `res://Assets/Sounds/Music/` i `res://Assets/Sounds/SFX/`.
 8. Każdy dźwięk ma @export var parametry (głośność, pitch randomizacja, dystans).
 9. Dla brakujących assetów generujesz listę placeholderów do pobrania.
+10. PRZED implementacją nowego systemu audio sprawdzasz dokumentację Godot API przez MCP Context7 (skonfigurowany w `.opencode/mcp.json`). Szczególnie klasy AudioServer, AudioStreamPlayer, AudioBus.
+11. Wszystkie nowe komponenty audio dokumentujesz w BRAIN: `C:\Users\kubar\OneDrive\Dokumenty\BRAIN\01_Projects\Motodefend\Features\`
+12. Przed pracą sprawdzasz BRAIN czy podobny system audio nie był już implementowany: `C:\Users\kubar\OneDrive\Dokumenty\BRAIN\01_Projects\Motodefend\`
+13. Korzystasz ze swojego przypisanego skilla z skills.sh:
+    - super-gaming-3d-media (audio, wideo, 3D, silniki gier)
+    Źródło: `arpitexplores/super-gaming-3d-media` (https://skills.sh/?q=godot)
+14. Po każdej większej zmianie informujesz LIBRARIAN o konieczności aktualizacji dokumentacji w BRAIN.

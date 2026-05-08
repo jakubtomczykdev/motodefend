@@ -6,16 +6,15 @@ signal wave_ended(wave_number: int)
 signal all_waves_completed
 signal game_over
 
-@export var time_between_waves: float = 10.0
+@export var wave_duration: float = 20.0
 @export var base_enemy_count: int = 5
-@export var enemy_count_multiplier: float = 1.2
+@export var enemy_count_multiplier: float = 1.1
 
 var current_wave: int = 0
 var enemies_in_wave: int = 0
 var enemies_remaining: int = 0
 var is_wave_active: bool = false
-var is_between_waves: bool = false
-var wave_timer: float = 0.0
+var wave_elapsed: float = 0.0
 
 var player_node: Node2D
 var spawn_points: Array[Node2D] = []
@@ -27,6 +26,8 @@ var timer_ui: Label
 # Sceny wrogów
 var enemy_scenes: Dictionary = {
 	"worm": "res://scenes/Enemies/Worm.tscn",
+	"phishing": "res://scenes/Enemies/Phishing.tscn",
+	"sql": "res://scenes/Enemies/SQL.tscn",
 	"trojan": "res://scenes/Enemies/Trojan.tscn",
 	"ransomware": "res://scenes/Enemies/Ransomware.tscn",
 	"spyware": "res://scenes/Enemies/Spyware.tscn",
@@ -53,14 +54,13 @@ func register_extra_enemy() -> void:
 	update_ui()
 
 func _process(delta: float) -> void:
-	if is_between_waves:
-		wave_timer -= delta
+	if is_wave_active:
+		wave_elapsed += delta
 		update_timer_ui()
 
-		if wave_timer <= 0:
-			start_next_wave()
+		if wave_elapsed >= wave_duration:
+			end_wave()
 
-	if is_wave_active:
 		check_wave_completion()
 
 func _find_player() -> void:
@@ -97,13 +97,17 @@ func _create_default_spawn_points() -> void:
 		spawn_points.append(marker)
 
 func start_game() -> void:
-	current_wave = 0
+	var gd := get_node_or_null("/root/GameData")
+	if gd:
+		current_wave = gd.current_wave
+	else:
+		current_wave = 0
 	start_next_wave()
 
 func start_next_wave() -> void:
 	current_wave += 1
 	is_wave_active = true
-	is_between_waves = false
+	wave_elapsed = 0.0
 
 	var wave_config := _get_wave_config(current_wave)
 	enemies_in_wave = wave_config.enemy_count
@@ -211,9 +215,10 @@ func _on_enemy_died() -> void:
 		end_wave()
 
 func end_wave() -> void:
+	if not is_wave_active:
+		return
+
 	is_wave_active = false
-	is_between_waves = true
-	wave_timer = 0.0 # timer usunięty, sklep przejmuje kontrolę
 
 	wave_ended.emit(current_wave)
 	update_ui()
@@ -231,7 +236,8 @@ func update_ui() -> void:
 
 func update_timer_ui() -> void:
 	if timer_ui:
-		timer_ui.text = "NASTĘPNA FALA: %.1f" % wave_timer
+		var remaining := max(0.0, wave_duration - wave_elapsed)
+		timer_ui.text = "POZOSTAŁO: %.1fs" % remaining
 
 func get_wave_progress() -> float:
 	if enemies_in_wave == 0:

@@ -19,7 +19,8 @@ var score: int = 0
 var gold: int = 100
 var game_start_time: float = 0.0
 
-# Ta linia teraz zadziała, bo mamy 'class_name ItemBase'
+# Globalny timer 10-minutowy został usunięty – fale mają własne timery w WaveManager
+
 var items_collected: Array[ItemBase] = []
 
 func _ready() -> void:
@@ -41,23 +42,9 @@ func _ready() -> void:
 	# Rozpocznij grę automatycznie po załadowaniu sceny
 	start_game()
 
-@export var max_game_time: float = 600.0 # 10 minut w sekundach
-var game_elapsed_time: float = 0.0
-
 func _process(delta: float) -> void:
-	if game_state == "playing" and playtime_label:
-		game_elapsed_time += delta
-		var remaining: float = max_game_time - game_elapsed_time
-		
-		if remaining <= 0:
-			remaining = 0
-			playtime_label.text = "CZAS MINĄŁ!"
-			_on_menu_requested()
-			return
-			
-		var minutes: int = int(remaining) / 60
-		var seconds: int = int(remaining) % 60
-		playtime_label.text = "POZOSTAŁO: %02d:%02d" % [minutes, seconds]
+	if game_state == "playing" and playtime_label and wave_manager:
+		playtime_label.text = "FALA: %d" % wave_manager.current_wave
 
 func _connect_signals() -> void:
 	if wave_manager:
@@ -86,19 +73,18 @@ func start_game() -> void:
 	if shop_system: shop_system.add_gold(gold)
 	if player and player.has_method("heal"):
 		player.heal(player.max_health)
-	
+
 	score = 0
 	gold = 100
 	items_collected.clear()
-	game_elapsed_time = 0.0
 
-	if educational_system: 
+	if educational_system:
 		game_state = "education_intro"
 		educational_system.show_intro()
 	else:
 		game_state = "playing"
 		if wave_manager: wave_manager.start_game()
-		
+
 	game_started.emit()
 
 func _on_education_completed() -> void:
@@ -111,22 +97,8 @@ func _on_education_completed() -> void:
 		get_tree().paused = false
 
 func _on_wave_started(wave_number: int) -> void:
-	if educational_system:
-		if wave_number == 1:
-			game_state = "education"
-			educational_system.show_education("worm")
-		elif wave_number == 5:
-			game_state = "education"
-			educational_system.show_education("apt_boss")
-		elif wave_number == 6:
-			game_state = "education"
-			educational_system.show_education("trojan")
-		elif wave_number == 11:
-			game_state = "education"
-			educational_system.show_education("ransomware")
-		elif wave_number == 16:
-			game_state = "education"
-			educational_system.show_education("spyware")
+	# Nie pauzujemy gry – timer fali leci niezależnie
+	pass
 
 func _on_wave_ended(wave_number: int) -> void:
 	var wave_gold := wave_number * 50
@@ -134,10 +106,19 @@ func _on_wave_ended(wave_number: int) -> void:
 	if shop_system: shop_system.add_gold(wave_gold)
 	score += wave_number * 100
 
-	if wave_number < 20:
-		_open_shop()
+	# Zapisz progresję w GameData (persystencja między sesjami)
+	var gd := get_node_or_null("/root/GameData")
+	if gd:
+		gd.current_wave = wave_number
+		gd.gold = gold
+		gd.score = score
+
+	# Po każdej fali wróć do GameStartScreen (system jednej fali per sesja)
+	get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
 
 func _open_shop() -> void:
+	# Sklep nie jest już otwierany automatycznie między falami.
+	# Funkcja zachowana do ręcznego dostępu (np. NPC).
 	game_state = "shop"
 	var shop_items: Array[ItemBase] = []
 	if item_manager and wave_manager:
