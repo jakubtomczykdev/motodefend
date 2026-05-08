@@ -8,6 +8,7 @@ func _ready() -> void:
 	$AnimatedSprite2D.play("MashineAnimation")
 	$InteractArea.add_to_group("Interactable")
 
-func interact():
+func interact() -> void:
 	print("Interakcja z: " + npc_name)
-	# Tutaj można dodać otwarcie sklepu, dialog lub inne akcje.
+	# Rozpoczynamy grę (system sklepu dostępny w trakcie rozgrywki)
+	get_tree().change_scene_to_file("res://scenes/MainGame.tscn")

@@ -90,7 +90,7 @@ value = 100.0
 [node name="MasterLabel" type="Label" parent="CenterContainer/VBoxContainer/MasterRow" unique_id=441110]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.816, 1, 1, 1)
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
 theme_override_font_sizes/font_size = 35
 text = "100%"
@@ -122,7 +122,7 @@ value = 80.0
 [node name="MusicLabel" type="Label" parent="CenterContainer/VBoxContainer/MusicRow" unique_id=441114]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.816, 1, 1, 1)
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
 theme_override_font_sizes/font_size = 35
 text = "80%"
@@ -135,7 +135,7 @@ size_flags_horizontal = 3
 [node name="SfxText" type="Label" parent="CenterContainer/VBoxContainer/SfxRow" unique_id=441116]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.816, 1, 1, 1)
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
 theme_override_font_sizes/font_size = 35
 text = "Efekty (SFX)"
@@ -154,7 +154,7 @@ value = 100.0
 [node name="SfxLabel" type="Label" parent="CenterContainer/VBoxContainer/SfxRow" unique_id=441118]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.816, 1, 1, 1)
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
 theme_override_font_sizes/font_size = 35
 text = "100%"
@@ -167,7 +167,7 @@ size_flags_horizontal = 3
 [node name="UiText" type="Label" parent="CenterContainer/VBoxContainer/UiRow" unique_id=441120]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.816, 1, 1, 1)
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
 theme_override_font_sizes/font_size = 35
 text = "Interfejs (UI)"
@@ -186,7 +186,7 @@ value = 100.0
 [node name="UiLabel" type="Label" parent="CenterContainer/VBoxContainer/UiRow" unique_id=441122]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.816, 1, 1, 1)
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
 theme_override_font_sizes/font_size = 35
 text = "100%"
@@ -210,7 +210,7 @@ size_flags_horizontal = 3
 [node name="ResolutionText" type="Label" parent="CenterContainer/VBoxContainer/ResolutionRow" unique_id=441126]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.816, 1, 1, 1)
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
 theme_override_font_sizes/font_size = 35
 text = "Rozdzielczosc"
@@ -231,7 +231,7 @@ size_flags_horizontal = 3
 [node name="FullscreenLabel" type="Label" parent="CenterContainer/VBoxContainer/FullscreenRow" unique_id=441129]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.816, 1, 1, 1)
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
 theme_override_font_sizes/font_size = 35
 text = "Pelny ekran"
@@ -251,7 +251,7 @@ size_flags_horizontal = 3
 [node name="VsyncLabel" type="Label" parent="CenterContainer/VBoxContainer/VsyncRow" unique_id=441132]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.816, 1, 1, 1)
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
 theme_override_font_sizes/font_size = 35
 text = "V-Sync"

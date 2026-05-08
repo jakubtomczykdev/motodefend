@@ -8,7 +8,7 @@ func _ready() -> void:
 	$AnimatedSprite2D.play("standing")
 	$InteractArea.add_to_group("Interactable")
 
-func interact():
-	print("Interakcja z: " + npc_name)
-	# Rozpoczynamy właściwą grę
+## Rozpoczyna grę. Intro edukacyjne wyświetli się automatycznie
+## po załadowaniu MainGame (main_game_controller.start_game() → show_intro()).
+func interact() -> void:
 	get_tree().change_scene_to_file("res://scenes/MainGame.tscn")
