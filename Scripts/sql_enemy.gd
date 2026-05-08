@@ -1,4 +1,4 @@
-extends "res://Scripts/enemy_base.gd"
+extends EnemyBase
 ## SQL Injection - powolny, ale silny wróg
 
 func _ready() -> void:

@@ -1,4 +1,4 @@
-extends "res://Scripts/enemy_base.gd"
+extends EnemyBase
 ## Specyficzna logika dla Worma - rozmnażanie się
 
 @export var split_chance: float = 0.2

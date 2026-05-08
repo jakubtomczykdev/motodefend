@@ -9,6 +9,5 @@ func _ready() -> void:
 	$InteractArea.add_to_group("Interactable")
 
 func interact() -> void:
-	print("Interakcja z: " + npc_name)
 	# Rozpoczynamy grę (system sklepu dostępny w trakcie rozgrywki)
 	get_tree().change_scene_to_file("res://scenes/MainGame.tscn")

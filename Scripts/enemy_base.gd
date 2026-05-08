@@ -1,4 +1,5 @@
 extends CharacterBody2D
+class_name EnemyBase
 ## Baza dla wszystkich wrogów - HP, damage, AI
 
 signal died

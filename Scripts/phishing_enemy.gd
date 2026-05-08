@@ -1,4 +1,4 @@
-extends "res://Scripts/enemy_base.gd"
+extends EnemyBase
 ## Phishing - szybki, ale słaby wróg
 
 func _ready() -> void:

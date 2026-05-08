@@ -116,7 +116,6 @@ func _on_apply_pressed() -> void:
 	if am:
 		am.refresh_volumes()
 
-	print("[Settings] Zapisano ustawienia")
 
 func _on_reset_pressed() -> void:
 	var gd := get_node_or_null("/root/GameData")
@@ -130,7 +129,6 @@ func _on_reset_pressed() -> void:
 		am.refresh_volumes()
 
 	_load_current_settings()
-	print("[Settings] Przywrócono domyślne")
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://MainMenu.tscn")

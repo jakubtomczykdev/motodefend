@@ -4,7 +4,7 @@ class_name MotorolaItems
 ## Itemy oparte na produktach Motorola Solutions
 
 # CrossPatch - łączy zespoły terenowe, zwiększa zasięg ataku
-class CrossPatchItem extends "res://Scripts/item_base.gd":
+class CrossPatchItem extends ItemBase:
 	func _init():
 		item_name = "CrossPatch"
 		item_type = "communication"
@@ -18,7 +18,7 @@ class CrossPatchItem extends "res://Scripts/item_base.gd":
 		synergies = ["radio", "command"]
 
 # PSTA - analityka wideo wykrywająca anomalie, poprawia percepcję zagrożeń
-class PSTAItem extends "res://Scripts/item_base.gd":
+class PSTAItem extends ItemBase:
 	func _init():
 		item_name = "PSTA"
 		item_type = "analytics"
@@ -33,7 +33,7 @@ class PSTAItem extends "res://Scripts/item_base.gd":
 		synergies = ["command", "detection"]
 
 # Radio APX - komunikacja w kryzysie, daje bonus do szybkości reakcji
-class RadioAPXItem extends "res://Scripts/item_base.gd":
+class RadioAPXItem extends ItemBase:
 	func _init():
 		item_name = "Radio APX"
 		item_type = "radio"
@@ -47,7 +47,7 @@ class RadioAPXItem extends "res://Scripts/item_base.gd":
 		synergies = ["communication", "command"]
 
 # CommandCentral - centralne zarządzanie danymi, spowalnia fale wrogów
-class CommandCentralItem extends "res://Scripts/item_base.gd":
+class CommandCentralItem extends ItemBase:
 	func _init():
 		item_name = "CommandCentral"
 		item_type = "command"
@@ -62,7 +62,7 @@ class CommandCentralItem extends "res://Scripts/item_base.gd":
 		synergies = ["communication", "radio", "analytics"]
 
 # BodyCamera - kamera na body, zwiększa widoczność i zasięg
-class BodyCameraItem extends "res://Scripts/item_base.gd":
+class BodyCameraItem extends ItemBase:
 	func _init():
 		item_name = "BodyCamera"
 		item_type = "detection"
@@ -76,7 +76,7 @@ class BodyCameraItem extends "res://Scripts/item_base.gd":
 		synergies = ["analytics", "communication"]
 
 # SolutionHub - centralny hub łączący wszystkie systemy
-class SolutionHubItem extends "res://Scripts/item_base.gd":
+class SolutionHubItem extends ItemBase:
 	func _init():
 		item_name = "SolutionHub"
 		item_type = "hub"
@@ -92,7 +92,7 @@ class SolutionHubItem extends "res://Scripts/item_base.gd":
 		synergies = ["communication", "radio", "command", "analytics", "detection"]
 
 # Rave - zaawansowany system łączności
-class RaveItem extends "res://Scripts/item_base.gd":
+class RaveItem extends ItemBase:
 	func _init():
 		item_name = "RAVE"
 		item_type = "communication"
@@ -107,7 +107,7 @@ class RaveItem extends "res://Scripts/item_base.gd":
 		synergies = ["radio", "hub"]
 
 # LPR - rozpoznawanie tablic rejestracyjnych
-class LPRIItem extends "res://Scripts/item_base.gd":
+class LPRIItem extends ItemBase:
 	func _init():
 		item_name = "LPR"
 		item_type = "analytics"
@@ -121,7 +121,7 @@ class LPRIItem extends "res://Scripts/item_base.gd":
 		synergies = ["detection", "command"]
 
 # PremierOne - system CAD
-class PremierOneItem extends "res://Scripts/item_base.gd":
+class PremierOneItem extends ItemBase:
 	func _init():
 		item_name = "PremierOne"
 		item_type = "command"
@@ -136,7 +136,7 @@ class PremierOneItem extends "res://Scripts/item_base.gd":
 		synergies = ["hub", "analytics"]
 
 # VB400 - bodycam
-class VB400Item extends "res://Scripts/item_base.gd":
+class VB400Item extends ItemBase:
 	func _init():
 		item_name = "VB400"
 		item_type = "detection"
@@ -150,7 +150,7 @@ class VB400Item extends "res://Scripts/item_base.gd":
 		synergies = ["analytics", "radio"]
 
 # Funtion - platforma komunikacyjna
-class FuntionItem extends "res://Scripts/item_base.gd":
+class FuntionItem extends ItemBase:
 	func _init():
 		item_name = "Funtion"
 		item_type = "communication"
