@@ -236,7 +236,7 @@ func update_ui() -> void:
 
 func update_timer_ui() -> void:
 	if timer_ui:
-		var remaining := max(0.0, wave_duration - wave_elapsed)
+		var remaining: float = maxf(0.0, wave_duration - wave_elapsed)
 		timer_ui.text = "POZOSTAŁO: %.1fs" % remaining
 
 func get_wave_progress() -> float:

@@ -144,6 +144,10 @@ func take_damage(amount: int) -> void:
 		die()
 
 func die() -> void:
+	var gd := get_node_or_null("/root/GameData")
+	if gd:
+		gd.gold += score_value
+
 	died.emit()
 	queue_free()
 

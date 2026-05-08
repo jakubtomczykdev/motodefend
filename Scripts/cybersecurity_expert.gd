@@ -24,6 +24,7 @@ var idle_timer: float = 0.0
 var current_dialog_index: int = -1
 var dialog_timer: float = 0.0
 var dialog_label: Label = null
+var intro_shown: bool = false
 
 func _ready() -> void:
 	$AnimatedSprite2D.play("standing")
@@ -80,9 +81,37 @@ func _pick_new_target() -> void:
 	target_position = patrol_origin + random_offset
 
 func interact() -> void:
-	# Cykluj przez linie dialogowe
-	current_dialog_index = (current_dialog_index + 1) % dialog_lines.size()
-	_show_dialog(dialog_lines[current_dialog_index])
+	if not intro_shown:
+		_show_intro_sequence()
+	else:
+		_show_random_tip()
+
+func _show_intro_sequence() -> void:
+	var intro_lines: Array[String] = [
+		"Jestem Marek Nowak, Ekspert Cyberbezpieczeństwa SOC.",
+		"Witaj w naszej centrali. Nasza sieć jest pod ciągłym atakiem.",
+		"Twoim zadaniem jest odpieranie fal hakerów i wirusów.",
+		"Każda fala to 20 sekund – wyeliminuj wszystkich wrogów!",
+		"Po każdej fali wrócisz tu, do centrali. Kolejne fale będą trudniejsze.",
+		"Korzystaj ze sklepu (automat po lewej) by ulepszyć swój ekwipunek.",
+		"Powodzenia, agent! Nasza sieć na Ciebie liczy."
+	]
+	intro_shown = true
+	current_dialog_index = 0
+	_show_dialog(intro_lines[current_dialog_index])
+
+func _show_random_tip() -> void:
+	var tips: Array[String] = [
+		"Kolejne fale są coraz trudniejsze – ulepszaj broń w sklepie!",
+		"Wormy potrafią się rozmnażać – eliminuj je szybko.",
+		"Bossowie pojawiają się co 5 fal – bądź przygotowany.",
+		"SQL Injection zadaje dużo obrażeń – trzymaj dystans.",
+		"Kupuj ulepszenia pancerza – każde HP się liczy.",
+		"Trojan to szybki przeciwnik – celuj precyzyjnie."
+	]
+	var tip: String = tips[current_dialog_index % tips.size()]
+	current_dialog_index += 1
+	_show_dialog(tip)
 
 func _show_dialog(text: String) -> void:
 	if dialog_label:

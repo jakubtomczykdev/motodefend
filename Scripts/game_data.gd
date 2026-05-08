@@ -56,6 +56,9 @@ func load_settings() -> void:
 	shadows_enabled = config.get_value("graphics", "shadows", true)
 	screen_shake = config.get_value("graphics", "screen_shake", true)
 
+	player_hp = config.get_value("game", "player_hp", 100)
+	player_max_hp = config.get_value("game", "player_max_hp", 100)
+
 func save_settings() -> void:
 	var config := ConfigFile.new()
 
@@ -72,6 +75,9 @@ func save_settings() -> void:
 	config.set_value("graphics", "particles", particles_enabled)
 	config.set_value("graphics", "shadows", shadows_enabled)
 	config.set_value("graphics", "screen_shake", screen_shake)
+
+	config.set_value("game", "player_hp", player_hp)
+	config.set_value("game", "player_max_hp", player_max_hp)
 
 	config.save(SETTINGS_PATH)
 

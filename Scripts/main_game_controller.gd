@@ -13,6 +13,8 @@ var shop_system: Control
 var educational_system: Control
 var end_screen: Control
 var playtime_label: Label
+var health_bar: ProgressBar
+var hp_label: Label
 
 var game_state: String = "menu" # menu, playing, paused, shop, education, game_over, victory
 var score: int = 0
@@ -33,6 +35,8 @@ func _ready() -> void:
 	educational_system = get_node_or_null("EducationalLayer/EducationalSystem")
 	end_screen = get_node_or_null("EndScreen")
 	playtime_label = get_node_or_null("HUD/PlaytimeUI")
+	health_bar = get_node_or_null("HUD/HealthBar")
+	hp_label = get_node_or_null("HUD/HPLabel")
 
 	_connect_signals()
 
@@ -45,6 +49,20 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if game_state == "playing" and playtime_label and wave_manager:
 		playtime_label.text = "FALA: %d" % wave_manager.current_wave
+
+	# Aktualizuj wyświetlanie golda
+	var gold_label := get_node_or_null("HUD/GoldLabel")
+	if gold_label:
+		var gd := get_node_or_null("/root/GameData")
+		if gd:
+			gold_label.text = "GOLD: %d" % gd.gold
+
+	# Aktualizuj pasek życia gracza
+	if health_bar and player:
+		health_bar.max_value = player.max_health
+		health_bar.value = player.current_health
+		if hp_label:
+			hp_label.text = "HP: %d/%d" % [player.current_health, player.max_health]
 
 func _connect_signals() -> void:
 	if wave_manager:
@@ -69,23 +87,47 @@ func _connect_signals() -> void:
 		end_screen.menu_requested.connect(_on_menu_requested)
 
 func start_game() -> void:
-	if build_system: build_system.clear_build()
+	print("[MainGame] start_game BEGIN")
+	if build_system:
+		print("[MainGame] build_system.clear_build()...")
+		build_system.clear_build()
+		print("[MainGame] build cleared OK")
+
+	# Wczytaj gold i HP z GameData, jeśli istnieją – fallback do wartości domyślnych
+	var gd := get_node_or_null("/root/GameData")
+	if gd and gd.gold > 0:
+		gold = gd.gold
+	else:
+		gold = 100
+
 	if shop_system: shop_system.add_gold(gold)
-	if player and player.has_method("heal"):
-		player.heal(player.max_health)
+
+	if player:
+		if player.has_method("heal"):
+			player.heal(player.max_health)
+
+		if gd and gd.player_max_hp > 0 and gd.player_hp > 0:
+			player.max_health = gd.player_max_hp
+			player.current_health = gd.player_hp
+		elif wave_manager:
+			var wave_hp: int = 9 + wave_manager.current_wave
+			print("[MainGame] setting HP=%d for wave %d" % [wave_hp, wave_manager.current_wave])
+			player.max_health = wave_hp
+			player.current_health = wave_hp
+		player.health_changed.emit(player.current_health, player.max_health)
 
 	score = 0
-	gold = 100
 	items_collected.clear()
 
-	if educational_system:
-		game_state = "education_intro"
-		educational_system.show_intro()
-	else:
-		game_state = "playing"
-		if wave_manager: wave_manager.start_game()
+	# System edukacyjny tymczasowo wyłączony – przechodzimy od razu do gry
+	print("[MainGame] starting wave manager...")
+	game_state = "playing"
+	if wave_manager:
+		wave_manager.start_game()
+		print("[MainGame] wave_manager.start_game() OK")
 
 	game_started.emit()
+	print("[MainGame] start_game END")
 
 func _on_education_completed() -> void:
 	if game_state == "education_intro":
@@ -101,7 +143,7 @@ func _on_wave_started(wave_number: int) -> void:
 	pass
 
 func _on_wave_ended(wave_number: int) -> void:
-	var wave_gold := wave_number * 50
+	var wave_gold := wave_number * 50 + 10
 	gold += wave_gold
 	if shop_system: shop_system.add_gold(wave_gold)
 	score += wave_number * 100
@@ -157,10 +199,17 @@ func _on_game_over() -> void:
 	show_game_over()
 
 func _on_player_died() -> void:
-	game_over.emit()
+	# Zapisz do GameData i wróć do GameStartScreen
+	var gd := get_node_or_null("/root/GameData")
+	if gd:
+		gd.current_wave = wave_manager.current_wave if wave_manager else 0
+	get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
 
 func _on_player_health_changed(_current: int, _max: int) -> void:
-	pass
+	var gd := get_node_or_null("/root/GameData")
+	if gd:
+		gd.player_hp = _current
+		gd.player_max_hp = _max
 
 func _on_restart_requested() -> void:
 	get_tree().reload_current_scene()

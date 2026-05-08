@@ -72,6 +72,8 @@ Zasady commitów:
   - `docs(brain): udokumentowano BUG_001`
 - **Jeśli nie ma żadnych zmian do zakomitowania, poinformuj o tym użytkownika** (nie commituj pustego zestawu zmian).
 
+**⚠️ PRZYPOMNIENIE: GIT_PUSHER JEST OBOWIĄZKOWY. Po każdej turze pracy (wszystkie taski ukończone), GIT_PUSHER robi commit. NIGDY nie pomijaj tego kroku. Jeśli nie ma GIT_PUSHERA w danej turze – koordynator sam go uruchamia jako ostatniego agenta.**
+
 ## Zasada #8: MCP Context7 jako główne źródło wiedzy Godot
 
 Każdy agent programistyczny (GAME_PROGRAMMER, UI_DESIGNER, LEVEL_DESIGNER, SOUND_DESIGNER, DEBUGGER, BALANCER) MUSI:
@@ -118,24 +120,85 @@ Agenci mają przypisane specjalistyczne skille z repozytoriów skills.sh (głów
 - `biologicpro/godot_codex_skills` – godot-headless
 - `arpitexplores/super-gaming-3d-media` – super-gaming-3d-media
 
+## Zasada #11: Komunikacja międzyokienkowa przez BRAIN (Obsidian)
+
+Projekt używa **4 okienek OpenCode** pracujących równolegle. Komunikacja odbywa się przez wspólny vault BRAIN:
+
+### Struktura okienek
+| Okno | Rola | Domeny |
+|------|------|--------|
+| **Okno 1** | GŁÓWNY KOORDYNATOR | Strategia, podział zadań, integracja wyników |
+| **Okno 2** | PLANNER ALPHA | UI, Sceny, Design, Dialogi, Fabuła, Grafika |
+| **Okno 3** | PLANNER BETA | GDScript, Mechaniki, Walka, NPC, Sklep, Wave Manager |
+| **Okno 4** | PLANNER GAMMA | Testy, QA, Dokumentacja, Audio, Balans, Security, Git |
+
+### Protokół komunikacji
+1. **GŁÓWNY KOORDYNATOR (Okno 1)** wpisuje zadania do plików:
+   - `C:\Users\kubar\OneDrive\Dokumenty\BRAIN\01_Projects\Motodefend\Comms\Planner_Alpha_Tasks.md`
+   - `C:\Users\kubar\OneDrive\Dokumenty\BRAIN\01_Projects\Motodefend\Comms\Planner_Beta_Tasks.md`
+   - `C:\Users\kubar\OneDrive\Dokumenty\BRAIN\01_Projects\Motodefend\Comms\Planner_Gamma_Tasks.md`
+
+2. **MINI-PLANNER (Okna 2-4)** co 30 sekund sprawdza swój plik `_Tasks`:
+   - Czyta plik → wykonuje zadania → deleguje do agentów
+   - Po wykonaniu wpisuje wyniki do pliku `_Results`
+
+3. **GŁÓWNY KOORDYNATOR** sprawdza pliki wyników:
+   - `Planner_Alpha_Results.md`
+   - `Planner_Beta_Results.md`
+   - `Planner_Gamma_Results.md`
+
+4. Wszystkie rozmowy zapisywane w `Comms\Conversation_Log.md`
+
+5. Tablica główna: `Comms\Coordinator_Board.md`
+
+### Zasady dla Mini-Plannerów
+- Każdy mini-planner **tylko deleguje** do agentów wykonawczych
+- Nie pisze kodu samodzielnie
+- Korzysta z Context7 MCP i BRAIN
+- Raportuje wyniki natychmiast po ukończeniu
+- W przypadku błędu – wpisuje do `_Results` z tagiem `BLOKER`
+
+## Zasada #12: Pełna transparentność – rozmowy i planowanie widoczne
+
+1. **Wszystkie rozmowy między okienkami** (Główny Koordynator ↔ Mini-Plannery) muszą być zapisywane w `Comms\Conversation_Log.md` w BRAIN.
+
+2. **Każdy Mini-Planner** przed rozpoczęciem pracy wpisuje do `_Results` swój SZCZEGÓŁOWY PLAN:
+   - Którego agenta deleguje
+   - Jakie pliki będą modyfikowane
+   - Szacowany czas wykonania
+   - Potencjalne ryzyka
+
+3. **Po wykonaniu zadania** Mini-Planner wpisuje do `_Results`:
+   - Co dokładnie zrobił
+   - Które pliki zmodyfikował (pełne ścieżki)
+   - Czy wystąpiły błędy
+   - Status: ✅ Sukces / ⚠️ Częściowy / ❌ Błąd
+
+4. **Główny Koordynator** po każdej turze aktualizuje `Coordinator_Board.md`:
+   - Podsumowanie tury
+   - Co zostało zrobione
+   - Co pozostało
+   - Nowa kolejka zadań
+
+5. **Conversation_Log.md** zawiera pełną historię wszystkich decyzji, delegacji i wyników – jest to "czarna skrzynka" projektu.
+
+6. **Użytkownik (kubar) musi widzieć** co się dzieje w każdym oknie – dlatego wszystkie pliki Comms są w formacie czytelnym dla człowieka (tabele, listy, znaczniki statusu).
+
 ## Podsumowanie workflow
 
 ```
-1. Koordynator tworzy/aktualizuje plan (plan.md)
-2. SECURITY_OFFICER robi boot check
-3. Wszyscy agenci ładują wiedzę z BRAIN (C:\Users\kubar\OneDrive\Dokumenty\BRAIN)
-4. Równoległa faza agentów:
-   ├── GAME_PROGRAMMER → implementuje skrypty .gd (korzysta z Context7 MCP)
-   ├── UI_DESIGNER → tworzy sceny UI .tscn (korzysta z Context7 MCP)
-   ├── SOUND_DESIGNER → dodaje audio
-   ├── STORYTELLER → pisze dialogi
-   ├── LEVEL_DESIGNER → buduje poziomy
-   └── BALANCER → aktualizuje statystyki
+1. GŁÓWNY KOORDYNATOR (Okno 1) tworzy/aktualizuje plan (plan.md)
+2. GŁÓWNY KOORDYNATOR rozdziela zadania do Plannerów Alpha/Beta/Gamma przez BRAIN Comms/
+3. SECURITY_OFFICER robi boot check
+4. Równoległa praca 3 mini-plannerów (Okna 2-4):
+   ├── PLANNER ALPHA → deleguje do UI_DESIGNER, STORYTELLER, GAME_DESIGNER
+   ├── PLANNER BETA → deleguje do GAME_PROGRAMMER, LEVEL_DESIGNER, BALANCER
+   └── PLANNER GAMMA → deleguje do DEBUGGER, LIBRARIAN, SOUND_DESIGNER, SECURITY_OFFICER
 5. DEBUGGER testuje wszystkie zmiany (korzysta z Context7 MCP)
 6. LIBRARIAN dokumentuje w BRAIN (Obsidian vault)
-7. GIT_PUSHER commituje i wypycha (zawsze, obowiązkowo)
+7. GIT_PUSHER commituje i wypycha (⚠️ ZAWSZE, OBOWIĄZKOWO, na koniec każdej tury)
 8. WATCHMAN monitoruje cały proces
-9. Koordynator (ja) – tylko deleguje i weryfikuje, nigdy nie pisze kodu
+9. GŁÓWNY KOORDYNATOR – tylko deleguje i weryfikuje, nigdy nie pisze kodu
 ```
 
 ## Agenci i ich pliki
