@@ -27,6 +27,7 @@ var custom_inputs: Dictionary = {}
 var current_wave: int = 0
 var score: int = 0
 var gold: int = 0
+var inventory: Array = []
 var player_hp: int = 100
 var player_max_hp: int = 100
 
@@ -117,3 +118,6 @@ func reset_to_defaults() -> void:
 
 	save_settings()
 	apply_video_settings()
+
+func add_inventory_item(item) -> void:
+	inventory.append(item)

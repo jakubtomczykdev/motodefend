@@ -59,11 +59,11 @@ text = "HP: 10/10"
 [node name="GoldLabel" type="Label" parent="HUD"]
 anchors_preset = 0
 offset_left = 20.0
-offset_top = 50.0
+offset_top = 70.0
 offset_right = 220.0
-offset_bottom = 70.0
-theme_override_font_sizes/font_size = 20
-text = "GOLD: 0"
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 24
+text = "ZLOTO: 100"
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(960, 540)

@@ -15,6 +15,7 @@ var end_screen: Control
 var playtime_label: Label
 var health_bar: ProgressBar
 var hp_label: Label
+var gold_label: Label
 
 var game_state: String = "menu" # menu, playing, paused, shop, education, game_over, victory
 var score: int = 0
@@ -37,6 +38,7 @@ func _ready() -> void:
 	playtime_label = get_node_or_null("HUD/PlaytimeUI")
 	health_bar = get_node_or_null("HUD/HealthBar")
 	hp_label = get_node_or_null("HUD/HPLabel")
+	gold_label = get_node_or_null("HUD/GoldLabel")
 
 	_connect_signals()
 
@@ -51,11 +53,8 @@ func _process(delta: float) -> void:
 		playtime_label.text = "FALA: %d" % wave_manager.current_wave
 
 	# Aktualizuj wyświetlanie golda
-	var gold_label := get_node_or_null("HUD/GoldLabel")
 	if gold_label:
-		var gd := get_node_or_null("/root/GameData")
-		if gd:
-			gold_label.text = "GOLD: %d" % gd.gold
+		gold_label.text = "ZLOTO: %d" % gold
 
 	# Aktualizuj pasek życia gracza
 	if health_bar and player:
@@ -143,9 +142,8 @@ func _on_wave_started(wave_number: int) -> void:
 	pass
 
 func _on_wave_ended(wave_number: int) -> void:
-	var wave_gold := wave_number * 50 + 10
-	gold += wave_gold
-	if shop_system: shop_system.add_gold(wave_gold)
+	gold += 10
+	if shop_system: shop_system.add_gold(10)
 	score += wave_number * 100
 
 	# Zapisz progresję w GameData (persystencja między sesjami)

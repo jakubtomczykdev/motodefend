@@ -27,9 +27,12 @@ func _open_shop() -> void:
 	if shop.has_signal("shop_closed"):
 		shop.shop_closed.connect(_on_shop_closed)
 
+	if shop.has_signal("refresh_requested"):
+		shop.refresh_requested.connect(_on_shop_refresh.bind(shop))
+
 	if shop.has_method("configure_shop"):
 		var items := _create_placeholder_items()
-		shop.configure_shop(items)
+		shop.configure_shop(items, _get_player_gold())
 	elif shop.has_method("open_shop"):
 		shop.open_shop([], null, null)
 
@@ -41,6 +44,7 @@ func _create_placeholder_items() -> Array:
 	item1.item_type = "damage"
 	item1.description = "Zwiększa obrażenia o 25%"
 	item1.cost = 50
+	item1.stats = {"damage": 0.25}
 	items.append(item1)
 
 	var item2 := ItemBase.new()
@@ -48,6 +52,7 @@ func _create_placeholder_items() -> Array:
 	item2.item_type = "attack_speed"
 	item2.description = "Zwiększa prędkość ataku o 20%"
 	item2.cost = 40
+	item2.stats = {"attack_speed": 0.20}
 	items.append(item2)
 
 	var item3 := ItemBase.new()
@@ -55,6 +60,7 @@ func _create_placeholder_items() -> Array:
 	item3.item_type = "move_speed"
 	item3.description = "Zwiększa prędkość ruchu o 30%"
 	item3.cost = 35
+	item3.stats = {"move_speed": 0.30}
 	items.append(item3)
 
 	var item4 := ItemBase.new()
@@ -62,9 +68,21 @@ func _create_placeholder_items() -> Array:
 	item4.item_type = "max_health"
 	item4.description = "Zwiększa maksymalne HP o 50%"
 	item4.cost = 60
+	item4.stats = {"max_health": 0.50}
 	items.append(item4)
 
 	return items
 
 func _on_shop_closed() -> void:
 	shop_open = false
+
+func _get_player_gold() -> int:
+	var gd := get_node_or_null("/root/GameData")
+	if gd:
+		return gd.gold
+	return 100
+
+func _on_shop_refresh(shop: Control) -> void:
+	if shop.has_method("configure_shop"):
+		var items := _create_placeholder_items()
+		shop.configure_shop(items, _get_player_gold())

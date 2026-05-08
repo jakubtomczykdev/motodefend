@@ -3,11 +3,12 @@ extends Control
 
 signal item_purchased(item: ItemBase)
 signal shop_closed
+signal refresh_requested
 
 @export var starting_gold: int = 100
 
 var current_gold: int
-var shop_items: Array[ItemBase] = []
+var shop_items: Array = []
 var build_system: Node
 var item_manager: Node
 
@@ -19,6 +20,7 @@ var item_scene: PackedScene = preload("res://scenes/ShopItem.tscn")
 
 var refresh_button: Button
 var refresh_cost: int = 10
+var refresh_cost_increment: int = 5
 
 func _ready() -> void:
 	if has_node("VBoxContainer/GoldLabel"):
@@ -45,10 +47,15 @@ func open_shop(available_items: Array[ItemBase], player_build: Node, manager: No
 
 	visible = true
 
-func configure_shop(items: Array) -> void:
+## Konfiguruje sklep w trybie standalone (hub) – używa GameData do persystencji
+func configure_shop(items: Array, starting_gold: int) -> void:
 	shop_items = items
-	_refresh_display()
+	current_gold = starting_gold
+
+	refresh_cost = 10
 	_setup_refresh_button()
+	_clear_items()
+	_populate_items()
 	_update_gold_label()
 	visible = true
 
@@ -65,7 +72,7 @@ func _populate_items() -> void:
 	if not items_container:
 		return
 
-	for item: ItemBase in shop_items:
+	for item in shop_items:
 		var item_ui: Panel = item_scene.instantiate()
 		item_ui.setup_item(item, current_gold)
 		item_ui.item_clicked.connect(_on_item_clicked)
@@ -84,23 +91,25 @@ func _refresh_display() -> void:
 		item_ui.item_clicked.connect(_on_item_purchased)
 
 func _setup_refresh_button() -> void:
-	if not refresh_button:
-		refresh_button = Button.new()
-		refresh_button.text = "ODŚWIEŻ (" + str(refresh_cost) + " gold)"
+	if has_node("VBoxContainer/RefreshButton"):
+		refresh_button = $VBoxContainer/RefreshButton
 		refresh_button.pressed.connect(_on_refresh_pressed)
-		if items_container:
-			items_container.get_parent().add_child(refresh_button)
+		_update_refresh_button_text()
 
 func _on_refresh_pressed() -> void:
-	if current_gold >= refresh_cost:
-		current_gold -= refresh_cost
-		refresh_cost += 5
-		_update_gold_label()
+	if current_gold < refresh_cost:
+		return
+	current_gold -= refresh_cost
+	refresh_cost += refresh_cost_increment
+	_update_gold_label()
+	_update_refresh_button_text()
+	# Powiadom shopkeepera aby wygenerował nowe itemy
+	refresh_requested.emit()
+	_update_item_states()
 
-		var new_items := _generate_random_items()
-		shop_items = new_items
-		_refresh_display()
-		refresh_button.text = "ODŚWIEŻ (" + str(refresh_cost) + " gold)"
+func _update_refresh_button_text() -> void:
+	if refresh_button:
+		refresh_button.text = "ODŚWIEŻ (%d gold)" % refresh_cost
 
 func _generate_random_items() -> Array:
 	var items: Array = []
@@ -117,12 +126,19 @@ func _generate_random_items() -> Array:
 	return items
 
 func _on_item_clicked(item: ItemBase) -> void:
-	if current_gold >= item.cost and build_system:
+	if current_gold >= item.cost:
 		current_gold -= item.cost
-		build_system.add_item(item)
 		item_purchased.emit(item)
 		_update_gold_label()
 		_update_item_states()
+
+		# W trybie standalone – zapisz do GameData
+		if build_system:
+			build_system.add_item(item)
+		else:
+			var gd := get_node_or_null("/root/GameData")
+			if gd and gd.has_method("add_inventory_item"):
+				gd.add_inventory_item(item)
 
 func _on_item_purchased(item: ItemBase) -> void:
 	if current_gold >= item.cost:
