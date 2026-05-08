@@ -56,6 +56,7 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	handle_movement(delta)
 	move_and_slide()
+	_clamp_to_screen()
 	update_animation()
 
 func handle_input(_delta: float) -> void:
@@ -167,6 +168,11 @@ func update_animation() -> void:
 	else:
 		sprite.stop()
 		sprite.frame = 0
+
+func _clamp_to_screen() -> void:
+	var screen_size := get_viewport_rect().size
+	global_position.x = clamp(global_position.x, 30, screen_size.x - 30)
+	global_position.y = clamp(global_position.y, 30, screen_size.y - 30)
 
 func update_interaction_prompt() -> void:
 	var interactables: Array[Node] = get_tree().get_nodes_in_group("Interactable")

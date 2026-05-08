@@ -126,10 +126,16 @@ func _get_wave_config(wave: int) -> Dictionary:
 	# Określ typy wrogów
 	config.enemy_types = []
 
-	# Waves 1-3: tylko Worm i Phishing
-	if wave <= 3:
+	# Wave 1: tylko Worm i Phishing
+	if wave == 1:
 		config.enemy_types.append("worm")
 		config.enemy_types.append("phishing")
+
+	# Waves 2-3: Worm + Phishing + SQL
+	elif wave <= 3:
+		config.enemy_types.append("worm")
+		config.enemy_types.append("phishing")
+		config.enemy_types.append("sql")
 
 	# Waves 4-7: Worm + Phishing + SQL
 	elif wave <= 7:

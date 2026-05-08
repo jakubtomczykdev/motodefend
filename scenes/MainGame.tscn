@@ -68,6 +68,13 @@ text = "ZLOTO: 100"
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(960, 540)
 
+[node name="Camera2D" type="Camera2D" parent="Player"]
+limit_smoothed = true
+limit_left = 0
+limit_top = 0
+limit_right = 1920
+limit_bottom = 1080
+
 [node name="WaveManager" type="Node" parent="."]
 script = ExtResource("3_wave")
 
