@@ -5,7 +5,6 @@
 [ext_resource type="Script" path="res://Scripts/wave_manager.gd" id="3_wave"]
 [ext_resource type="Script" path="res://Scripts/build_system.gd" id="4_build"]
 [ext_resource type="Script" path="res://Scripts/item_manager.gd" id="5_item"]
-[ext_resource type="PackedScene" uid="uid://shop_scene" path="res://scenes/Shop.tscn" id="6_shop"]
 [ext_resource type="PackedScene" uid="uid://educational_popup" path="res://scenes/EducationalPopup.tscn" id="7_edu"]
 [ext_resource type="PackedScene" uid="uid://end_screen" path="res://scenes/EndScreen.tscn" id="8_end"]
 
@@ -83,8 +82,6 @@ script = ExtResource("4_build")
 
 [node name="ItemManager" type="Node" parent="."]
 script = ExtResource("5_item")
-
-[node name="ShopSystem" parent="." instance=ExtResource("6_shop")]
 
 [node name="EducationalLayer" type="CanvasLayer" parent="."]
 layer = 10

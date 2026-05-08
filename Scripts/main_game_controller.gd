@@ -42,7 +42,6 @@ func _ready() -> void:
 
 	_connect_signals()
 
-	if shop_system: shop_system.visible = false
 	if educational_system: educational_system.visible = false
 
 	# Rozpocznij grę automatycznie po załadowaniu sceny
@@ -73,12 +72,6 @@ func _connect_signals() -> void:
 	if player and player.has_signal("died"):
 		player.died.connect(_on_player_died)
 		player.health_changed.connect(_on_player_health_changed)
-
-	if shop_system:
-		if shop_system.has_signal("item_purchased"):
-			shop_system.item_purchased.connect(_on_item_purchased)
-		if shop_system.has_signal("shop_closed"):
-			shop_system.shop_closed.connect(_on_shop_closed)
 
 	if educational_system:
 		educational_system.education_completed.connect(_on_education_completed)
