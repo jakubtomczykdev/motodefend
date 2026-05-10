@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://trojan_enemy"]
+
+[ext_resource type="Script" path="res://Scripts/enemy_base.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(32, 32)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 250.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2"]
+radius = 30.0
+
+[node name="Trojan" type="CharacterBody2D"]
+script = ExtResource("1")
+scale = Vector2(0.25, 0.25)
+max_health = 60
+damage = 15
+move_speed = 120.0
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.306, 0.804, 0.769, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="DetectionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("CircleShape2D_1")
+
+[node name="AttackArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+shape = SubResource("CircleShape2D_2")

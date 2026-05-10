@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://tjeubeg1cp6j"]
+
+[ext_resource type="Texture2D" uid="uid://mcyshkgbp8kb" path="res://Assets/Characters/cybersecuritySpecialist.png" id="1_rbol0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_16jly"]
+atlas = ExtResource("1_rbol0")
+region = Rect2(0, 0, 320, 698)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xy5aj"]
+atlas = ExtResource("1_rbol0")
+region = Rect2(320, 0, 320, 698)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7aria"]
+atlas = ExtResource("1_rbol0")
+region = Rect2(640, 0, 320, 698)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t1gu2"]
+atlas = ExtResource("1_rbol0")
+region = Rect2(960, 0, 320, 698)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dv7a4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_16jly")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xy5aj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7aria")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t1gu2")
+}],
+"loop": true,
+"name": &"standing",
+"speed": 0.5
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a8ldq"]
+size = Vector2(119, 248)
+
+[node name="CybersecurityExpert" type="CharacterBody2D" unique_id=594552917]
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=665301189]
+position = Vector2(-7.9999995, 0.99999994)
+scale = Vector2(0.4, 0.4)
+sprite_frames = SubResource("SpriteFrames_dv7a4")
+animation = &"standing"
+frame_progress = 0.08538636
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=397300005]
+position = Vector2(-9.5, -5)
+shape = SubResource("RectangleShape2D_a8ldq")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="InteractArea" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+position = Vector2(-9.5, -5)
+shape = SubResource("RectangleShape2D_a8ldq")
+
+[node name="DialogLabel" type="Label" parent="."]
+position = Vector2(-150, -200)
+custom_minimum_size = Vector2(300, 0)
+theme_override_colors/font_color = Color(0.816, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 2

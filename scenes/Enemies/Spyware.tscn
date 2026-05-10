@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://bji01vijbmblb"]
+
+[ext_resource type="Script" uid="uid://buc3ertw6atds" path="res://Scripts/enemy_base.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(32, 32)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 300.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2"]
+radius = 30.0
+
+[node name="Spyware" type="CharacterBody2D" unique_id=1767592810]
+scale = Vector2(0.25, 0.25)
+script = ExtResource("1")
+max_health = 30
+move_speed = 180.0
+detection_range = 300.0
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=105716294]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0, 0.5, 1, 1)
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1790943877]
+shape = SubResource("RectangleShape2D_1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="DetectionArea" type="Area2D" parent="." unique_id=195633721]
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=1108253231]
+shape = SubResource("CircleShape2D_1")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=65767708]
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=1219007975]
+shape = SubResource("CircleShape2D_2")
