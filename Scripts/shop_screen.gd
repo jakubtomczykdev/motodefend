@@ -1,53 +1,121 @@
 extends Control
-const WeaponItemsClass := preload("res://Scripts/items/weapon_items.gd")
-const ShopItemScene := preload("res://scenes/ShopItem.tscn")
-## Ekran sklepu jako osobna scena – 4 itemy, gold, przycisk POWRÓT
+## Ekran sklepu – roguelike arena-survivor UI
+## Lewo: podgląd itemu | Prawo: lista kart | Góra: tytuł + gold | Dół: POWRÓT
 
-@onready var gold_label: Label = $VBoxContainer/GoldLabel
-@onready var items_container: VBoxContainer = $VBoxContainer/ScrollContainer/ItemsContainer
-@onready var back_button: Button = $VBoxContainer/BackButton
+const WeaponItemsClass := preload("res://Scripts/items/weapon_items.gd")
+
+@onready var gold_label: Label = $TopBar/GoldLabel
+@onready var items_container: VBoxContainer = $MainArea/ItemsScroll/ItemsContainer
+@onready var back_button: Button = $BottomBar/BackButton
+
+# Preview nodes
+@onready var preview_icon: TextureRect = $MainArea/PreviewPanel/PreviewVBox/PreviewIcon
+@onready var preview_name: Label = $MainArea/PreviewPanel/PreviewVBox/PreviewName
+@onready var preview_rarity: Label = $MainArea/PreviewPanel/PreviewVBox/PreviewRarity
+@onready var preview_desc: Label = $MainArea/PreviewPanel/PreviewVBox/PreviewDescription
+@onready var preview_cost: Label = $MainArea/PreviewPanel/PreviewVBox/PreviewCost
 
 var player_gold: int = 100
+var weapon_items: Array[WeaponBase] = []
+var selected_weapon: WeaponBase = null
+var buy_buttons: Array[Button] = []
 
 func _ready() -> void:
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
 		player_gold = gd.gold
 
+	weapon_items = WeaponItemsClass.get_all_weapons()
 	_setup_items()
 	_update_gold_label()
+	_update_preview(null)
 	back_button.pressed.connect(_on_back_pressed)
 
 func _setup_items() -> void:
-	var weapons := WeaponItemsClass.get_all_weapons()
-	for weapon in weapons:
-		var item_instance := ShopItemScene.instantiate()
-		setup_weapon_item(item_instance, weapon)
-		items_container.add_child(item_instance)
+	for weapon in weapon_items:
+		var card := _create_item_card(weapon)
+		items_container.add_child(card)
 
-func setup_weapon_item(item_node: Node, weapon: WeaponBase) -> void:
-	if item_node.has_node("HBoxContainer/IconTexture"):
-		var icon_tex: TextureRect = item_node.get_node("HBoxContainer/IconTexture")
-		if weapon.icon:
-			icon_tex.texture = weapon.icon
-	if item_node.has_node("HBoxContainer/VBoxContainer/NameLabel"):
-		var name_lbl: Label = item_node.get_node("HBoxContainer/VBoxContainer/NameLabel")
-		name_lbl.text = weapon.get_display_name()
-	if item_node.has_node("HBoxContainer/VBoxContainer/DescriptionLabel"):
-		var desc_lbl: Label = item_node.get_node("HBoxContainer/VBoxContainer/DescriptionLabel")
-		desc_lbl.text = weapon.description
-	if item_node.has_node("HBoxContainer/VBoxContainer/HBoxContainer2/CostLabel"):
-		var cost_lbl: Label = item_node.get_node("HBoxContainer/VBoxContainer/HBoxContainer2/CostLabel")
-		cost_lbl.text = "Koszt: %d G" % weapon.cost
-	if item_node.has_node("HBoxContainer/VBoxContainer/HBoxContainer2/RarityLabel"):
-		var rarity_lbl: Label = item_node.get_node("HBoxContainer/VBoxContainer/HBoxContainer2/RarityLabel")
-		rarity_lbl.text = weapon.rarity.capitalize()
-		rarity_lbl.modulate = weapon.get_rarity_color()
-	if item_node.has_node("HBoxContainer/BuyButton"):
-		var buy_btn: Button = item_node.get_node("HBoxContainer/BuyButton")
-		buy_btn.pressed.connect(_on_weapon_bought.bind(weapon, buy_btn))
+func _create_item_card(weapon: WeaponBase) -> Panel:
+	var card := Panel.new()
+	card.custom_minimum_size = Vector2(0, 100)
 
-func _on_weapon_bought(weapon: WeaponBase, button: Button) -> void:
+	var hbox := HBoxContainer.new()
+	hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	hbox.add_theme_constant_override("separation", 10)
+	card.add_child(hbox)
+
+	# Icon (left part of card)
+	var icon := TextureRect.new()
+	icon.custom_minimum_size = Vector2(80, 80)
+	icon.expand_mode = TextureRect.EXPAND_KEEP_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	if weapon.icon:
+		icon.texture = weapon.icon
+	hbox.add_child(icon)
+
+	# Info (middle)
+	var info_vbox := VBoxContainer.new()
+	info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var name_lbl := Label.new()
+	name_lbl.text = weapon.get_display_name()
+	name_lbl.add_theme_font_size_override("font_size", 18)
+	info_vbox.add_child(name_lbl)
+
+	var desc_lbl := Label.new()
+	desc_lbl.text = weapon.description
+	desc_lbl.add_theme_font_size_override("font_size", 13)
+	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info_vbox.add_child(desc_lbl)
+
+	var cost_lbl := Label.new()
+	cost_lbl.text = "Koszt: %d G" % weapon.cost
+	cost_lbl.add_theme_font_size_override("font_size", 16)
+	cost_lbl.add_theme_color_override("font_color", Color(1, 0.84, 0))
+	info_vbox.add_child(cost_lbl)
+
+	hbox.add_child(info_vbox)
+
+	# Buy button (right)
+	var buy_btn := Button.new()
+	buy_btn.text = "KUP"
+	buy_btn.custom_minimum_size = Vector2(80, 0)
+	buy_btn.add_theme_font_size_override("font_size", 18)
+	buy_btn.pressed.connect(_on_buy_pressed.bind(weapon, buy_btn))
+	hbox.add_child(buy_btn)
+	buy_buttons.append(buy_btn)
+
+	# Click on entire card selects the weapon for preview
+	card.gui_input.connect(_on_card_clicked.bind(weapon))
+	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+	return card
+
+func _on_card_clicked(event: InputEvent, weapon: WeaponBase) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_update_preview(weapon)
+
+func _update_preview(weapon: WeaponBase) -> void:
+	selected_weapon = weapon
+	if not weapon:
+		preview_icon.texture = null
+		preview_name.text = "Wybierz przedmiot"
+		preview_rarity.text = ""
+		preview_desc.text = ""
+		preview_cost.text = ""
+		return
+
+	if weapon.icon:
+		preview_icon.texture = weapon.icon
+	preview_name.text = weapon.get_display_name()
+	preview_rarity.text = weapon.rarity.capitalize()
+	preview_rarity.add_theme_color_override("font_color", weapon.get_rarity_color())
+	preview_desc.text = weapon.description
+	preview_cost.text = "Koszt: %d G" % weapon.cost
+	preview_cost.add_theme_color_override("font_color", Color(1, 0.84, 0))
+
+func _on_buy_pressed(weapon: WeaponBase, button: Button) -> void:
 	if player_gold < weapon.cost:
 		return
 
@@ -57,9 +125,9 @@ func _on_weapon_bought(weapon: WeaponBase, button: Button) -> void:
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
 		gd.gold = player_gold
-		if not gd.has("pending_weapons"):
-			gd.pending_weapons = []
-		gd.pending_weapons.append(weapon.duplicate())
+		if not gd.has("pending_weapon_ids"):
+			gd.pending_weapon_ids = []
+		gd.pending_weapon_ids.append(weapon.weapon_type)
 
 	button.disabled = true
 	button.text = "KUPIONE"

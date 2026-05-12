@@ -127,10 +127,12 @@ func start_game() -> void:
 		print("[MainGame] wave_manager.start_game() OK")
 
 	# Equip weapons purchased in shop
-	if gd and gd.has("pending_weapons") and player and player.has_method("add_weapon"):
-		for w in gd.pending_weapons:
-			player.add_weapon(w)
-		gd.pending_weapons.clear()
+	if gd and gd.has("pending_weapon_ids") and player and player.has_method("add_weapon"):
+		for wid in gd.pending_weapon_ids:
+			var wd: WeaponBase = _create_weapon_from_id(wid)
+			if wd:
+				player.add_weapon(wd)
+		gd.pending_weapon_ids.clear()
 
 	game_started.emit()
 	print("[MainGame] start_game END")
@@ -227,6 +229,14 @@ func show_game_over() -> void:
 		var playtime := Time.get_unix_time_from_system() - game_start_time
 		end_screen.show_game_over(score, wave_manager.current_wave, items_collected, playtime)
 		get_tree().paused = true
+
+func _create_weapon_from_id(weapon_type: String) -> WeaponBase:
+	const WIC := preload("res://Scripts/items/weapon_items.gd")
+	var all_weapons: Array = WIC.get_all_weapons()
+	for w in all_weapons:
+		if w.weapon_type == weapon_type:
+			return w
+	return null
 
 func show_victory() -> void:
 	if end_screen and wave_manager:

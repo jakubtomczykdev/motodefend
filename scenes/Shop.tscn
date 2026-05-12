@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://shop_scene"]
+[gd_scene load_steps=2 format=3 uid="uid://shop_scene"]
 
-[ext_resource type="Script" path="res://Scripts/shop_screen.gd" id="1"]
-[ext_resource type="Texture2D" path="res://Assets/newAssets/bgFuturistic.png" id="2"]
+[ext_resource type="Script" path="res://Scripts/shop_screen.gd" id="1_shop_script"]
 
 [node name="ShopScreen" type="Control"]
 layout_mode = 3
@@ -10,52 +9,144 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1")
+script = ExtResource("1_shop_script")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-expand_mode = 1
-stretch_mode = 5
-texture = ExtResource("2")
+color = Color(0.02, 0.04, 0.08, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="TopBar" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 100.0
-offset_top = 50.0
-offset_right = -100.0
-offset_bottom = -50.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 70.0
+grow_horizontal = 2
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer"]
-layout_mode = 2
+[node name="TitleLabel" type="Label" parent="TopBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 10.0
+offset_right = -200.0
+offset_bottom = -10.0
 theme_override_font_sizes/font_size = 36
 text = "SKLEP MOTOROLA"
-horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="GoldLabel" type="Label" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "GOLD: 0"
-horizontal_alignment = 1
+[node name="GoldLabel" type="Label" parent="TopBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -195.0
+offset_top = 10.0
+offset_right = -15.0
+offset_bottom = -10.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 28
+text = "GOLD: 100"
+horizontal_alignment = 2
+vertical_alignment = 1
 
-[node name="Separator" type="HSeparator" parent="VBoxContainer"]
-layout_mode = 2
+[node name="MainArea" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 85.0
+offset_right = -20.0
+offset_bottom = -65.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+[node name="PreviewPanel" type="Panel" parent="MainArea"]
 layout_mode = 2
+custom_minimum_size = Vector2(350, 0)
 size_flags_vertical = 3
 
-[node name="ItemsContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+[node name="PreviewVBox" type="VBoxContainer" parent="MainArea/PreviewPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = -15.0
+theme_override_constants/separation = 10
+
+[node name="PreviewIcon" type="TextureRect" parent="MainArea/PreviewPanel/PreviewVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 200)
+expand_mode = 0
+stretch_mode = 5
+
+[node name="PreviewName" type="Label" parent="MainArea/PreviewPanel/PreviewVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Wybierz przedmiot"
+horizontal_alignment = 1
+
+[node name="PreviewRarity" type="Label" parent="MainArea/PreviewPanel/PreviewVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = ""
+horizontal_alignment = 1
+
+[node name="PreviewDescription" type="Label" parent="MainArea/PreviewPanel/PreviewVBox"]
+layout_mode = 2
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="PreviewCost" type="Label" parent="MainArea/PreviewPanel/PreviewVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = ""
+horizontal_alignment = 1
+
+[node name="ItemsScroll" type="ScrollContainer" parent="MainArea"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="BackButton" type="Button" parent="VBoxContainer"]
+[node name="ItemsContainer" type="VBoxContainer" parent="MainArea/ItemsScroll"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="BottomBar" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -60.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_vertical = 0
+
+[node name="BackButton" type="Button" parent="BottomBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 200.0
+offset_top = 10.0
+offset_right = -200.0
+offset_bottom = -10.0
+theme_override_font_sizes/font_size = 22
 text = "POWRÓT"
