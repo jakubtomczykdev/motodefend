@@ -38,24 +38,28 @@ func _setup_items() -> void:
 
 func _create_item_card(weapon: WeaponBase) -> Panel:
 	var card := Panel.new()
-	card.custom_minimum_size = Vector2(0, 100)
+	card.layout_mode = 2
 
 	var hbox := HBoxContainer.new()
-	hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	hbox.layout_mode = 2
+	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	hbox.add_theme_constant_override("separation", 10)
 	card.add_child(hbox)
 
 	# Icon (left part of card)
 	var icon := TextureRect.new()
+	icon.layout_mode = 2
 	icon.custom_minimum_size = Vector2(80, 80)
-	icon.expand_mode = TextureRect.EXPAND_KEEP_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.expand_mode = 0
+	icon.stretch_mode = 5
 	if weapon.icon:
 		icon.texture = weapon.icon
 	hbox.add_child(icon)
 
 	# Info (middle)
 	var info_vbox := VBoxContainer.new()
+	info_vbox.layout_mode = 2
 	info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var name_lbl := Label.new()
@@ -127,7 +131,7 @@ func _on_buy_pressed(weapon: WeaponBase, button: Button) -> void:
 		gd.gold = player_gold
 		if not gd.has("pending_weapon_ids"):
 			gd.pending_weapon_ids = []
-		gd.pending_weapon_ids.append(weapon.weapon_type)
+		gd.pending_weapon_ids.append(weapon.weapon_name)
 
 	button.disabled = true
 	button.text = "KUPIONE"

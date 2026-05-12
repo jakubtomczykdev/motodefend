@@ -126,8 +126,9 @@ func start_game() -> void:
 		wave_manager.start_game()
 		print("[MainGame] wave_manager.start_game() OK")
 
-	# Equip weapons purchased in shop
+	# Equip weapons purchased in shop (opóźnione o 1 klatkę dla _ready gracza)
 	if gd and gd.has("pending_weapon_ids") and player and player.has_method("add_weapon"):
+		await get_tree().process_frame
 		for wid in gd.pending_weapon_ids:
 			var wd: WeaponBase = _create_weapon_from_id(wid)
 			if wd:
@@ -230,11 +231,11 @@ func show_game_over() -> void:
 		end_screen.show_game_over(score, wave_manager.current_wave, items_collected, playtime)
 		get_tree().paused = true
 
-func _create_weapon_from_id(weapon_type: String) -> WeaponBase:
+func _create_weapon_from_id(weapon_id: String) -> WeaponBase:
 	const WIC := preload("res://Scripts/items/weapon_items.gd")
 	var all_weapons: Array = WIC.get_all_weapons()
 	for w in all_weapons:
-		if w.weapon_type == weapon_type:
+		if w.weapon_name == weapon_id:
 			return w
 	return null
 
