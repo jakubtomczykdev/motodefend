@@ -13,7 +13,7 @@ class OldRadio extends WeaponBase:
 		rarity = "common"
 		damage = 10.0
 		attack_speed = 4.0
-		range = 150.0
+		weapon_range = 150.0
 		is_old_variant = true
 		icon = load("res://Assets/newAssets/oldRadio.png")
 
@@ -27,7 +27,7 @@ class NewRadio extends WeaponBase:
 		rarity = "epic"
 		damage = 25.0
 		attack_speed = 3.0
-		range = 250.0
+		weapon_range = 250.0
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/newRadio.png")
 
@@ -41,7 +41,7 @@ class OldDrone extends WeaponBase:
 		rarity = "rare"
 		damage = 8.0
 		attack_speed = 5.0
-		range = 300.0
+		weapon_range = 300.0
 		is_old_variant = true
 		icon = load("res://Assets/newAssets/oldDrone.png")
 
@@ -55,7 +55,7 @@ class FightingDrone extends WeaponBase:
 		rarity = "legendary"
 		damage = 20.0
 		attack_speed = 3.0
-		range = 400.0
+		weapon_range = 400.0
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/fightingDrone.png")
 
@@ -69,7 +69,7 @@ class Blaster extends WeaponBase:
 		rarity = "rare"
 		damage = 18.0
 		attack_speed = 1.5
-		range = 350.0
+		weapon_range = 350.0
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/Blaster.png")
 
@@ -83,7 +83,7 @@ class Sword extends WeaponBase:
 		rarity = "common"
 		damage = 15.0
 		attack_speed = 1.0
-		range = 80.0
+		weapon_range = 80.0
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/sword.png")
 

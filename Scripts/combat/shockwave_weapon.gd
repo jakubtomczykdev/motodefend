@@ -34,7 +34,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase) -> void:
 
 	var collision_shape := CollisionShape2D.new()
 	var circle_shape := CircleShape2D.new()
-	circle_shape.radius = weapon_data.range
+	circle_shape.radius = weapon_data.weapon_range
 	collision_shape.shape = circle_shape
 	shockwave_area.add_child(collision_shape)
 

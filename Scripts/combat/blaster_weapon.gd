@@ -34,7 +34,7 @@ func find_closest_enemy(from_pos: Vector2) -> Node2D:
 	if not current_weapon:
 		return null
 
-	var max_range := current_weapon.range
+	var max_range := current_weapon.weapon_range
 	var enemies: Array[Node] = get_tree().get_nodes_in_group("Enemies")
 	var closest_enemy: Node2D = null
 	var closest_distance := max_range

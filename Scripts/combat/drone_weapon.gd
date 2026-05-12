@@ -81,7 +81,7 @@ func _update_attack_timer(delta: float) -> void:
 func _find_closest_enemy() -> Node2D:
 	var enemies: Array[Node] = get_tree().get_nodes_in_group("Enemies")
 	var closest: Node2D = null
-	var closest_dist := current_weapon.range
+	var closest_dist := current_weapon.weapon_range
 
 	for enemy: Node in enemies:
 		if enemy is Node2D:

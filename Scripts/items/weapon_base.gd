@@ -9,7 +9,7 @@ class_name WeaponBase
 @export var rarity: String = "common"  # common, rare, epic, legendary
 @export var damage: float = 10.0
 @export var attack_speed: float = 2.0  # cooldown w sekundach
-@export var range: float = 100.0
+@export var weapon_range: float = 100.0
 @export var stats: Dictionary = {}  # dodatkowe modyfikatory (jak w ItemBase)
 @export var is_old_variant: bool = false  # dla "old" prefix
 
