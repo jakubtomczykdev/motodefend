@@ -129,7 +129,7 @@ func start_game() -> void:
 		print("[MainGame] wave_manager.start_game() OK")
 
 	# Equip weapons purchased in shop (opóźnione o 1 klatkę dla _ready gracza)
-	if gd and gd.has("pending_weapon_ids") and player and player.has_method("add_weapon"):
+	if gd and player and player.has_method("add_weapon"):
 		await get_tree().process_frame
 		var all_weapons: Array = WeaponItemsClass.get_all_weapons()
 		for widx in gd.pending_weapon_ids:
