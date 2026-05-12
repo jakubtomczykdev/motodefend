@@ -130,14 +130,14 @@ position = Vector2(20, 0)
 [node name="WeaponSlot1" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(-30, 0)
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.2, 0.2)
 visible = false
 z_index = 5
 
 [node name="WeaponSlot2" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(30, 0)
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.2, 0.2)
 visible = false
 z_index = 5
 

@@ -28,7 +28,7 @@ func initialize(p_player_ref: Node2D, weapon_data: WeaponBase) -> void:
 		if not tex:
 			tex = load("res://Assets/newAssets/oldDrone.png") as Texture2D
 		sprite.texture = tex
-	sprite.scale = Vector2(0.5, 0.5)
+	sprite.scale = Vector2(0.25, 0.25)
 	add_child(sprite)
 
 	# Kolizja – okrąg o promieniu 10
@@ -99,6 +99,10 @@ func _start_attack(enemy: Node2D) -> void:
 	attack_elapsed = 0.0
 	attack_start_pos = global_position
 	state = DroneState.ATTACKING
+
+	var am := get_node_or_null("/root/AudioManager")
+	if am and am.has_method("play_sfx"):
+		am.play_sfx("drone_hum")
 
 func _process_attack(delta: float) -> void:
 	attack_elapsed += delta

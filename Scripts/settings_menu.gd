@@ -16,6 +16,10 @@ extends Control
 @onready var fullscreen_checkbox: CheckBox = %FullscreenCheckBox
 @onready var vsync_checkbox: CheckBox = %VsyncCheckBox
 
+@onready var gold_input: LineEdit = $GoldSection/GoldInput if has_node("GoldSection/GoldInput") else null
+@onready var add_gold_btn: Button = $GoldSection/AddGoldBtn if has_node("GoldSection/AddGoldBtn") else null
+@onready var current_gold_label: Label = $GoldSection/CurrentGoldLabel if has_node("GoldSection/CurrentGoldLabel") else null
+
 @onready var apply_button: Button = %ApplyButton
 @onready var reset_button: Button = %ResetButton
 @onready var back_button: Button = %BackButton
@@ -46,6 +50,10 @@ func _ready() -> void:
 	_load_current_settings()
 	_connect_signals()
 	back_button.grab_focus()
+
+	if add_gold_btn:
+		add_gold_btn.pressed.connect(_on_add_gold_pressed)
+	_update_gold_display()
 
 func _populate_resolutions() -> void:
 	resolution_dropdown.clear()
@@ -132,3 +140,21 @@ func _on_reset_pressed() -> void:
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://MainMenu.tscn")
+
+func _on_add_gold_pressed() -> void:
+	var amount_str := gold_input.text.strip_edges() if gold_input else "9999"
+	if amount_str.is_empty():
+		amount_str = "9999"
+	var amount := int(amount_str)
+	if amount <= 0:
+		amount = 9999
+	var gd := get_node_or_null("/root/GameData")
+	if gd:
+		gd.gold += amount
+		if gold_input: gold_input.text = ""
+		_update_gold_display()
+
+func _update_gold_display() -> void:
+	var gd := get_node_or_null("/root/GameData")
+	if gd and current_gold_label:
+		current_gold_label.text = "Gold: " + str(gd.gold)

@@ -7,7 +7,7 @@ extends Node
 const OLDRADIO_DAMAGE: float = 10.0
 const OLDRADIO_ATTACK_SPEED: float = 4.0
 const OLDRADIO_RANGE: float = 150.0
-const OLDRADIO_COST: int = 90
+const OLDRADIO_COST: int = 60
 
 # NewRadio
 const NEWRADIO_DAMAGE: float = 25.0
@@ -37,7 +37,7 @@ const BLASTER_COST: int = 200
 const SWORD_DAMAGE: float = 15.0
 const SWORD_ATTACK_SPEED: float = 1.0
 const SWORD_RANGE: float = 80.0
-const SWORD_COST: int = 80
+const SWORD_COST: int = 50
 
 # ============ GAME BALANCE ============
 

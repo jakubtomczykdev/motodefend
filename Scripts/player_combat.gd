@@ -26,6 +26,8 @@ var muzzle: Marker2D # punkt wylotu pocisku
 var projectile_scene: PackedScene = preload("res://scenes/Projectile.tscn")
 var weapon_manager: Node
 
+var _reticle: ColorRect
+
 func _ready() -> void:
 	# Znajdź węzły bezpiecznie
 	if has_node("AnimatedSprite2D"):
@@ -68,7 +70,16 @@ func _ready() -> void:
 	if slot1 or slot2:
 		weapon_manager.setup_slots(slot1, slot2)
 
+	_reticle = ColorRect.new()
+	_reticle.color = Color(1, 0.2, 0.2, 0.6)
+	_reticle.size = Vector2(8, 8)
+	_reticle.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_reticle.z_index = 100
+	add_child(_reticle)
+
 func _process(delta: float) -> void:
+	if _reticle:
+		_reticle.global_position = get_global_mouse_position() - _reticle.size / 2
 	handle_input(delta)
 	handle_cooldown(delta)
 	update_interaction_prompt()

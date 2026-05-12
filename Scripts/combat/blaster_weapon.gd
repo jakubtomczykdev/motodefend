@@ -26,6 +26,10 @@ func fire(player_pos: Vector2, target_pos: Vector2, weapon_data: WeaponBase) -> 
 
 	get_tree().current_scene.add_child(projectile)
 
+	var am := get_node_or_null("/root/AudioManager")
+	if am and am.has_method("play_sfx"):
+		am.play_sfx("blaster_shot")
+
 	var flash := ColorRect.new()
 	flash.color = Color(0, 0.8, 1, 0.7)
 	flash.size = Vector2(20, 20)

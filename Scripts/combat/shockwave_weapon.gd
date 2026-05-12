@@ -59,6 +59,10 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 	can_attack = false
 	attack_timer = weapon_data.attack_speed
 
+	var am := get_node_or_null("/root/AudioManager")
+	if am and am.has_method("play_sfx"):
+		am.play_sfx("radio_wave")
+
 
 func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, wave: Area2D) -> void:
 	if not body.is_in_group("Enemies"):

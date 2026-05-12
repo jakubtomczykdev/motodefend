@@ -19,11 +19,15 @@ func swing(player_pos: Vector2, direction: Vector2, weapon_data: WeaponBase) -> 
 	var swing_area: Area2D = Area2D.new()
 	get_tree().root.add_child(swing_area)
 
+	var am := get_node_or_null("/root/AudioManager")
+	if am and am.has_method("play_sfx"):
+		am.play_sfx("sword_slash")
+
 	var sword_sprite := Sprite2D.new()
 	var tex := load("res://Assets/newAssets/sword.png") as Texture2D
 	if tex:
 		sword_sprite.texture = tex
-		sword_sprite.scale = Vector2(0.8, 0.8)
+		sword_sprite.scale = Vector2(0.35, 0.35)
 		swing_area.add_child(sword_sprite)
 
 	var collision_shape: CollisionShape2D = CollisionShape2D.new()

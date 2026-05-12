@@ -267,6 +267,29 @@ theme_override_font_sizes/font_size = 35
 [node name="HSeparator3" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=441134]
 layout_mode = 2
 
+[node name="GoldSection" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 20
+
+[node name="GoldSectionLabel" type="Label" parent="CenterContainer/VBoxContainer/GoldSection"]
+layout_mode = 2
+text = "DEBUG:"
+
+[node name="GoldInput" type="LineEdit" parent="CenterContainer/VBoxContainer/GoldSection"]
+layout_mode = 2
+custom_minimum_size = Vector2(80, 0)
+placeholder_text = "9999"
+
+[node name="AddGoldBtn" type="Button" parent="CenterContainer/VBoxContainer/GoldSection"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 40)
+text = "DODAJ ZŁOTO"
+
+[node name="CurrentGoldLabel" type="Label" parent="CenterContainer/VBoxContainer/GoldSection"]
+layout_mode = 2
+text = "Gold: 0"
+
 [node name="ButtonsRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441135]
 layout_mode = 2
 alignment = 1
