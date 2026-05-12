@@ -21,23 +21,40 @@ var selected_weapon: WeaponBase = null
 var buy_buttons: Array[Button] = []
 
 func _ready() -> void:
+	print("[DEBUG] shop_screen._ready() START")
+	
+	if not items_container:
+		push_error("Shop: items_container is null!")
+		return
+	
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
 		player_gold = gd.gold
-
+	
+	print("[DEBUG] gold_label=", gold_label, " items_container=", items_container, " back_button=", back_button)
+	
 	weapon_items = WeaponItemsClass.get_all_weapons()
+	print("[DEBUG] weapon_items count=", weapon_items.size())
 	_setup_items()
 	_update_gold_label()
 	_update_preview(null)
 	back_button.pressed.connect(_on_back_pressed)
+	print("[DEBUG] shop_screen._ready() END")
 
 func _setup_items() -> void:
+	if weapon_items.is_empty():
+		return
+	
 	for i in range(weapon_items.size()):
 		var weapon := weapon_items[i]
 		var card := _create_item_card(weapon, i)
 		items_container.add_child(card)
 
 func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
+	if not weapon:
+		push_error("Shop: _create_item_card called with null weapon")
+		return Panel.new()
+	
 	var card := Panel.new()
 	card.layout_mode = 2
 
