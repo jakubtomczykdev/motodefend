@@ -26,6 +26,16 @@ func fire(player_pos: Vector2, target_pos: Vector2, weapon_data: WeaponBase) -> 
 
 	get_tree().current_scene.add_child(projectile)
 
+	var flash := ColorRect.new()
+	flash.color = Color(0, 0.8, 1, 0.7)
+	flash.size = Vector2(20, 20)
+	flash.position = player_pos - Vector2(10, 10)
+	get_tree().current_scene.add_child(flash)
+
+	var flash_tween := create_tween()
+	flash_tween.tween_property(flash, "modulate:a", 0.0, 0.1)
+	flash_tween.tween_callback(flash.queue_free)
+
 	can_attack = false
 	attack_timer = weapon_data.attack_speed
 

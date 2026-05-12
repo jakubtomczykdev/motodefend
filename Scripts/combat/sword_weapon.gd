@@ -19,6 +19,13 @@ func swing(player_pos: Vector2, direction: Vector2, weapon_data: WeaponBase) -> 
 	var swing_area: Area2D = Area2D.new()
 	get_tree().root.add_child(swing_area)
 
+	var sword_sprite := Sprite2D.new()
+	var tex := load("res://Assets/newAssets/sword.png") as Texture2D
+	if tex:
+		sword_sprite.texture = tex
+		sword_sprite.scale = Vector2(0.8, 0.8)
+		swing_area.add_child(sword_sprite)
+
 	var collision_shape: CollisionShape2D = CollisionShape2D.new()
 	var rect_shape: RectangleShape2D = RectangleShape2D.new()
 	rect_shape.size = Vector2(80, 40)
