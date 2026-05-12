@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://c0k55lc55dpyb" path="res://Scripts/cybersecurity_expert.gd" id="7_vjy5m"]
 [ext_resource type="Script" path="res://Scripts/game_start_hub.gd" id="8_hub"]
 [ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://retropix.ttf" id="9_font"]
+[ext_resource type="Texture2D" path="res://Assets/newAssets/bgFuturistic.png" id="bg_tex"]
 
 [node name="Node2D" type="Node2D" unique_id=720583781]
 script = ExtResource("8_hub")
@@ -15,13 +16,15 @@ script = ExtResource("8_hub")
 [node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="ColorRect" type="ColorRect" parent="BackgroundLayer"]
+[node name="TextureRect" type="TextureRect" parent="BackgroundLayer"]
+texture = ExtResource("bg_tex")
+expand_mode = 1
+stretch_mode = 5
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.06, 0.12, 0.28, 1)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

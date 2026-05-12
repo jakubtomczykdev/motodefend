@@ -1,6 +1,8 @@
 extends CharacterBody2D
 ## System walki gracza - strzelanie, statystyki, interakcje
 
+const WeaponManagerClass := preload("res://Scripts/combat/weapon_manager.gd")
+
 signal health_changed(current_health: int, max_health: int)
 signal died
 
@@ -22,6 +24,7 @@ var interaction_prompt: Label
 var muzzle: Marker2D # punkt wylotu pocisku
 
 var projectile_scene: PackedScene = preload("res://scenes/Projectile.tscn")
+var weapon_manager: Node
 
 func _ready() -> void:
 	# Znajdź węzły bezpiecznie
@@ -48,10 +51,20 @@ func _ready() -> void:
 
 	add_to_group("Player")
 
+	# Inicjalizacja WeaponManager
+	weapon_manager = WeaponManagerClass.new()
+	weapon_manager.name = "WeaponManager"
+	add_child(weapon_manager)
+
 func _process(delta: float) -> void:
 	handle_input(delta)
 	handle_cooldown(delta)
 	update_interaction_prompt()
+	if weapon_manager and weapon_manager.has_method("update_drones"):
+		weapon_manager.update_drones()
+	if weapon_manager and weapon_manager.has_method("activate_all_weapons"):
+		var target_pos := get_global_mouse_position()
+		weapon_manager.activate_all_weapons(target_pos)
 
 func _physics_process(delta: float) -> void:
 	handle_movement(delta)
@@ -198,3 +211,13 @@ func interact() -> void:
 				if interactable.has_method("interact"):
 					interactable.call("interact")
 				break
+
+func add_weapon(weapon: WeaponBase) -> bool:
+	if weapon_manager and weapon_manager.has_method("add_weapon"):
+		return weapon_manager.add_weapon(weapon)
+	return false
+
+func get_weapon_count() -> int:
+	if weapon_manager and weapon_manager.has_method("get_weapon_count"):
+		return weapon_manager.get_weapon_count()
+	return 0
