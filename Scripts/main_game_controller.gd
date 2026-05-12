@@ -126,6 +126,12 @@ func start_game() -> void:
 		wave_manager.start_game()
 		print("[MainGame] wave_manager.start_game() OK")
 
+	# Equip weapons purchased in shop
+	if gd and gd.has("pending_weapons") and player and player.has_method("add_weapon"):
+		for w in gd.pending_weapons:
+			player.add_weapon(w)
+		gd.pending_weapons.clear()
+
 	game_started.emit()
 	print("[MainGame] start_game END")
 

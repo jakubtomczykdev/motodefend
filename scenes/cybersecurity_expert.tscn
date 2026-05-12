@@ -39,7 +39,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a8ldq"]
-size = Vector2(119, 248)
+size = Vector2(80, 170)
 
 [node name="CybersecurityExpert" type="CharacterBody2D" unique_id=594552917]
 metadata/logic_bricks_graph = {
@@ -51,7 +51,7 @@ metadata/logic_bricks_frames = []
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=665301189]
 position = Vector2(-7.9999995, 0.99999994)
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.25, 0.25)
 sprite_frames = SubResource("SpriteFrames_dv7a4")
 animation = &"standing"
 frame_progress = 0.08538636

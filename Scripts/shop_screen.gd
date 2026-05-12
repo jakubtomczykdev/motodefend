@@ -4,7 +4,7 @@ const ShopItemScene := preload("res://scenes/ShopItem.tscn")
 ## Ekran sklepu jako osobna scena – 4 itemy, gold, przycisk POWRÓT
 
 @onready var gold_label: Label = $VBoxContainer/GoldLabel
-@onready var items_container: VBoxContainer = $VBoxContainer/ItemsContainer
+@onready var items_container: VBoxContainer = $VBoxContainer/ScrollContainer/ItemsContainer
 @onready var back_button: Button = $VBoxContainer/BackButton
 
 var player_gold: int = 100
@@ -51,19 +51,15 @@ func _on_weapon_bought(weapon: WeaponBase, button: Button) -> void:
 	if player_gold < weapon.cost:
 		return
 
-	var player := get_tree().get_first_node_in_group("Player")
-	if not player or not player.has_method("add_weapon"):
-		return
-
-	if not player.add_weapon(weapon):
-		return
-
 	player_gold -= weapon.cost
 	_update_gold_label()
 
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
 		gd.gold = player_gold
+		if not gd.has("pending_weapons"):
+			gd.pending_weapons = []
+		gd.pending_weapons.append(weapon.duplicate())
 
 	button.disabled = true
 	button.text = "KUPIONE"

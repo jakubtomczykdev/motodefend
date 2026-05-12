@@ -50,6 +50,7 @@ metadata/logic_bricks_graph = {
 metadata/logic_bricks_frames = []
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=902937345]
+scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_601d7")
 animation = &"MashineAnimation"
 frame_progress = 0.23258917
