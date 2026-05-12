@@ -132,10 +132,13 @@ func start_game() -> void:
 	if gd and player and player.has_method("add_weapon"):
 		await get_tree().process_frame
 		var all_weapons: Array = WeaponItemsClass.get_all_weapons()
+		print("[DEBUG] Equipping weapons: pending_ids=", gd.pending_weapon_ids, " all_weapons count=", all_weapons.size())
 		for widx in gd.pending_weapon_ids:
 			var wd: WeaponBase = all_weapons[widx] if widx < all_weapons.size() else null
+			print("[DEBUG] Equipping weapon index=", widx, " weapon=", wd.weapon_name if wd else "NULL")
 			if wd:
-				player.add_weapon(wd)
+				var result: bool = player.add_weapon(wd)
+				print("[DEBUG] add_weapon result=", result)
 		gd.pending_weapon_ids.clear()
 
 	game_started.emit()

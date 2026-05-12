@@ -209,11 +209,16 @@ func interact() -> void:
 			if distance < 100.0:
 				if interactable.has_method("interact"):
 					interactable.call("interact")
+				# Fallback: InteractArea nie ma interact(), ale jej parent (NPC) ma
+				elif interactable.get_parent() and interactable.get_parent().has_method("interact"):
+					interactable.get_parent().interact()
 				break
 
 func add_weapon(weapon: WeaponBase) -> bool:
 	if weapon_manager and weapon_manager.has_method("add_weapon"):
-		return weapon_manager.add_weapon(weapon)
+		var result: bool = weapon_manager.add_weapon(weapon)
+		print("[DEBUG] player_combat.add_weapon called for ", weapon.weapon_name, " result=", result)
+		return result
 	return false
 
 func get_weapon_count() -> int:
