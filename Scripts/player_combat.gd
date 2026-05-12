@@ -56,6 +56,18 @@ func _ready() -> void:
 	weapon_manager.name = "WeaponManager"
 	add_child(weapon_manager)
 
+	# Podłącz sloty broni z drzewa sceny do menadżera
+	var slot1 := get_node_or_null("WeaponSlot1") as Sprite2D
+	var slot2 := get_node_or_null("WeaponSlot2") as Sprite2D
+
+	if not slot1:
+		slot1 = get_node_or_null("%WeaponSlot1") as Sprite2D
+	if not slot2:
+		slot2 = get_node_or_null("%WeaponSlot2") as Sprite2D
+
+	if slot1 or slot2:
+		weapon_manager.setup_slots(slot1, slot2)
+
 func _process(delta: float) -> void:
 	handle_input(delta)
 	handle_cooldown(delta)

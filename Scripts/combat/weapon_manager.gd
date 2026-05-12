@@ -11,6 +11,36 @@ var player_ref: Node2D = null
 
 func _ready() -> void:
 	player_ref = get_parent()
+	_connect_weapon_slots()
+
+
+## Podłącza sloty broni z zewnątrz (np. z player_combat)
+func setup_slots(slot1: Sprite2D, slot2: Sprite2D = null) -> void:
+	weapon_slots.clear()
+	if slot1:
+		weapon_slots.append(slot1)
+	if slot2:
+		weapon_slots.append(slot2)
+	update_weapon_sprites()
+
+
+func _connect_weapon_slots() -> void:
+	if weapon_slots.size() > 0:
+		return
+	if not player_ref:
+		return
+	var s1 := player_ref.get_node_or_null("WeaponSlot1") as Sprite2D
+	var s2 := player_ref.get_node_or_null("WeaponSlot2") as Sprite2D
+	if not s1:
+		s1 = player_ref.get_node_or_null("%WeaponSlot1") as Sprite2D
+	if not s2:
+		s2 = player_ref.get_node_or_null("%WeaponSlot2") as Sprite2D
+	if s1:
+		weapon_slots.append(s1)
+	if s2:
+		weapon_slots.append(s2)
+	if weapon_slots.size() > 0:
+		update_weapon_sprites()
 
 
 ## Dodaje broń do ekwipunku gracza
@@ -92,9 +122,22 @@ func update_weapon_sprites() -> void:
 			weapon_slots[i].visible = false
 
 
+## Obraca sloty broni w kierunku celu (myszka / wróg)
+func rotate_weapon_slots(target_pos: Vector2) -> void:
+	if not player_ref:
+		return
+	var dir := (target_pos - player_ref.global_position).normalized()
+	var angle := dir.angle()
+	for slot in weapon_slots:
+		if slot.visible:
+			slot.rotation = angle
+
+
 ## Wołane co klatkę – aktywuje wszystkie gotowe bronie
 ## Bronie same pilnują cooldownu przez is_ready()
 func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
+	rotate_weapon_slots(target_pos)
+	
 	for i: int in range(weapon_instances.size()):
 		var instance: Node = weapon_instances[i]
 		if not is_instance_valid(instance):
@@ -106,7 +149,8 @@ func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
 		var weapon_data: WeaponBase = weapons[i]
 		match weapon_data.weapon_type:
 			"shockwave":
-				instance.activate(player_ref.global_position, weapon_data)
+				var target_dir := _get_aim_direction(target_pos)
+				instance.activate(player_ref.global_position, weapon_data, target_dir)
 			"drone":
 				pass  # Atakuje automatycznie w _physics_process
 			"blaster":
