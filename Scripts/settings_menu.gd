@@ -141,7 +141,7 @@ func _on_reset_pressed() -> void:
 func _on_back_pressed() -> void:
 	var gd := get_node_or_null("/root/GameData")
 	if gd and gd.return_scene != "":
-		var scene := gd.return_scene
+		var scene: String = gd.return_scene
 		gd.return_scene = ""
 		get_tree().change_scene_to_file(scene)
 	else:
