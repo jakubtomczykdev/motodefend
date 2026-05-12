@@ -1,6 +1,8 @@
 extends Node2D
 ## Główny kontroler gry - integruje wszystkie systemy
 
+const WeaponItemsClass := preload("res://Scripts/items/weapon_items.gd")
+
 signal game_started
 signal game_over
 signal victory
@@ -129,8 +131,9 @@ func start_game() -> void:
 	# Equip weapons purchased in shop (opóźnione o 1 klatkę dla _ready gracza)
 	if gd and gd.has("pending_weapon_ids") and player and player.has_method("add_weapon"):
 		await get_tree().process_frame
-		for wid in gd.pending_weapon_ids:
-			var wd: WeaponBase = _create_weapon_from_id(wid)
+		var all_weapons: Array = WeaponItemsClass.get_all_weapons()
+		for widx in gd.pending_weapon_ids:
+			var wd: WeaponBase = all_weapons[widx] if widx < all_weapons.size() else null
 			if wd:
 				player.add_weapon(wd)
 		gd.pending_weapon_ids.clear()

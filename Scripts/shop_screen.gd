@@ -32,13 +32,24 @@ func _ready() -> void:
 	back_button.pressed.connect(_on_back_pressed)
 
 func _setup_items() -> void:
-	for weapon in weapon_items:
-		var card := _create_item_card(weapon)
+	for i in range(weapon_items.size()):
+		var weapon := weapon_items[i]
+		var card := _create_item_card(weapon, i)
 		items_container.add_child(card)
 
-func _create_item_card(weapon: WeaponBase) -> Panel:
+func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 	var card := Panel.new()
 	card.layout_mode = 2
+
+	var card_style := StyleBoxFlat.new()
+	card_style.bg_color = Color(0.075, 0.106, 0.180, 0.8)
+	card_style.border_width_left = 1
+	card_style.border_width_right = 1
+	card_style.border_width_top = 1
+	card_style.border_width_bottom = 1
+	card_style.border_color = Color(0.267, 0.278, 0.306)
+	card_style.set_corner_radius_all(4)
+	card.add_theme_stylebox_override("panel", card_style)
 
 	var hbox := HBoxContainer.new()
 	hbox.layout_mode = 2
@@ -63,30 +74,46 @@ func _create_item_card(weapon: WeaponBase) -> Panel:
 	info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var name_lbl := Label.new()
+	name_lbl.layout_mode = 2
 	name_lbl.text = weapon.get_display_name()
 	name_lbl.add_theme_font_size_override("font_size", 18)
+	name_lbl.add_theme_color_override("font_color", Color(0.855, 0.886, 0.992))
 	info_vbox.add_child(name_lbl)
 
 	var desc_lbl := Label.new()
+	desc_lbl.layout_mode = 2
 	desc_lbl.text = weapon.description
 	desc_lbl.add_theme_font_size_override("font_size", 13)
+	desc_lbl.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
 	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info_vbox.add_child(desc_lbl)
 
 	var cost_lbl := Label.new()
+	cost_lbl.layout_mode = 2
 	cost_lbl.text = "Koszt: %d G" % weapon.cost
 	cost_lbl.add_theme_font_size_override("font_size", 16)
-	cost_lbl.add_theme_color_override("font_color", Color(1, 0.84, 0))
+	cost_lbl.add_theme_color_override("font_color", Color(0, 0.941, 1))
 	info_vbox.add_child(cost_lbl)
 
 	hbox.add_child(info_vbox)
 
 	# Buy button (right)
 	var buy_btn := Button.new()
+	buy_btn.layout_mode = 2
 	buy_btn.text = "KUP"
 	buy_btn.custom_minimum_size = Vector2(80, 0)
 	buy_btn.add_theme_font_size_override("font_size", 18)
-	buy_btn.pressed.connect(_on_buy_pressed.bind(weapon, buy_btn))
+	buy_btn.add_theme_color_override("font_color", Color.WHITE)
+	var buy_btn_style := StyleBoxFlat.new()
+	buy_btn_style.bg_color = Color(0, 0.941, 1, 0.3)
+	buy_btn_style.border_width_left = 1
+	buy_btn_style.border_width_right = 1
+	buy_btn_style.border_width_top = 1
+	buy_btn_style.border_width_bottom = 1
+	buy_btn_style.border_color = Color(0, 0.941, 1)
+	buy_btn_style.set_corner_radius_all(4)
+	buy_btn.add_theme_stylebox_override("normal", buy_btn_style)
+	buy_btn.pressed.connect(_on_buy_pressed.bind(weapon, buy_btn, weapon_index))
 	hbox.add_child(buy_btn)
 	buy_buttons.append(buy_btn)
 
@@ -119,7 +146,7 @@ func _update_preview(weapon: WeaponBase) -> void:
 	preview_cost.text = "Koszt: %d G" % weapon.cost
 	preview_cost.add_theme_color_override("font_color", Color(1, 0.84, 0))
 
-func _on_buy_pressed(weapon: WeaponBase, button: Button) -> void:
+func _on_buy_pressed(weapon: WeaponBase, button: Button, weapon_index: int) -> void:
 	if player_gold < weapon.cost:
 		return
 
@@ -129,9 +156,7 @@ func _on_buy_pressed(weapon: WeaponBase, button: Button) -> void:
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
 		gd.gold = player_gold
-		if not gd.has("pending_weapon_ids"):
-			gd.pending_weapon_ids = []
-		gd.pending_weapon_ids.append(weapon.weapon_name)
+		gd.pending_weapon_ids.append(weapon_index)
 
 	button.disabled = true
 	button.text = "KUPIONE"
