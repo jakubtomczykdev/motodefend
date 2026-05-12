@@ -16,9 +16,9 @@ extends Control
 @onready var fullscreen_checkbox: CheckBox = %FullscreenCheckBox
 @onready var vsync_checkbox: CheckBox = %VsyncCheckBox
 
-@onready var gold_input: LineEdit = $GoldSection/GoldInput if has_node("GoldSection/GoldInput") else null
-@onready var add_gold_btn: Button = $GoldSection/AddGoldBtn if has_node("GoldSection/AddGoldBtn") else null
-@onready var current_gold_label: Label = $GoldSection/CurrentGoldLabel if has_node("GoldSection/CurrentGoldLabel") else null
+@onready var gold_input: LineEdit = $CenterContainer/VBoxContainer/GoldSection/GoldInput
+@onready var add_gold_btn: Button = $CenterContainer/VBoxContainer/GoldSection/AddGoldBtn
+@onready var current_gold_label: Label = $CenterContainer/VBoxContainer/GoldSection/CurrentGoldLabel
 
 @onready var apply_button: Button = %ApplyButton
 @onready var reset_button: Button = %ResetButton
@@ -139,7 +139,13 @@ func _on_reset_pressed() -> void:
 	_load_current_settings()
 
 func _on_back_pressed() -> void:
-	get_tree().change_scene_to_file("res://MainMenu.tscn")
+	var gd := get_node_or_null("/root/GameData")
+	if gd and gd.return_scene != "":
+		var scene := gd.return_scene
+		gd.return_scene = ""
+		get_tree().change_scene_to_file(scene)
+	else:
+		get_tree().change_scene_to_file("res://MainMenu.tscn")
 
 func _on_add_gold_pressed() -> void:
 	var amount_str := gold_input.text.strip_edges() if gold_input else "9999"

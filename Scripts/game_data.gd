@@ -31,6 +31,7 @@ var inventory: Array = []
 var pending_weapon_ids: Array = []
 var player_hp: int = 100
 var player_max_hp: int = 100
+var return_scene: String = ""
 
 func _ready() -> void:
 	var window := get_window()

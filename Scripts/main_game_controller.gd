@@ -250,3 +250,11 @@ func show_victory() -> void:
 		var playtime := Time.get_unix_time_from_system() - game_start_time
 		end_screen.show_victory(score, wave_manager.current_wave, items_collected, playtime)
 		get_tree().paused = true
+
+func _input(event: InputEvent) -> void:
+	if (event.is_action_pressed("ui_cancel") or 
+		(event is InputEventKey and event.keycode == KEY_ESCAPE and event.pressed)):
+		var gd := get_node_or_null("/root/GameData")
+		if gd:
+			gd.return_scene = "res://scenes/MainGame.tscn"
+		get_tree().change_scene_to_file("res://scenes/Settings.tscn")

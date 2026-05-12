@@ -48,3 +48,11 @@ func _update_gold_display() -> void:
 
 func _on_start_game_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/MainGame.tscn")
+
+func _input(event: InputEvent) -> void:
+	if (event.is_action_pressed("ui_cancel") or 
+		(event is InputEventKey and event.keycode == KEY_ESCAPE and event.pressed)):
+		var gd := get_node_or_null("/root/GameData")
+		if gd:
+			gd.return_scene = "res://scenes/GameStartScreen.tscn"
+		get_tree().change_scene_to_file("res://scenes/Settings.tscn")
