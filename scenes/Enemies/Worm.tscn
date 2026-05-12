@@ -13,7 +13,7 @@ radius = 250.0
 radius = 30.0
 
 [node name="Worm" type="CharacterBody2D"]
-scale = Vector2(0.25, 0.25)
+scale = Vector2(0.15, 0.15)
 script = ExtResource("1")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

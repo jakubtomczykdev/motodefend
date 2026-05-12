@@ -183,9 +183,8 @@ func update_animation() -> void:
 		sprite.frame = 0
 
 func _clamp_to_screen() -> void:
-	var screen_size := get_viewport_rect().size
-	global_position.x = clamp(global_position.x, 30, screen_size.x - 30)
-	global_position.y = clamp(global_position.y, 30, screen_size.y - 30)
+	global_position.x = clamp(global_position.x, 30, 1890)
+	global_position.y = clamp(global_position.y, 30, 1050)
 
 func update_interaction_prompt() -> void:
 	var interactables: Array[Node] = get_tree().get_nodes_in_group("Interactable")

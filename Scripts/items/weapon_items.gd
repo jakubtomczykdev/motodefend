@@ -9,12 +9,13 @@ class OldRadio extends WeaponBase:
 		weapon_name = "Radio"
 		weapon_type = "shockwave"
 		description = "Stare radio – emituje słabą falę uderzeniową"
-		cost = 150
+		cost = 90
 		rarity = "common"
 		damage = 10.0
 		attack_speed = 4.0
 		range = 150.0
 		is_old_variant = true
+		icon = load("res://Assets/newAssets/oldRadio.png")
 
 # Nowe Radio Motorola – potężna fala uderzeniowa
 class NewRadio extends WeaponBase:
@@ -22,12 +23,13 @@ class NewRadio extends WeaponBase:
 		weapon_name = "Radio Motorola"
 		weapon_type = "shockwave"
 		description = "Nowe radio Motorola – potężna fala uderzeniowa"
-		cost = 450
+		cost = 300
 		rarity = "epic"
 		damage = 25.0
 		attack_speed = 3.0
 		range = 250.0
 		is_old_variant = false
+		icon = load("res://Assets/newAssets/newRadio.png")
 
 # Stary Dron – wolno krąży i atakuje
 class OldDrone extends WeaponBase:
@@ -35,12 +37,13 @@ class OldDrone extends WeaponBase:
 		weapon_name = "Dron"
 		weapon_type = "drone"
 		description = "Stary dron – wolno krąży i atakuje"
-		cost = 200
+		cost = 120
 		rarity = "rare"
 		damage = 8.0
 		attack_speed = 5.0
 		range = 300.0
 		is_old_variant = true
+		icon = load("res://Assets/newAssets/oldDrone.png")
 
 # Dron Bojowy – szybki i śmiercionośny
 class FightingDrone extends WeaponBase:
@@ -48,12 +51,13 @@ class FightingDrone extends WeaponBase:
 		weapon_name = "Dron Bojowy"
 		weapon_type = "drone"
 		description = "Dron bojowy – szybki i śmiercionośny"
-		cost = 550
+		cost = 350
 		rarity = "legendary"
 		damage = 20.0
 		attack_speed = 3.0
 		range = 400.0
 		is_old_variant = false
+		icon = load("res://Assets/newAssets/fightingDrone.png")
 
 # Blaster – szybkie pociski energetyczne
 class Blaster extends WeaponBase:
@@ -61,12 +65,13 @@ class Blaster extends WeaponBase:
 		weapon_name = "Blaster"
 		weapon_type = "blaster"
 		description = "Blaster – szybkie pociski energetyczne"
-		cost = 300
+		cost = 200
 		rarity = "rare"
 		damage = 18.0
 		attack_speed = 1.5
 		range = 350.0
 		is_old_variant = false
+		icon = load("res://Assets/newAssets/Blaster.png")
 
 # Miecz – atak w zwarciu
 class Sword extends WeaponBase:
@@ -74,12 +79,13 @@ class Sword extends WeaponBase:
 		weapon_name = "Miecz"
 		weapon_type = "sword"
 		description = "Miecz – atak w zwarciu"
-		cost = 120
+		cost = 80
 		rarity = "common"
 		damage = 15.0
 		attack_speed = 1.0
 		range = 80.0
 		is_old_variant = false
+		icon = load("res://Assets/newAssets/sword.png")
 
 
 static func get_all_weapons() -> Array[WeaponBase]:

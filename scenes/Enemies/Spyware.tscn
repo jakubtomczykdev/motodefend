@@ -12,7 +12,7 @@ radius = 300.0
 radius = 30.0
 
 [node name="Spyware" type="CharacterBody2D" unique_id=1767592810]
-scale = Vector2(0.25, 0.25)
+scale = Vector2(0.15, 0.15)
 script = ExtResource("1")
 max_health = 30
 move_speed = 180.0

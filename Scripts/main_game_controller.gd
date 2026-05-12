@@ -16,6 +16,7 @@ var playtime_label: Label
 var health_bar: ProgressBar
 var hp_label: Label
 var gold_label: Label
+var enemies_label: Label
 
 var game_state: String = "menu" # menu, playing, paused, shop, education, game_over, victory
 var score: int = 0
@@ -39,6 +40,7 @@ func _ready() -> void:
 	health_bar = get_node_or_null("HUD/HealthBar")
 	hp_label = get_node_or_null("HUD/HPLabel")
 	gold_label = get_node_or_null("HUD/GoldLabel")
+	enemies_label = get_node_or_null("HUD/EnemiesRemainingLabel")
 
 	_connect_signals()
 
@@ -54,6 +56,10 @@ func _process(delta: float) -> void:
 	# Aktualizuj wyświetlanie golda
 	if gold_label:
 		gold_label.text = "ZLOTO: %d" % gold
+
+	# Aktualizuj licznik wrogów
+	if enemies_label and wave_manager:
+		enemies_label.text = "WROGOWIE: %d/%d" % [wave_manager.enemies_remaining, wave_manager.enemies_in_wave]
 
 	# Aktualizuj pasek życia gracza
 	if health_bar and player:

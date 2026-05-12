@@ -32,6 +32,10 @@ var player_hp: int = 100
 var player_max_hp: int = 100
 
 func _ready() -> void:
+	var window := get_window()
+	if window:
+		window.size = Vector2i(1920, 1080)
+		window.mode = Window.MODE_WINDOWED
 	load_settings()
 	apply_video_settings()
 

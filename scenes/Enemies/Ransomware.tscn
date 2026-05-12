@@ -13,7 +13,7 @@ radius = 30.0
 
 [node name="Ransomware" type="CharacterBody2D"]
 script = ExtResource("1")
-scale = Vector2(0.25, 0.25)
+scale = Vector2(0.15, 0.15)
 max_health = 150
 damage = 25
 move_speed = 50.0
