@@ -12,11 +12,6 @@ func _ready():
 	interaction_area.area_entered.connect(_on_interaction_area_area_entered)
 	interaction_area.area_exited.connect(_on_interaction_area_area_exited)
 	interaction_prompt.visible = false
-	queue_redraw()
-
-func _draw() -> void:
-	draw_circle(Vector2.ZERO, 150, Color(0, 1, 0, 0.3))
-
 func _physics_process(_delta):
 	# Używamy Twoich nazw z Mapowania wejścia (Input Map)
 	var direction = Input.get_vector("walk_left", "walk_right", "walk_up", "walk_down")
