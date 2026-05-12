@@ -18,15 +18,17 @@ func initialize(p_player_ref: Node2D, weapon_data: WeaponBase) -> void:
 	player_ref = p_player_ref
 	current_weapon = weapon_data
 
-	# Placeholder sprite – kwadrat 16×16 w kolorze cyjan (do zastąpienia teksturą)
-	var placeholder_image := Image.create(16, 16, false, Image.FORMAT_RGBA8)
-	placeholder_image.fill(Color.WHITE)
-	var placeholder_texture := ImageTexture.create_from_image(placeholder_image)
-
+	# Sprite drona
 	var sprite := Sprite2D.new()
-	sprite.name = "DroneSprite"
-	sprite.texture = placeholder_texture
-	sprite.modulate = Color.CYAN
+	if weapon_data.icon:
+		sprite.texture = weapon_data.icon
+	else:
+		# Fallback - zaladuj z pliku
+		var tex := load("res://Assets/newAssets/fightingDrone.png") as Texture2D
+		if not tex:
+			tex = load("res://Assets/newAssets/oldDrone.png") as Texture2D
+		sprite.texture = tex
+	sprite.scale = Vector2(0.5, 0.5)
 	add_child(sprite)
 
 	# Kolizja – okrąg o promieniu 10

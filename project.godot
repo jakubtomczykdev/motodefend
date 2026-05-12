@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 GlobalVars="*uid://dx1y6cx8kuy8e"
 GameData="*res://Scripts/game_data.gd"
 AudioManager="*res://Scripts/audio_manager.gd"
+BalanceData="*res://Scripts/balance_data.gd"
 
 [display]
 
