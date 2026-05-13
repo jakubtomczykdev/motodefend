@@ -232,8 +232,8 @@ func end_wave() -> void:
 
 	is_wave_active = false
 
-	wave_ended.emit(current_wave)
 	update_ui()
+	wave_ended.emit(current_wave)
 
 func check_wave_completion() -> void:
 	if enemies_remaining <= 0:

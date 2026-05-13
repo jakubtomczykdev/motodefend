@@ -145,10 +145,12 @@ func _on_back_pressed() -> void:
 		return
 
 	var gd := get_node_or_null("/root/GameData")
-	if gd and gd.return_scene != "":
-		var scene: String = gd.return_scene
+	if gd:
+		var target_scene = gd.return_scene
 		gd.return_scene = ""
-		get_tree().change_scene_to_file(scene)
+		if target_scene == "" or target_scene.begins_with("__") or not ResourceLoader.exists(target_scene):
+			target_scene = "res://MainMenu.tscn"
+		get_tree().change_scene_to_file(target_scene)
 	else:
 		get_tree().change_scene_to_file("res://MainMenu.tscn")
 

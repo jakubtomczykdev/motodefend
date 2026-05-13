@@ -125,3 +125,4 @@ text = "Wyjscie"
 
 [connection signal="pressed" from="ButtonsContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="ButtonsContainer/settingsBtn" to="." method="_on_settings_btn_pressed"]
+[connection signal="pressed" from="ButtonsContainer/Button2" to="." method="_on_button_2_pressed"]

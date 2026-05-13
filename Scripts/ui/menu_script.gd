@@ -20,7 +20,8 @@ func _ready() -> void:
 	if bg:
 		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-	start_button.grab_focus()
+	if start_button:
+		start_button.grab_focus()
 
 # --- PRZYCISK: START ---
 func _on_start_button_pressed():

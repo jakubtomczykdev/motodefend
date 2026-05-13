@@ -193,6 +193,7 @@ func _on_wave_ended(wave_number: int) -> void:
 
 	# Po każdej fali wróć do GameStartScreen (system jednej fali per sesja)
 	get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
+	return
 
 func _open_shop() -> void:
 	# Sklep nie jest już otwierany automatycznie między falami.
@@ -257,6 +258,7 @@ func _on_player_died() -> void:
 	if gd:
 		gd.current_wave = wave_manager.current_wave if wave_manager else 0
 	get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
+	return
 
 func _on_player_health_changed(_current: int, _max: int) -> void:
 	var gd := get_node_or_null("/root/GameData")
