@@ -17,6 +17,14 @@ func _ready() -> void:
 	slot1_cooldown.visible = false
 	slot2_cooldown.visible = false
 	
+	# Wymuś poprawne rozmiary ikon (zabezpieczenie przed edycją sceny)
+	slot1_icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	slot1_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	slot1_icon.custom_minimum_size = Vector2(80, 80)
+	slot2_icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	slot2_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	slot2_icon.custom_minimum_size = Vector2(80, 80)
+	
 	# Znajdz WeaponManager gracza po 1 klatce
 	await get_tree().process_frame
 	_find_weapon_manager()

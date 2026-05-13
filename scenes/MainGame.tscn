@@ -122,7 +122,7 @@ layout_mode = 2
 theme_override_constants/separation = 30
 
 [node name="WeaponSlot1" type="Panel" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2(140, 110)
+custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1"]
@@ -159,7 +159,7 @@ theme_override_font_sizes/font_size = 13
 horizontal_alignment = 1
 
 [node name="WeaponSlot2" type="Panel" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2(140, 110)
+custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2"]
