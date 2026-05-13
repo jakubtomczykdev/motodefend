@@ -19,6 +19,10 @@ signal died
 @export var dodge_cooldown: float = 0.6
 @export var invulnerability_duration: float = 0.6
 
+@export var crit_chance: float = 0.0
+@export var crit_damage: float = 1.5
+@export var pierce: int = 0
+
 var current_health: int
 var can_shoot: bool = true
 var attack_cooldown: float = 0.0
@@ -107,7 +111,12 @@ func _process(delta: float) -> void:
 		handle_input(delta)
 		if weapon_manager and weapon_manager.has_method("activate_all_weapons"):
 			var target_pos := get_global_mouse_position()
-			weapon_manager.activate_all_weapons(target_pos)
+			if Input.is_action_pressed("attack"):
+				weapon_manager.activate_all_weapons(target_pos)
+			else:
+				# Obracaj broń nawet jeśli nie strzelamy
+				if weapon_manager.has_method("rotate_weapon_slots"):
+					weapon_manager.rotate_weapon_slots(target_pos)
 
 func _physics_process(delta: float) -> void:
 	if is_rolling:
@@ -165,9 +174,7 @@ func handle_input(_delta: float) -> void:
 		if weapon_manager and weapon_manager.has_method("set_active_weapon"):
 			weapon_manager.set_active_weapon(1)
 
-	# Strzelanie
-	if Input.is_action_pressed("attack") and can_shoot and not is_rolling:
-		shoot()
+	# Ataki są obsługiwane przez WeaponManager w _process
 
 func current_interactable_in_range() -> bool:
 	var interactables: Array[Node] = get_tree().get_nodes_in_group("Interactable")
@@ -184,7 +191,15 @@ func start_roll() -> void:
 	
 	is_rolling = true
 	roll_timer = dodge_duration
-	roll_cooldown_timer = dodge_cooldown
+	
+	# Apply cooldown reduction
+	var cd_reduction: float = 0.0
+	var main_node = get_tree().current_scene
+	var build_system = main_node.get_node_or_null("BuildSystem")
+	if build_system:
+		cd_reduction = build_system.get_stat("cooldown_reduction")
+	
+	roll_cooldown_timer = dodge_cooldown * (1.0 - cd_reduction)
 	set_invulnerable(dodge_duration)
 	
 	# Jeśli gracz nie trzyma kierunku, roll w stronę myszy
@@ -232,25 +247,6 @@ func set_invulnerable(duration: float) -> void:
 	is_invulnerable = true
 	invulnerability_timer = max(invulnerability_timer, duration)
 
-func shoot() -> void:
-	if not can_shoot:
-		return
-
-	can_shoot = false
-	attack_cooldown = 1.0 / attack_speed
-
-	# Znajdź najbliższego wroga w zasięgu
-	var target := find_closest_enemy()
-
-	if target:
-		# Strzelaj w kierunku wroga
-		var direction := (target.global_position - global_position).normalized()
-		fire_projectile(direction)
-	else:
-		# Strzelaj w kierunku myszy
-		var mouse_pos := get_global_mouse_position()
-		var direction := (mouse_pos - global_position).normalized()
-		fire_projectile(direction)
 
 func fire_projectile(direction: Vector2) -> void:
 	var projectile: Area2D = projectile_scene.instantiate()
@@ -262,10 +258,37 @@ func fire_projectile(direction: Vector2) -> void:
 
 	projectile.direction = direction
 	projectile.speed = projectile_speed
-	projectile.damage = damage
-	projectile.owner_node = self
+	
+	# Critical Hit Logic
+	var is_crit := randf() < crit_chance
+	var final_damage := damage
+	if is_crit:
+		final_damage = int(damage * crit_damage)
+		_spawn_crit_effect(projectile.global_position)
 
+	projectile.damage = final_damage
+	
+	# Pierce Logic
+	if pierce > 0:
+		projectile.can_pierce = true
+		projectile.max_pierce_count = pierce
+		
+	projectile.owner_node = self
 	get_tree().current_scene.add_child(projectile)
+
+func _spawn_crit_effect(pos: Vector2) -> void:
+	var label := Label.new()
+	label.text = "KRYTYK!"
+	label.modulate = Color(1, 0.8, 0, 1) # Gold
+	label.add_theme_font_size_override("font_size", 20)
+	label.global_position = pos + Vector2(-30, -40)
+	get_tree().current_scene.add_child(label)
+	
+	var tween := create_tween()
+	tween.tween_property(label, "scale", Vector2(1.5, 1.5), 0.1)
+	tween.tween_property(label, "global_position:y", label.global_position.y - 60, 0.4)
+	tween.parallel().tween_property(label, "modulate:a", 0.0, 0.5)
+	tween.tween_callback(label.queue_free)
 
 func find_closest_enemy() -> Node2D:
 	var enemies: Array[Node] = get_tree().get_nodes_in_group("Enemies")
@@ -285,6 +308,15 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	if is_invulnerable:
 		return
 
+	# Dodge Chance
+	var main_node = get_tree().current_scene
+	var build_system = main_node.get_node_or_null("BuildSystem")
+	if build_system:
+		var dodge: float = build_system.get_stat("dodge_chance")
+		if randf() < dodge:
+			_spawn_dodge_label()
+			return
+
 	current_health -= amount
 	health_changed.emit(current_health, max_health)
 	
@@ -303,6 +335,18 @@ func heal(amount: int) -> void:
 func die() -> void:
 	died.emit()
 	queue_free()
+
+func _spawn_dodge_label() -> void:
+	var label := Label.new()
+	label.text = "UNIK!"
+	label.modulate = Color(0, 1, 1) # Cyan
+	label.global_position = global_position + Vector2(-20, -50)
+	get_tree().current_scene.add_child(label)
+	
+	var tween := create_tween()
+	tween.tween_property(label, "global_position:y", label.global_position.y - 40, 0.5)
+	tween.parallel().tween_property(label, "modulate:a", 0.0, 0.6)
+	tween.tween_callback(label.queue_free)
 
 func update_animation() -> void:
 	if not sprite:

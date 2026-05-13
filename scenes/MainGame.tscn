@@ -132,12 +132,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="WeaponIcon1" type="TextureRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
-expand_mode = 0
+mouse_filter = 2
+expand_mode = 3
 stretch_mode = 5
 
 [node name="CooldownOverlay1" type="ColorRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1/VBoxContainer"]
@@ -167,12 +169,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="WeaponIcon2" type="TextureRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2/VBoxContainer2"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
-expand_mode = 0
+mouse_filter = 2
+expand_mode = 3
 stretch_mode = 5
 
 [node name="CooldownOverlay2" type="ColorRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2/VBoxContainer2"]

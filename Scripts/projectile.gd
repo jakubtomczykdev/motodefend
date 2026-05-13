@@ -13,6 +13,9 @@ var owner_node: Node2D
 var pierce_count: int = 0
 var time_alive: float = 0.0
 
+var homing_target: Node2D = null
+var homing_strength: float = 0.0
+
 var sprite: Sprite2D
 var collision: CollisionShape2D
 
@@ -41,6 +44,10 @@ func _generate_projectile_texture() -> void:
 		sprite.texture = tex
 
 func _physics_process(delta: float) -> void:
+	if homing_target and is_instance_valid(homing_target):
+		var target_dir := (homing_target.global_position - global_position).normalized()
+		direction = direction.lerp(target_dir, homing_strength * delta).normalized()
+
 	position += direction * speed * delta
 
 	if direction.length() > 0:

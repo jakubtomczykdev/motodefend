@@ -28,7 +28,12 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 	# Wizualna fala - ColorRect rozszerzająca się
 	var wave_visual := ColorRect.new()
 	wave_visual.size = Vector2(1, 1)
-	wave_visual.color = Color(0, 0.941, 1, 0.4)
+	
+	# Motorola Cyan for New Radio, Default for Old
+	var is_motorola := "Motorola" in weapon_data.weapon_name
+	var wave_color := Color(0, 0.941, 1, 0.5) if is_motorola else Color(0.6, 0.7, 0.8, 0.4)
+	
+	wave_visual.color = wave_color
 	wave_visual.global_position = player_pos
 	wave_visual.rotation = target_dir.angle()
 	get_tree().current_scene.add_child(wave_visual)
@@ -86,6 +91,10 @@ func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, wave: Area2D) 
 
 	if body.has_method("take_damage"):
 		body.take_damage(weapon_data.damage)
+
+	# UNIQUE LOGIC: New Motorola Radio slows down enemies
+	if "Motorola" in weapon_data.weapon_name and body.has_method("apply_slowdown"):
+		body.apply_slowdown(0.4, 2.0) # 60% slow for 2 seconds
 
 	# Iskry przy trafieniu falą
 	for i in range(2):

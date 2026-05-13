@@ -189,7 +189,7 @@ func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
 					instance.fire(player_ref.global_position, target.global_position, weapon_data)
 			"sword":
 				var direction: Vector2 = _get_aim_direction(target_pos)
-				instance.swing(player_ref.global_position, direction, weapon_data)
+				instance.swing(player_ref, direction, weapon_data)
 
 ## Wyznacza kierunek celowania
 func _get_aim_direction(target_pos: Vector2) -> Vector2:

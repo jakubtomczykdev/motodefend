@@ -14,6 +14,7 @@ signal damaged(amount: int)
 @export var knockback_resistance: float = 0.0
 @export var score_value: int = 10
 @export var is_wandering: bool = true
+@export var is_boss: bool = false
 
 var current_health: int
 var can_attack: bool = true
@@ -32,12 +33,16 @@ var wander_interval: float = 4.0
 var knockback_velocity: Vector2 = Vector2.ZERO
 var players_in_attack_range: Array[Node2D] = []
 
+var slowdown_timer: float = 0.0
+var original_move_speed: float = 0.0
+
 var _health_bar: ProgressBar
 var _health_bar_scale: float = 1.0
 
 func _ready() -> void:
-	# Upewnij się, że wróg jest widoczny
+	# Upewnij się, że wróg jest widoczny i w grupie
 	visible = true
+	add_to_group("Enemies")
 	
 	# Znajdź węzły bezpiecznie
 	if has_node("AnimatedSprite2D"):
@@ -55,6 +60,7 @@ func _ready() -> void:
 		attack_area = $AttackArea
 
 	current_health = max_health
+	original_move_speed = move_speed
 	add_to_group("Enemies")
 
 	# Utwórz pasek zdrowia nad głową wroga
@@ -113,6 +119,12 @@ func _physics_process(delta: float) -> void:
 		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, 500.0 * delta)
 	else:
 		knockback_velocity = Vector2.ZERO
+
+	if slowdown_timer > 0:
+		slowdown_timer -= delta
+		if slowdown_timer <= 0:
+			move_speed = original_move_speed
+			modulate = Color.WHITE
 
 	move_and_slide()
 	
@@ -232,8 +244,17 @@ func attack() -> void:
 	attack_timer = attack_cooldown
 
 func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
-	current_health -= amount
-	damaged.emit(amount)
+	var final_damage := amount
+	
+	if is_boss:
+		var main_node = get_tree().current_scene
+		var build_system = main_node.get_node_or_null("BuildSystem")
+		if build_system:
+			var bonus: float = build_system.get_stat("boss_damage_bonus")
+			final_damage = int(amount * (1.0 + bonus))
+
+	current_health -= final_damage
+	damaged.emit(final_damage)
 	
 	if knockback != Vector2.ZERO:
 		knockback_velocity = knockback * (1.0 - knockback_resistance)
@@ -267,3 +288,8 @@ func _on_attack_area_body_entered(body: Node2D) -> void:
 func _on_attack_area_body_exited(body: Node2D) -> void:
 	if body.is_in_group("Player"):
 		players_in_attack_range.erase(body)
+
+func apply_slowdown(multiplier: float, duration: float) -> void:
+	move_speed = original_move_speed * multiplier
+	slowdown_timer = duration
+	modulate = Color(0.5, 0.8, 1.0, 1.0) # Light blue tint for slowdown

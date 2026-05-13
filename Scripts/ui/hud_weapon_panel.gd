@@ -20,6 +20,16 @@ func _ready() -> void:
 	# Znajdz WeaponManager gracza po 1 klatce
 	await get_tree().process_frame
 	_find_weapon_manager()
+	
+	# Dodaj obsługę kliknięć
+	var slot1_panel := slot1_icon.get_parent().get_parent()
+	var slot2_panel := slot2_icon.get_parent().get_parent()
+	
+	slot1_panel.gui_input.connect(_on_slot_gui_input.bind(0))
+	slot2_panel.gui_input.connect(_on_slot_gui_input.bind(1))
+	
+	slot1_panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	slot2_panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 func _find_weapon_manager() -> void:
 	var players := get_tree().get_nodes_in_group("Player")
@@ -80,6 +90,19 @@ func _update_slot(icon: TextureRect, name_label: Label, cooldown: ColorRect, wea
 func _set_slot_active(panel: Control, active: bool) -> void:
 	if active:
 		panel.modulate = Color(1.2, 1.2, 1.2, 1.0)
-		# panel.scale = Vector2(1.05, 1.05) # Skalowanie może psuć layout w PanelContainer
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(0.1, 0.2, 0.3, 0.6)
+		style.border_width_left = 2
+		style.border_width_right = 2
+		style.border_width_top = 2
+		style.border_width_bottom = 2
+		style.border_color = Color(0, 0.9, 1.0)
+		panel.add_theme_stylebox_override("panel", style)
 	else:
 		panel.modulate = Color(0.6, 0.6, 0.6, 0.7)
+		panel.add_theme_stylebox_override("panel", null)
+
+func _on_slot_gui_input(event: InputEvent, index: int) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if weapon_manager and weapon_manager.has_method("set_active_weapon"):
+			weapon_manager.set_active_weapon(index)

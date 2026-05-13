@@ -43,7 +43,8 @@ class PSTAItem extends ItemBase:
 		cost = 300
 		stats = {
 			"crit_chance": 0.15,
-			"attack_speed": 0.1
+			"attack_speed": 0.1,
+			"dodge_chance": 0.1
 		}
 		# Logic for dodge chance would be in player_combat
 
@@ -57,7 +58,8 @@ class RadioAPXItem extends ItemBase:
 		cost = 100
 		stats = {
 			"attack_speed": 0.1,
-			"move_speed": 0.1
+			"move_speed": 0.1,
+			"cooldown_reduction": 0.2
 		}
 
 # CommandCentral - centralne zarządzanie danymi
@@ -90,7 +92,8 @@ class BodyCameraItem extends ItemBase:
 		cost = 200
 		stats = {
 			"attack_range": 0.15,
-			"crit_chance": 0.05
+			"crit_chance": 0.05,
+			"boss_damage_bonus": 0.2
 		}
 
 # SolutionHub - centralny hub łączący wszystkie systemy

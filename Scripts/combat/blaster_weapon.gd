@@ -20,6 +20,13 @@ func fire(player_pos: Vector2, target_pos: Vector2, weapon_data: WeaponBase) -> 
 	projectile.damage = int(weapon_data.damage)
 	projectile.direction = direction
 	projectile.global_position = player_pos
+	
+	# UNIQUE LOGIC: Slight homing for Blaster
+	var target := find_closest_enemy(player_pos)
+	if target:
+		projectile.homing_target = target
+		projectile.homing_strength = 2.0 # Gentle tracking
+	
 	get_tree().current_scene.add_child(projectile)
 
 	# Muzzle flash - rozbłysk u wylotu lufy

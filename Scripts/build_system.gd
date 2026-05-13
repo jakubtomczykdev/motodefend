@@ -17,7 +17,10 @@ var player_stats: Dictionary = {
 	"crit_damage": 1.5,
 	"pierce": 0,
 	"projectile_count": 1,
-	"projectile_speed": 1.0
+	"projectile_speed": 1.0,
+	"dodge_chance": 0.0,
+	"cooldown_reduction": 0.0,
+	"boss_damage_bonus": 0.0
 }
 
 var items: Array[ItemBase] = []

@@ -17,7 +17,6 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GlobalVars="*uid://dx1y6cx8kuy8e"
 GameData="*res://Scripts/game_data.gd"
 AudioManager="*res://Scripts/audio_manager.gd"
 BalanceData="*res://Scripts/balance_data.gd"
@@ -31,7 +30,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/ai_assistant_hub/plugin.cfg", "res://addons/logic_bricks/plugin.cfg")
+enabled=PackedStringArray("res://addons/ai_assistant_hub/plugin.cfg")
 
 [input]
 

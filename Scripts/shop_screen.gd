@@ -21,12 +21,22 @@ var buy_buttons: Array[Button] = []
 
 const REROLL_COST: int = 25
 
+var item_manager: Node = null
+var build_system: Node = null
+var shop_pool: Array = [] # Mix of WeaponBase and ItemBase
+
 func _ready() -> void:
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
 		player_gold = gd.gold
 
 	all_weapons = WeaponItemsClass.get_all_weapons()
+
+	# Znajdź systemy w drzewie sceny (jeśli istnieją w MainGame)
+	var main = get_tree().current_scene
+	if main:
+		item_manager = main.get_node_or_null("ItemManager")
+		build_system = main.get_node_or_null("BuildSystem")
 
 	back_button.pressed.connect(_on_back_pressed)
 	reroll_button.pressed.connect(_on_reroll_pressed)
@@ -60,13 +70,23 @@ func _reroll_shop() -> void:
 					break
 			pool.append(chosen)
 	
+	# Wybierz 2 bronie i 2 itemy (lub 3 i 1)
+	shop_pool.clear()
+	
 	pool.shuffle()
-	for i in range(min(3, pool.size())):
-		shop_weapons.append(pool[i])
+	for i in range(min(2, pool.size())):
+		shop_pool.append(pool[i])
+		
+	if item_manager:
+		var items: Array = item_manager.get_shop_items(2, 1) # 2 losowe itemy
+		for it in items:
+			shop_pool.append(it)
+	
+	shop_pool.shuffle()
 
-	for i in range(shop_weapons.size()):
-		var weapon := shop_weapons[i]
-		var card := _create_item_card(weapon, i)
+	for i in range(shop_pool.size()):
+		var item = shop_pool[i]
+		var card := _create_item_card(item, i)
 		items_container.add_child(card)
 
 	_update_gold_label()
@@ -168,13 +188,13 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 
 	return card
 
-func _on_card_clicked(event: InputEvent, weapon: WeaponBase) -> void:
+func _on_card_clicked(event: InputEvent, item: Resource) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		_update_preview(weapon)
+		_update_preview(item)
 
-func _update_preview(weapon: WeaponBase) -> void:
-	selected_weapon = weapon
-	if not weapon:
+func _update_preview(item: Resource) -> void:
+	selected_weapon = item
+	if not item:
 		preview_icon.texture = null
 		preview_name.text = "Wybierz przedmiot"
 		preview_rarity.text = ""
@@ -182,33 +202,58 @@ func _update_preview(weapon: WeaponBase) -> void:
 		preview_cost.text = ""
 		return
 
-	if weapon.icon:
-		preview_icon.texture = weapon.icon
-	preview_name.text = weapon.get_display_name()
-	preview_rarity.text = weapon.rarity.capitalize()
-	preview_rarity.add_theme_color_override("font_color", weapon.get_rarity_color())
-	preview_desc.text = weapon.description + "\n\nStatystyki:\n- Obrażenia: %0.1f\n- Szybkość: %0.2f s\n- Zasięg: %0.0f" % [weapon.damage, weapon.attack_speed, weapon.weapon_range]
-	preview_cost.text = "Koszt: %d G" % weapon.cost
+	if item.get("icon"):
+		preview_icon.texture = item.get("icon")
+	
+	if item.has_method("get_display_name"):
+		preview_name.text = item.call("get_display_name")
+	else:
+		preview_name.text = item.get("item_name")
+		
+	preview_rarity.text = item.get("rarity").capitalize()
+	preview_rarity.add_theme_color_override("font_color", item.call("get_rarity_color"))
+	
+	if item is WeaponBase:
+		preview_desc.text = item.description + "\n\nStatystyki:\n- Obrażenia: %0.1f\n- Szybkość: %0.2f s\n- Zasięg: %0.0f" % [item.damage, item.attack_speed, item.weapon_range]
+	else:
+		var stats_text := ""
+		var stats_dict = item.get("stats")
+		if stats_dict:
+			stats_text = "\n\nPremie:\n"
+			for sname in stats_dict:
+				stats_text += "- %s: +%d%%\n" % [sname.capitalize(), int(stats_dict[sname] * 100)]
+		preview_desc.text = item.description + stats_text
+		
+	preview_cost.text = "Koszt: %d G" % item.get("cost")
 
-func _on_buy_pressed(weapon: WeaponBase, button: Button, weapon_index: int) -> void:
-	if player_gold < weapon.cost:
+func _on_buy_pressed(item: Resource, button: Button, item_index: int) -> void:
+	if player_gold < item.get("cost"):
 		return
 
-	player_gold -= weapon.cost
+	player_gold -= item.get("cost")
 	_update_gold_label()
 
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
 		gd.gold = player_gold
-		var full_index := all_weapons.find(weapon)
-		if full_index >= 0:
-			gd.pending_weapon_ids.append(full_index)
+		
+		if item is WeaponBase:
+			var full_index := all_weapons.find(item)
+			if full_index >= 0:
+				gd.pending_weapon_ids.append(full_index)
+		elif item is ItemBase:
+			# Dodaj do buildu (jeśli jesteśmy w MainGame)
+			if build_system:
+				build_system.add_item(item)
+			# Poinformuj MainGameController o nowym itemie
+			var main = get_tree().current_scene
+			if main and main.has_method("_on_item_purchased"):
+				main.call("_on_item_purchased", item)
 
 	button.disabled = true
 	button.text = "KUPIONE"
 	
-	# Odśwież podgląd po zakupie (opcjonalne, ale dobre UX)
-	_update_preview(weapon)
+	_update_preview(item)
 
 func _on_reroll_pressed() -> void:
 	if player_gold < REROLL_COST:

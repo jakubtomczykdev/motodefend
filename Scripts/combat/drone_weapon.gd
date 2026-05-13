@@ -32,6 +32,13 @@ func initialize(p_player_ref: Node2D, weapon_data: WeaponBase) -> void:
 	_drone_sprite.scale = Vector2(0.5, 0.5)
 	add_child(_drone_sprite)
 
+	# UNIQUE LOGIC: Fighting Drone is faster and more aggressive
+	if "Bojowy" in weapon_data.weapon_name or weapon_data.rarity == "legendary":
+		move_speed = 250.0
+		detection_range = 500.0
+		shoot_range = 300.0
+		_drone_sprite.modulate = Color(1.2, 1.2, 1.2, 1.0) # Glow effect
+
 	var collision_shape := CollisionShape2D.new()
 	var circle_shape := CircleShape2D.new()
 	circle_shape.radius = 10.0
@@ -142,6 +149,10 @@ func _process_chase(delta: float) -> void:
 			_drone_sprite.scale.x = abs(_drone_sprite.scale.x)
 		else:
 			_drone_sprite.scale.x = -abs(_drone_sprite.scale.x)
+	
+	# More aggressive chasing: accelerate if far
+	if global_position.distance_to(target_enemy.global_position) > shoot_range:
+		velocity *= 1.3
 
 func _process_shoot(delta: float) -> void:
 	if not target_enemy or not is_instance_valid(target_enemy):

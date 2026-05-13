@@ -96,6 +96,7 @@ func _connect_signals() -> void:
 		end_screen.menu_requested.connect(_on_menu_requested)
 
 func start_game() -> void:
+	var gd := get_node_or_null("/root/GameData")
 	print("[MainGame] start_game BEGIN")
 	if build_system:
 		print("[MainGame] build_system.clear_build()...")
@@ -103,7 +104,6 @@ func start_game() -> void:
 		print("[MainGame] build cleared OK")
 
 	# Wczytaj gold i HP z GameData, jeśli istnieją – fallback do wartości domyślnych
-	var gd := get_node_or_null("/root/GameData")
 	if gd and gd.gold > 0:
 		gold = gd.gold
 	else:
@@ -135,18 +135,25 @@ func start_game() -> void:
 		wave_manager.start_game()
 		print("[MainGame] wave_manager.start_game() OK")
 
-	# Equip weapons purchased in shop (opóźnione o 1 klatkę dla _ready gracza)
-	if gd and player and player.has_method("add_weapon"):
-		await get_tree().process_frame
-		var all_weapons: Array = WeaponItemsClass.get_all_weapons()
-		print("[DEBUG] Equipping weapons: pending_ids=", gd.pending_weapon_ids, " all_weapons count=", all_weapons.size())
-		for widx in gd.pending_weapon_ids:
-			var wd: WeaponBase = all_weapons[widx] if widx < all_weapons.size() else null
-			print("[DEBUG] Equipping weapon index=", widx, " weapon=", wd.weapon_name if wd else "NULL")
-			if wd:
-				var result: bool = player.add_weapon(wd)
-				print("[DEBUG] add_weapon result=", result)
-		gd.pending_weapon_ids.clear()
+	# Equip permanent weapons and items from GameData
+	if gd and player:
+		# Restore Weapons
+		if player.has_method("add_weapon"):
+			await get_tree().process_frame
+			var all_weapons: Array = WeaponItemsClass.get_all_weapons()
+			for widx in gd.pending_weapon_ids:
+				if widx < all_weapons.size():
+					var wd: WeaponBase = all_weapons[widx]
+					player.add_weapon(wd)
+		
+		# Restore Items (Passives)
+		for item in gd.inventory:
+			if item is ItemBase:
+				items_collected.append(item)
+				if build_system:
+					build_system.add_item(item)
+		
+		_update_player_stats()
 
 	game_started.emit()
 	print("[MainGame] start_game END")
@@ -198,16 +205,33 @@ func _on_shop_closed() -> void:
 		wave_manager.start_next_wave()
 
 func _on_item_purchased(item: ItemBase) -> void:
-	items_collected.append(item)
+	if not items_collected.has(item):
+		items_collected.append(item)
+	
+	var gd := get_node_or_null("/root/GameData")
+	if gd and not gd.inventory.has(item):
+		gd.add_inventory_item(item)
+		
 	_update_player_stats()
 
 func _update_player_stats() -> void:
 	if player and build_system:
+		# Podstawowe statystyki
 		player.damage = int(10 * build_system.get_stat("damage"))
 		player.attack_speed = 1.0 * build_system.get_stat("attack_speed")
 		player.move_speed = 300.0 * build_system.get_stat("move_speed")
 		player.attack_range = 400.0 * build_system.get_stat("attack_range")
 		player.max_health = int(100 * build_system.get_stat("max_health"))
+		
+		# Dodatkowe statystyki z przedmiotów
+		if "projectile_speed" in player:
+			player.projectile_speed = 500.0 * build_system.get_stat("projectile_speed")
+		if "crit_chance" in player:
+			player.crit_chance = build_system.get_stat("crit_chance")
+		if "crit_damage" in player:
+			player.crit_damage = build_system.get_stat("crit_damage")
+		if "pierce" in player:
+			player.pierce = int(build_system.get_stat("pierce"))
 
 func _on_all_waves_completed() -> void:
 	game_state = "victory"

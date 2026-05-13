@@ -3,44 +3,53 @@ extends Node2D
 var current_weapon: WeaponBase
 var can_attack: bool = true
 var attack_timer: float = 0.0
+var current_swing_area: Area2D = null
 var hit_enemies: Array = []
 
 func initialize(weapon_data: WeaponBase) -> void:
 	current_weapon = weapon_data
 	can_attack = true
 
-func swing(player_pos: Vector2, direction: Vector2, weapon_data: WeaponBase) -> void:
+func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: WeaponBase) -> void:
 	if not can_attack:
 		return
 
-	var swing_origin := player_pos + direction * 20
+	# Lunge (doskok) - dodaj pęd graczowi w stronę ataku
+	if player_body:
+		player_body.velocity += direction * 400.0
+
+	var swing_origin := player_body.global_position + direction * 20
 	var start_angle := direction.angle() - 1.2
 	var end_angle := direction.angle() + 1.2
 	var arc_length := 60.0
 
+	if current_swing_area:
+		current_swing_area.queue_free()
+
 	var swing_area: Area2D = Area2D.new()
-	get_tree().root.add_child(swing_area)
+	add_child(swing_area)
+	current_swing_area = swing_area
 	swing_area.global_position = swing_origin
 	swing_area.collision_layer = 0
 	swing_area.collision_mask = 1
 
 	var collision_shape: CollisionShape2D = CollisionShape2D.new()
 	var rect_shape: RectangleShape2D = RectangleShape2D.new()
-	rect_shape.size = Vector2(70, 36)
+	rect_shape.size = Vector2(weapon_data.weapon_range, 60) # Szybsze wyłapywanie
 	collision_shape.shape = rect_shape
+	collision_shape.position = Vector2(weapon_data.weapon_range / 2, 0)
 	swing_area.add_child(collision_shape)
-	swing_area.body_entered.connect(_on_swing_body_entered.bind(weapon_data))
 	hit_enemies.clear()
 
 	var arc_tween := create_tween()
 	arc_tween.set_parallel(true)
 
-	# Wizualny łuk cięcia - 3 segmenty tworzące smugę
-	for i in range(5):
+	# Wizualny łuk cięcia - 8 segmentów tworzących dłuższą smugę
+	for i in range(8):
 		var seg := ColorRect.new()
 		seg.size = Vector2(24, 6)
 		seg.color = Color(0.8, 0.95, 1, 0.7 - i * 0.12)
-		seg.global_position = swing_origin + direction * (12 + i * 10)
+		seg.global_position = swing_origin + direction * (10 + i * 14)
 		seg.rotation = direction.angle()
 		get_tree().root.add_child(seg)
 		var seg_tween := create_tween()
@@ -52,8 +61,8 @@ func swing(player_pos: Vector2, direction: Vector2, weapon_data: WeaponBase) -> 
 	var tex := load("res://Assets/newAssets/sword.png") as Texture2D
 	if tex:
 		sword_sprite.texture = tex
-		sword_sprite.scale = Vector2(0.7, 0.7)
-		sword_sprite.offset = Vector2(35, 0)
+		sword_sprite.scale = Vector2(1.0, 1.0)
+		sword_sprite.offset = Vector2(50, 0)
 		sword_sprite.modulate = Color(0.7, 0.85, 1, 1)
 	swing_area.add_child(sword_sprite)
 
@@ -73,7 +82,11 @@ func swing(player_pos: Vector2, direction: Vector2, weapon_data: WeaponBase) -> 
 	swing_area.rotation = start_angle
 	var swing_tween := create_tween()
 	swing_tween.tween_property(swing_area, "rotation", end_angle, 0.12)
-	swing_tween.tween_callback(swing_area.queue_free)
+	swing_tween.tween_callback(func():
+		if current_swing_area == swing_area:
+			current_swing_area = null
+		swing_area.queue_free()
+	)
 
 	can_attack = false
 	attack_timer = weapon_data.attack_speed
@@ -108,6 +121,12 @@ func _process(delta: float) -> void:
 		attack_timer -= delta
 		if attack_timer <= 0.0:
 			can_attack = true
+	
+	# Ciągłe sprawdzanie trafień podczas trwania zamachu
+	if current_swing_area and is_instance_valid(current_swing_area):
+		var bodies = current_swing_area.get_overlapping_bodies()
+		for body in bodies:
+			_on_swing_body_entered(body, current_weapon)
 
 func is_ready() -> bool:
 	return can_attack
