@@ -196,15 +196,15 @@ func _on_wave_ended(wave_number: int) -> void:
 	return
 
 func _open_shop() -> void:
-	# Sklep nie jest już otwierany automatycznie między falami.
-	# Funkcja zachowana do ręcznego dostępu (np. NPC).
 	game_state = "shop"
 	var shop_items: Array[ItemBase] = []
 	if item_manager and wave_manager:
-		shop_items = item_manager.get_shop_items(3, wave_manager.current_wave)
+		# Pobierz 4 przedmioty dla nowego układu HFlow
+		shop_items = item_manager.get_shop_items(4, wave_manager.current_wave)
 
 	if shop_system:
-		shop_system.open_shop(shop_items, build_system, item_manager)
+		if shop_system.has_method("open_shop"):
+			shop_system.open_shop(shop_items, build_system, item_manager)
 		get_tree().paused = true
 
 func _on_shop_closed() -> void:

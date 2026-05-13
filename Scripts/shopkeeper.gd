@@ -11,4 +11,9 @@ func _ready() -> void:
 		interact.add_to_group("Interactable")
 
 func interact() -> void:
-	get_tree().change_scene_to_file("res://scenes/Shop.tscn")
+	var main = get_tree().current_scene
+	if main and main.has_method("_open_shop"):
+		main._open_shop()
+	else:
+		# Fallback do zmiany sceny jeśli nie jesteśmy w MainGame
+		get_tree().change_scene_to_file("res://scenes/Shop.tscn")
