@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://116jl6uig251"]
+
+[ext_resource type="Texture2D" uid="uid://25fvumkpk0gk" path="res://Assets/Characters/esa.png" id="1_gbpxa"]
+[ext_resource type="Script" uid="uid://cg1y2d2yir0eq" path="res://Scripts/shopkeeper.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cqxkv"]
+size = Vector2(284, 209)
+
+[node name="SellingMashine" type="CharacterBody2D" unique_id=889363064]
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1013052398]
+position = Vector2(2, 2)
+shape = SubResource("RectangleShape2D_cqxkv")
+
+[node name="InteractArea" type="Area2D" parent="." unique_id=819408569]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" unique_id=1973976519]
+position = Vector2(31, 23.5)
+shape = SubResource("RectangleShape2D_cqxkv")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="Esa" type="Sprite2D" parent="." unique_id=1716845415]
+position = Vector2(27.812504, 25.281866)
+scale = Vector2(0.3050537, 0.27514648)
+texture = ExtResource("1_gbpxa")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []

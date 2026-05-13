@@ -1,0 +1,143 @@
+[gd_scene format=3 uid="uid://dxqcwr5onpo55"]
+
+[ext_resource type="Script" path="res://Scripts/player_combat.gd" id="1_combat"]
+[ext_resource type="Texture2D" uid="uid://c7qjp7et4tekb" path="res://Assets/Characters/Player/mainCharacterSprites-Photoroom.png" id="1_2q0pg"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ps2cl"]
+atlas = ExtResource("1_2q0pg")
+region = Rect2(0, 0, 320, 698)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4d8xo"]
+atlas = ExtResource("1_2q0pg")
+region = Rect2(640, 0, 320, 698)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aa5lu"]
+atlas = ExtResource("1_2q0pg")
+region = Rect2(0, 0, 320, 698)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elid4"]
+atlas = ExtResource("1_2q0pg")
+region = Rect2(960, 0, 320, 698)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gto46"]
+atlas = ExtResource("1_2q0pg")
+region = Rect2(0, 0, 320, 698)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lfgns"]
+atlas = ExtResource("1_2q0pg")
+region = Rect2(640, 0, 320, 698)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pqtc2"]
+atlas = ExtResource("1_2q0pg")
+region = Rect2(320, 0, 320, 698)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_u8vrl"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ps2cl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4d8xo")
+}],
+"loop": true,
+"name": &"front",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aa5lu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elid4")
+}],
+"loop": true,
+"name": &"left",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gto46")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lfgns")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pqtc2")
+}],
+"loop": true,
+"name": &"right",
+"speed": 3.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u8vrl"]
+size = Vector2(64, 150)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_interact"]
+size = Vector2(150, 260)
+
+[node name="Player" type="CharacterBody2D" unique_id=654260357]
+script = ExtResource("1_combat")
+add_to_group = "Player"
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=450965022]
+scale = Vector2(0.25, 0.25)
+sprite_frames = SubResource("SpriteFrames_u8vrl")
+animation = &"right"
+frame_progress = 0.65243375
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=598137194]
+position = Vector2(3, 6)
+shape = SubResource("RectangleShape2D_u8vrl")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="InteractionArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+position = Vector2(3, 6)
+shape = SubResource("RectangleShape2D_interact")
+
+[node name="InteractionPrompt" type="Label" parent="."]
+offset_left = -60.0
+offset_top = -140.0
+offset_right = 60.0
+offset_bottom = -117.0
+horizontal_alignment = 1
+text = "[E] Interakcja"
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(20, 0)
+
+[node name="WeaponSlot1" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(-30, 0)
+scale = Vector2(0.2, 0.2)
+visible = false
+z_index = 5
+
+[node name="WeaponSlot2" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(30, 0)
+scale = Vector2(0.2, 0.2)
+visible = false
+z_index = 5
+

@@ -1,0 +1,105 @@
+extends Node
+## System buildów - zarządza statystykami i itemami gracza
+
+signal stat_changed(stat_name: String, new_value: float)
+signal item_added(item: ItemBase)
+signal item_removed(item: ItemBase)
+
+@export var max_item_slots: int = 6
+
+var player_stats: Dictionary = {
+	"damage": 1.0,
+	"attack_speed": 1.0,
+	"move_speed": 1.0,
+	"attack_range": 1.0,
+	"max_health": 1.0,
+	"crit_chance": 0.0,
+	"crit_damage": 1.5,
+	"pierce": 0,
+	"projectile_count": 1,
+	"projectile_speed": 1.0,
+	"dodge_chance": 0.0,
+	"cooldown_reduction": 0.0,
+	"boss_damage_bonus": 0.0
+}
+
+var items: Array[ItemBase] = []
+var base_stats: Dictionary = player_stats.duplicate()
+
+func _ready() -> void:
+	base_stats = player_stats.duplicate()
+
+func add_item(item: ItemBase) -> bool:
+	if items.size() >= max_item_slots:
+		return false
+
+	items.append(item)
+	item.apply_effects(self)
+	item_added.emit(item)
+	recalculate_stats()
+
+	return true
+
+func remove_item(item: ItemBase) -> bool:
+	if not items.has(item):
+		return false
+
+	item.remove_effects(self)
+	items.erase(item)
+	item_removed.emit(item)
+	recalculate_stats()
+
+	return true
+
+func has_item_type(item_type: String) -> int:
+	var count := 0
+	for item in items:
+		if item.item_type == item_type:
+			count += 1
+	return count
+
+func get_stat(stat_name: String) -> float:
+	return player_stats.get(stat_name, 0.0)
+
+func set_base_stat(stat_name: String, value: float) -> void:
+	base_stats[stat_name] = value
+	recalculate_stats()
+
+func modify_stat(stat_name: String, multiplier: float) -> void:
+	player_stats[stat_name] *= multiplier
+	stat_changed.emit(stat_name, player_stats[stat_name])
+
+func add_stat(stat_name: String, value: float) -> void:
+	player_stats[stat_name] += value
+	stat_changed.emit(stat_name, player_stats[stat_name])
+
+func recalculate_stats() -> void:
+	# Reset do bazowych wartości
+	player_stats = base_stats.duplicate()
+
+	# Zastosuj efekty wszystkich itemów
+	for item: ItemBase in items:
+		item.apply_effects(self)
+
+	# Emituj sygnały dla wszystkich statystyk
+	for stat_name: String in player_stats:
+		stat_changed.emit(stat_name, player_stats[stat_name])
+
+func get_build_description() -> String:
+	var description: String = "Build:\n"
+
+	for item: ItemBase in items:
+		description += "- %s\n" % item.item_name
+
+	description += "\nStatystyki:\n"
+	for stat_name: String in player_stats:
+		if player_stats[stat_name] != 1.0 and player_stats[stat_name] != 0.0:
+			description += "%s: %.2f\n" % [stat_name, player_stats[stat_name]]
+
+	return description
+
+func clear_build() -> void:
+	for item: ItemBase in items.duplicate():
+		remove_item(item)
+
+	recalculate_stats()

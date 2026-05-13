@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cmpdo6p0usxca"]
+
+[node name="Node2D" type="Node2D" unique_id=912717149]
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
