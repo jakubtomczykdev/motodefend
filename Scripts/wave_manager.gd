@@ -207,11 +207,17 @@ func _spawn_enemy(enemy_type: String) -> void:
 	else:
 		enemy.global_position = Vector2.ZERO
 
-	enemy.connect("died", _on_enemy_died)
+	if enemy.has_signal("died"):
+		enemy.connect("died", _on_enemy_died)
 	
 	# Dodaj do sceny - preferujemy nadrzędny węzeł MainGame
-	var target_parent = get_parent() if get_parent() is Node2D else get_tree().current_scene
-	target_parent.add_child(enemy)
+	var target_parent = get_parent()
+	if not (target_parent is Node2D):
+		target_parent = get_tree().current_scene
+	if target_parent:
+		target_parent.add_child(enemy)
+	else:
+		push_warning("Cannot add enemy - no valid parent found")
 
 func _on_enemy_died() -> void:
 	enemies_remaining -= 1

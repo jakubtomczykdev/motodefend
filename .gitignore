@@ -5,6 +5,9 @@
 
 # AI / OpenCode agent files
 .opencode/
+.agents/
 AGENTS.md
 plan.md
 opencode.json
+CLAUDE.md
+handoff.md

@@ -86,6 +86,7 @@ func _connect_signals() -> void:
 
 	if player and player.has_signal("died"):
 		player.died.connect(_on_player_died)
+	if player and player.has_signal("health_changed"):
 		player.health_changed.connect(_on_player_health_changed)
 
 	if educational_system:
