@@ -48,51 +48,65 @@ func _physics_process(delta: float) -> void:
 		var target_dir := (homing_target.global_position - global_position).normalized()
 		direction = direction.lerp(target_dir, homing_strength * delta).normalized()
 
-	position += direction * speed * delta
+	var movement := direction * speed * delta
+	
+	# RAYCAST COLLISION (dla bardzo szybkich pocisków - zapobiega przelatywaniu przez sprite)
+	var space_state := get_world_2d().direct_space_state
+	var query := PhysicsRayQueryParameters2D.create(global_position, global_position + movement)
+	query.collide_with_areas = true
+	query.collide_with_bodies = true
+	
+	# Wykluczamy siebie i właściciela
+	var exclude := [self]
+	if owner_node:
+		exclude.append(owner_node)
+	query.exclude = exclude
+	
+	var result := space_state.intersect_ray(query)
+	if result:
+		_handle_collision(result.collider)
+		# Nawet jeśli trafiliśmy, przesuwamy pocisk do miejsca trafienia przed queue_free
+		global_position = result.position
+		return
+
+	position += movement
 
 	if direction.length() > 0:
 		rotation = direction.angle()
 
 	time_alive += delta
 	if time_alive >= lifetime:
-		_spawn_explosion(global_position)
 		queue_free()
 
 func _on_body_entered(body: Node2D) -> void:
-	if body == owner_node:
+	_handle_collision(body)
+
+func _handle_collision(collider: Node) -> void:
+	if not is_instance_valid(collider) or collider == owner_node:
 		return
 
-	if body.is_in_group("Enemies"):
-		if body.has_method("take_damage"):
-			body.take_damage(damage)
-		_spawn_explosion(global_position)
-		hit_target.emit(body)
+	# Szukamy właściwego obiektu do zadania obrażeń (ciało wroga lub jego rodzic/dziecko)
+	var target_body = collider
+	
+	# Jeśli trafiliśmy w coś, co nie jest w grupie wrogów, sprawdźmy rodzica (np. Area2D -> CharacterBody2D)
+	if not target_body.is_in_group("Enemies"):
+		if target_body.get_parent() and target_body.get_parent().is_in_group("Enemies"):
+			target_body = target_body.get_parent()
+	
+	if target_body.is_in_group("Enemies"):
+		if target_body.has_method("take_damage"):
+			target_body.take_damage(damage)
+		
+		hit_target.emit(target_body)
 
 		if not can_pierce or pierce_count >= max_pierce_count:
 			queue_free()
 		else:
 			pierce_count += 1
-	else:
-		_spawn_explosion(global_position)
+	elif collider is StaticBody2D or collider is TileMap:
+		# Ściana
 		queue_free()
-
-func _spawn_explosion(pos: Vector2) -> void:
-	for i in range(5):
-		var spark := ColorRect.new()
-		spark.size = Vector2(4 + randi() % 4, 4 + randi() % 4)
-		spark.color = Color(0.3 + randf() * 0.5, 0.7 + randf() * 0.3, 1, 1)
-		spark.global_position = pos + Vector2(randf_range(-6, 6), randf_range(-6, 6))
-		var scene = get_tree().current_scene
-		if scene:
-			scene.add_child(spark)
-		else:
-			spark.queue_free()
-			return
-		var dir := Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
-		var st := create_tween()
-		st.tween_property(spark, "global_position", spark.global_position + dir * 20, 0.15)
-		st.parallel().tween_property(spark, "modulate:a", 0.0, 0.2)
-		st.tween_callback(spark.queue_free)
+	# Inne Area2D (np. pociski) ignorujemy
 
 func set_direction(new_direction: Vector2) -> void:
 	direction = new_direction.normalized()

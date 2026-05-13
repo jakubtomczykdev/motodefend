@@ -64,12 +64,12 @@ class Blaster extends WeaponBase:
 	func _init():
 		weapon_name = "Blaster"
 		weapon_type = "blaster"
-		description = "Blaster – szybkie pociski energetyczne (pewny wybór na dystans)"
+		description = "Blaster – super szybka wiązka niebieskich kul w jednej linii"
 		cost = 200
 		rarity = "rare"
-		damage = 15.0
-		attack_speed = 1.5
-		weapon_range = 350.0
+		damage = 2.0
+		attack_speed = 0.05
+		weapon_range = 500.0
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/Blaster.png")
 

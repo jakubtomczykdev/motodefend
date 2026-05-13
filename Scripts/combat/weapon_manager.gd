@@ -184,9 +184,8 @@ func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
 				var target_dir := _get_aim_direction(target_pos)
 				instance.activate(player_ref.global_position, weapon_data, target_dir)
 			"blaster":
-				var target: Node2D = _find_closest_enemy()
-				if target:
-					instance.fire(player_ref.global_position, target.global_position, weapon_data)
+				# Strzelaj prosto w stronę myszki (target_pos), bez auto-namierzania
+				instance.fire(player_ref, target_pos, weapon_data)
 			"sword":
 				var direction: Vector2 = _get_aim_direction(target_pos)
 				instance.swing(player_ref, direction, weapon_data)
@@ -198,10 +197,10 @@ func _get_aim_direction(target_pos: Vector2) -> Vector2:
 	return Vector2.RIGHT
 
 ## Znajduje najbliższego wroga
-func _find_closest_enemy() -> Node2D:
+func _find_closest_enemy(max_range: float = INF) -> Node2D:
 	var enemies: Array[Node] = get_tree().get_nodes_in_group("Enemies")
 	var closest: Node2D = null
-	var closest_dist: float = INF
+	var closest_dist: float = max_range
 	for enemy: Node in enemies:
 		if enemy is Node2D:
 			var dist: float = player_ref.global_position.distance_to(enemy.global_position)
