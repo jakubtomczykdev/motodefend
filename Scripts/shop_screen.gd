@@ -13,10 +13,10 @@ const WeaponItemsClass := preload("res://Scripts/items/weapon_items.gd")
 @onready var preview_desc: Label = $MainArea/PreviewPanel/PreviewVBox/PreviewDescription
 @onready var preview_cost: Label = $MainArea/PreviewPanel/PreviewVBox/PreviewCost
 
-var player_gold: int = 100
+var player_gold: int = 300
 var all_weapons: Array[WeaponBase] = []
 var shop_weapons: Array[WeaponBase] = []
-var selected_weapon: WeaponBase = null
+var selected_item: Resource = null
 var buy_buttons: Array[Button] = []
 
 const REROLL_COST: int = 25
@@ -38,6 +38,12 @@ func _ready() -> void:
 		item_manager = main.get_node_or_null("ItemManager")
 		build_system = main.get_node_or_null("BuildSystem")
 
+	# Jeśli nie ma ItemManagera (sklep jako osobna scena), utwórz go
+	if not item_manager:
+		item_manager = load("res://Scripts/item_manager.gd").new()
+		item_manager.name = "ItemManager"
+		add_child(item_manager)
+
 	back_button.pressed.connect(_on_back_pressed)
 	reroll_button.pressed.connect(_on_reroll_pressed)
 
@@ -49,28 +55,10 @@ func _reroll_shop() -> void:
 	buy_buttons.clear()
 
 	shop_weapons.clear()
-	# Grupuj bronie po typie, wybierz tylko 1 wersję (preferuj nowszą)
-	var type_groups: Dictionary = {}
-	for w: WeaponBase in all_weapons:
-		if not type_groups.has(w.weapon_type):
-			type_groups[w.weapon_type] = []
-		type_groups[w.weapon_type].append(w)
+	# Użyj wszystkich broni (stare i nowe warianty) aby zapewnić tanie opcje
+	var pool: Array[WeaponBase] = all_weapons.duplicate()
 	
-	var pool: Array[WeaponBase] = []
-	for weapon_type: String in type_groups.keys():
-		var variants: Array = type_groups[weapon_type]
-		if variants.size() == 1:
-			pool.append(variants[0])
-		else:
-			# Wybierz wersję bez "old" prefixu (nowszą), fallback do pierwszej
-			var chosen: WeaponBase = variants[0]
-			for v in variants:
-				if not v.is_old_variant:
-					chosen = v
-					break
-			pool.append(chosen)
-	
-	# Wybierz 2 bronie i 2 itemy (lub 3 i 1)
+	# Wybierz 2 bronie i 2 itemy
 	shop_pool.clear()
 	
 	pool.shuffle()
@@ -92,7 +80,7 @@ func _reroll_shop() -> void:
 	_update_gold_label()
 	_update_preview(null)
 
-func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
+func _create_item_card(item_data: Resource, item_index: int) -> Panel:
 	var card := Panel.new()
 	card.custom_minimum_size = Vector2(220, 320)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -123,8 +111,8 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if weapon.icon:
-		icon.texture = weapon.icon
+	if item_data.icon:
+		icon.texture = item_data.icon
 	vbox.add_child(icon)
 
 	# Separator
@@ -132,9 +120,12 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 	sep.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(sep)
 
-	# Nazwa broni
+	# Nazwa przedmiotu
 	var name_lbl := Label.new()
-	name_lbl.text = weapon.get_display_name()
+	if item_data.has_method("get_display_name"):
+		name_lbl.text = item_data.get_display_name()
+	else:
+		name_lbl.text = item_data.get("item_name")
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_lbl.add_theme_font_size_override("font_size", 16)
 	name_lbl.add_theme_color_override("font_color", Color(0.855, 0.886, 0.992))
@@ -143,7 +134,7 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 
 	# Krótki opis
 	var desc_lbl := Label.new()
-	desc_lbl.text = weapon.description
+	desc_lbl.text = item_data.description
 	desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc_lbl.add_theme_font_size_override("font_size", 11)
 	desc_lbl.add_theme_color_override("font_color", Color(0.6, 0.65, 0.75))
@@ -154,7 +145,7 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 
 	# Cena
 	var cost_lbl := Label.new()
-	cost_lbl.text = "%d G" % weapon.cost
+	cost_lbl.text = "%d G" % item_data.cost
 	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_lbl.add_theme_font_size_override("font_size", 18)
 	cost_lbl.add_theme_color_override("font_color", Color(0, 0.941, 1))
@@ -179,12 +170,12 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 	buy_style.set_corner_radius_all(4)
 	buy_btn.add_theme_stylebox_override("normal", buy_style)
 
-	buy_btn.pressed.connect(_on_buy_pressed.bind(weapon, buy_btn, weapon_index))
+	buy_btn.pressed.connect(_on_buy_pressed.bind(item_data, buy_btn, item_index))
 	vbox.add_child(buy_btn)
 	buy_buttons.append(buy_btn)
 
 	# Kliknięcie karty = podgląd
-	card.gui_input.connect(_on_card_clicked.bind(weapon))
+	card.gui_input.connect(_on_card_clicked.bind(item_data))
 
 	return card
 
@@ -193,7 +184,7 @@ func _on_card_clicked(event: InputEvent, item: Resource) -> void:
 		_update_preview(item)
 
 func _update_preview(item: Resource) -> void:
-	selected_weapon = item
+	selected_item = item
 	if not item:
 		preview_icon.texture = null
 		preview_name.text = "Wybierz przedmiot"

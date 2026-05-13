@@ -26,7 +26,7 @@ var custom_inputs: Dictionary = {}
 # Dane gry
 var current_wave: int = 0
 var score: int = 0
-var gold: int = 100
+var gold: int = 300
 var inventory: Array = []
 var pending_weapon_ids: Array = []
 var player_hp: int = 100

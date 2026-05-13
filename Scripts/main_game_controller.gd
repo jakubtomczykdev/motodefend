@@ -107,7 +107,7 @@ func start_game() -> void:
 	if gd and gd.gold > 0:
 		gold = gd.gold
 	else:
-		gold = 100
+		gold = 300
 
 	if shop_system: shop_system.add_gold(gold)
 
@@ -145,6 +145,13 @@ func start_game() -> void:
 				if widx < all_weapons.size():
 					var wd: WeaponBase = all_weapons[widx]
 					player.add_weapon(wd)
+			# Wyczyść zapisane bronie aby nie duplikować przy kolejnej fali
+			gd.pending_weapon_ids.clear()
+		
+		# Jeśli gracz nie ma broni, daj domyślną (Blaster)
+		if player.get_weapon_count() == 0:
+			var default_weapon: WeaponBase = WeaponItemsClass.Blaster.new()
+			player.add_weapon(default_weapon)
 		
 		# Restore Items (Passives)
 		for item in gd.inventory:
