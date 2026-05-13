@@ -1,0 +1,10 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+**/addons/
+
+# AI / OpenCode agent files
+.opencode/
+AGENTS.md
+plan.md
+opencode.json
