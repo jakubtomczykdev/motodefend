@@ -91,8 +91,10 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 8)
-	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	# Użyj kotwic zamiast flag, aby wypełnić Panel
+	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 10)
+	vbox.mouse_filter = Control.MOUSE_FILTER_PASS
 	card.add_child(vbox)
 
 	# Ikona broni – wymuszony rozmiar 180x180
@@ -100,12 +102,14 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 	icon.custom_minimum_size = Vector2(180, 180)
 	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if weapon.icon:
 		icon.texture = weapon.icon
 	vbox.add_child(icon)
 
 	# Separator
 	var sep := HSeparator.new()
+	sep.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(sep)
 
 	# Nazwa broni
@@ -114,6 +118,7 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_lbl.add_theme_font_size_override("font_size", 16)
 	name_lbl.add_theme_color_override("font_color", Color(0.855, 0.886, 0.992))
+	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(name_lbl)
 
 	# Krótki opis
@@ -124,6 +129,7 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 	desc_lbl.add_theme_color_override("font_color", Color(0.6, 0.65, 0.75))
 	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_lbl.custom_minimum_size = Vector2(0, 32)
+	desc_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(desc_lbl)
 
 	# Cena
@@ -132,6 +138,7 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_lbl.add_theme_font_size_override("font_size", 18)
 	cost_lbl.add_theme_color_override("font_color", Color(0, 0.941, 1))
+	cost_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(cost_lbl)
 
 	# Przycisk KUP
@@ -140,6 +147,7 @@ func _create_item_card(weapon: WeaponBase, weapon_index: int) -> Panel:
 	buy_btn.custom_minimum_size = Vector2(0, 40)
 	buy_btn.add_theme_font_size_override("font_size", 16)
 	buy_btn.add_theme_color_override("font_color", Color.WHITE)
+	buy_btn.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var buy_style := StyleBoxFlat.new()
 	buy_style.bg_color = Color(0, 0.941, 1, 0.25)
@@ -179,7 +187,7 @@ func _update_preview(weapon: WeaponBase) -> void:
 	preview_name.text = weapon.get_display_name()
 	preview_rarity.text = weapon.rarity.capitalize()
 	preview_rarity.add_theme_color_override("font_color", weapon.get_rarity_color())
-	preview_desc.text = weapon.description
+	preview_desc.text = weapon.description + "\n\nStatystyki:\n- Obrażenia: %0.1f\n- Szybkość: %0.2f s\n- Zasięg: %0.0f" % [weapon.damage, weapon.attack_speed, weapon.weapon_range]
 	preview_cost.text = "Koszt: %d G" % weapon.cost
 
 func _on_buy_pressed(weapon: WeaponBase, button: Button, weapon_index: int) -> void:
@@ -198,6 +206,9 @@ func _on_buy_pressed(weapon: WeaponBase, button: Button, weapon_index: int) -> v
 
 	button.disabled = true
 	button.text = "KUPIONE"
+	
+	# Odśwież podgląd po zakupie (opcjonalne, ale dobre UX)
+	_update_preview(weapon)
 
 func _on_reroll_pressed() -> void:
 	if player_gold < REROLL_COST:

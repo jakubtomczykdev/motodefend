@@ -81,10 +81,12 @@ offset_top = 15.0
 offset_right = -15.0
 offset_bottom = -15.0
 theme_override_constants/separation = 10
+alignment = 1
 
 [node name="PreviewIcon" type="TextureRect" parent="MainArea/PreviewPanel/PreviewVBox"]
 custom_minimum_size = Vector2(200, 200)
-expand_mode = 0
+layout_mode = 2
+expand_mode = 3
 stretch_mode = 5
 
 [node name="PreviewName" type="Label" parent="MainArea/PreviewPanel/PreviewVBox"]
@@ -111,6 +113,7 @@ horizontal_alignment = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 12
+alignment = 1
 
 [node name="BottomBar" type="Panel" parent="."]
 layout_mode = 0
