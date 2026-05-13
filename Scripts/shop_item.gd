@@ -1,69 +1,78 @@
 extends Panel
-## UI pojedynczego itemu w sklepie
+## Skrypt pojedynczego przedmiotu w sklepie - zaktualizowany pod nowy design
 
 signal item_clicked(item: ItemBase)
 
-var item_data: ItemBase
-var current_gold: int
+@onready var icon_texture: TextureRect = $VBox/IconContainer/IconTexture
+@onready var name_label: Label = $VBox/NameLabel
+@onready var rarity_chip: Label = $VBox/RarityChip
+@onready var cost_label: Label = $VBox/CostBox/CostLabel
+@onready var buy_button: Button = $VBox/BuyButton
 
-var icon_texture: TextureRect
-var name_label: Label
-var description_label: Label
-var cost_label: Label
-var rarity_label: Label
-var buy_button: Button
+var item_data: ItemBase
 
 func _ready() -> void:
-	# Znajdź węzły bezpiecznie
-	if has_node("HBoxContainer/IconTexture"):
-		icon_texture = $HBoxContainer/IconTexture
-	if has_node("HBoxContainer/VBoxContainer/NameLabel"):
-		name_label = $HBoxContainer/VBoxContainer/NameLabel
-	if has_node("HBoxContainer/VBoxContainer/DescriptionLabel"):
-		description_label = $HBoxContainer/VBoxContainer/DescriptionLabel
-	if has_node("HBoxContainer/VBoxContainer/HBoxContainer2/CostLabel"):
-		cost_label = $HBoxContainer/VBoxContainer/HBoxContainer2/CostLabel
-	if has_node("HBoxContainer/VBoxContainer/HBoxContainer2/RarityLabel"):
-		rarity_label = $HBoxContainer/VBoxContainer/HBoxContainer2/RarityLabel
-	if has_node("HBoxContainer/BuyButton"):
-		buy_button = $HBoxContainer/BuyButton
-		buy_button.pressed.connect(_on_buy_button_pressed)
+	if buy_button:
+		buy_button.pressed.connect(_on_buy_pressed)
+	
+	# Efekty najechania myszką
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
 
-func setup_item(item: ItemBase, gold: int) -> void:
+func setup_item(item: ItemBase, current_gold: int) -> void:
 	item_data = item
-	current_gold = gold
+	name_label.text = item.item_name.to_upper()
+	cost_label.text = str(item.cost)
+	
+	if item.icon:
+		icon_texture.texture = item.icon
+	
+	_update_rarity_style(item.rarity)
+	update_affordability(current_gold)
 
-	# Ustaw dane itemu
-	if name_label:
-		name_label.text = item_data.item_name
-	if description_label:
-		description_label.text = item_data.description
-	if cost_label:
-		cost_label.text = "Koszt: %d" % item_data.cost
-	if rarity_label:
-		rarity_label.text = item_data.rarity.capitalize()
-		# Ustaw kolor rzadkości
-		var rarity_color := item_data.get_rarity_color()
-		rarity_label.modulate = rarity_color
-
-	# Ustaw ikonę jeśli dostępna
-	if item_data.icon and icon_texture:
-		icon_texture.texture = item_data.icon
-
-	# Ustaw przycisk
-	update_affordability(gold)
+func _update_rarity_style(rarity: String) -> void:
+	rarity_chip.text = rarity.to_upper()
+	var color := Color(1, 1, 1)
+	
+	match rarity.to_lower():
+		"common": color = Color(0.7, 0.7, 0.7) # Slate
+		"uncommon": color = Color(0.3, 0.8, 0.5) # Teal
+		"rare": color = Color(0, 0.6, 1.0) # Cyber Blue
+		"epic": color = Color(0.6, 0.2, 0.9) # Purple
+		"legendary": color = Color(1.0, 0.8, 0.0) # Gold
+	
+	rarity_chip.modulate = color
+	
+	# Apply glow to the panel border
+	var style = get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	style.border_color = color
+	style.border_color.a = 0.5
+	add_theme_stylebox_override("panel", style)
 
 func update_affordability(gold: int) -> void:
-	current_gold = gold
+	if gold < item_data.cost:
+		buy_button.disabled = true
+		buy_button.modulate = Color(1, 1, 1, 0.5)
+		buy_button.text = "INSUFFICIENT_FUNDS"
+	else:
+		buy_button.disabled = false
+		buy_button.modulate = Color(1, 1, 1, 1.0)
+		buy_button.text = "INSTALL_MODULE"
 
-	if buy_button:
-		if current_gold >= item_data.cost:
-			buy_button.disabled = false
-			buy_button.text = "Kup"
-		else:
-			buy_button.disabled = true
-			buy_button.text = "Brak złota"
+func _on_buy_pressed() -> void:
+	item_clicked.emit(item_data)
 
-func _on_buy_button_pressed() -> void:
-	if current_gold >= item_data.cost:
-		item_clicked.emit(item_data)
+func _on_mouse_entered() -> void:
+	# Subtle scale up and border highlight
+	var tween = create_tween()
+	tween.tween_property(self, "scale", Vector2(1.02, 1.02), 0.1)
+	
+	var style = get_theme_stylebox("panel") as StyleBoxFlat
+	style.bg_color.a = 1.0
+
+func _on_mouse_exited() -> void:
+	var tween = create_tween()
+	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.1)
+	
+	var style = get_theme_stylebox("panel") as StyleBoxFlat
+	style.bg_color.a = 0.9

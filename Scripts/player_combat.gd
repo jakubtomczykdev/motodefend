@@ -357,17 +357,31 @@ func update_animation() -> void:
 		return
 
 	if velocity.length() > 0:
-		if velocity.x > 0:
-			sprite.play("right")
-		elif velocity.x < 0:
-			sprite.play("left")
-		else:
-			if velocity.y > 0:
-				sprite.play("front")
+		var dir = velocity.normalized()
+		
+		if dir.y < -0.5: # Ruch w górę
+			if dir.x > 0.5:
+				sprite.play("back-right")
+			elif dir.x < -0.5:
+				sprite.play("back-left")
 			else:
+				sprite.play("back")
+		elif dir.y > 0.5: # Ruch w dół
+			if dir.x > 0.5:
+				sprite.play("front-right")
+			elif dir.x < -0.5:
+				sprite.play("front-left")
+			else:
+				sprite.play("front")
+		else: # Ruch poziomy
+			if dir.x > 0:
 				sprite.play("right")
+			elif dir.x < 0:
+				sprite.play("left")
 	else:
 		sprite.stop()
+		# Opcjonalnie: ustaw klatkę spoczynkową (idle) zależnie od ostatniego kierunku
+		# Na razie zatrzymujemy na bieżącej klatce lub zerujemy
 		sprite.frame = 0
 
 func _clamp_to_screen() -> void:

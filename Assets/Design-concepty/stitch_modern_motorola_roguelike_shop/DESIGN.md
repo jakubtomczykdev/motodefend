@@ -50,43 +50,43 @@ colors:
   surface-variant: '#2d3449'
 typography:
   display-lg:
-    fontFamily: metropolis
-    fontSize: 48px
-    fontWeight: '700'
-    lineHeight: 56px
-    letterSpacing: -0.02em
+	fontFamily: metropolis
+	fontSize: 48px
+	fontWeight: '700'
+	lineHeight: 56px
+	letterSpacing: -0.02em
   headline-md:
-    fontFamily: metropolis
-    fontSize: 32px
-    fontWeight: '600'
-    lineHeight: 40px
-    letterSpacing: -0.01em
+	fontFamily: metropolis
+	fontSize: 32px
+	fontWeight: '600'
+	lineHeight: 40px
+	letterSpacing: -0.01em
   headline-sm:
-    fontFamily: metropolis
-    fontSize: 24px
-    fontWeight: '600'
-    lineHeight: 32px
+	fontFamily: metropolis
+	fontSize: 24px
+	fontWeight: '600'
+	lineHeight: 32px
   body-lg:
-    fontFamily: hankenGrotesk
-    fontSize: 18px
-    fontWeight: '400'
-    lineHeight: 28px
+	fontFamily: hankenGrotesk
+	fontSize: 18px
+	fontWeight: '400'
+	lineHeight: 28px
   body-md:
-    fontFamily: hankenGrotesk
-    fontSize: 16px
-    fontWeight: '400'
-    lineHeight: 24px
+	fontFamily: hankenGrotesk
+	fontSize: 16px
+	fontWeight: '400'
+	lineHeight: 24px
   label-caps:
-    fontFamily: spaceMono
-    fontSize: 12px
-    fontWeight: '700'
-    lineHeight: 16px
-    letterSpacing: 0.1em
+	fontFamily: spaceMono
+	fontSize: 12px
+	fontWeight: '700'
+	lineHeight: 16px
+	letterSpacing: 0.1em
   label-status:
-    fontFamily: hankenGrotesk
-    fontSize: 14px
-    fontWeight: '500'
-    lineHeight: 20px
+	fontFamily: hankenGrotesk
+	fontSize: 14px
+	fontWeight: '500'
+	lineHeight: 20px
 spacing:
   unit: 4px
   gutter: 16px

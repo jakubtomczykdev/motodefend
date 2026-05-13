@@ -123,51 +123,10 @@ func _get_wave_config(wave: int) -> Dictionary:
 	# Oblicz liczbę wrogów
 	config.enemy_count = int(base_enemy_count * pow(enemy_count_multiplier, wave - 1))
 
-	# Określ typy wrogów
-	config.enemy_types = []
+	# Określ typy wrogów - TYLKO TYPY Z FINALNYMI GRAFIKAMI DLA DEMO
+	config.enemy_types = ["worm", "trojan", "ransomware"]
 
-	# Wave 1: tylko Worm i Phishing
-	if wave == 1:
-		config.enemy_types.append("worm")
-		config.enemy_types.append("phishing")
-
-	# Waves 2-3: Worm + Phishing + SQL
-	elif wave <= 3:
-		config.enemy_types.append("worm")
-		config.enemy_types.append("phishing")
-		config.enemy_types.append("sql")
-
-	# Waves 4-7: Worm + Phishing + SQL
-	elif wave <= 7:
-		config.enemy_types.append("worm")
-		config.enemy_types.append("phishing")
-		config.enemy_types.append("sql")
-
-	# Waves 8-12: Poprzednie + Trojan
-	elif wave <= 12:
-		config.enemy_types.append("worm")
-		config.enemy_types.append("phishing")
-		config.enemy_types.append("sql")
-		config.enemy_types.append("trojan")
-
-	# Waves 13-18: Poprzednie + Ransomware
-	elif wave <= 18:
-		config.enemy_types.append("worm")
-		config.enemy_types.append("phishing")
-		config.enemy_types.append("sql")
-		config.enemy_types.append("trojan")
-		config.enemy_types.append("ransomware")
-
-	# Waves 19+: wszystkie typy
-	else:
-		config.enemy_types.append("worm")
-		config.enemy_types.append("phishing")
-		config.enemy_types.append("sql")
-		config.enemy_types.append("trojan")
-		config.enemy_types.append("ransomware")
-		config.enemy_types.append("spyware")
-
-	# Co 5 fal: Boss
+	# Co 5 fal: Boss (używa esa.png, więc jest OK)
 	if wave % 5 == 0:
 		config.has_boss = true
 	else:

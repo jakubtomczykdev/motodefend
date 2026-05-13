@@ -40,16 +40,31 @@ func _clamp_to_screen() -> void:
 	global_position.y = clamp(global_position.y, 30, 1050)
 
 func update_animations(direction):
-	if direction.x > 0:
-		_animated_sprite.play("right")
-	elif direction.x < 0:
-		_animated_sprite.play("left")
-	elif direction.y != 0:
-		# Przy ruchu góra/dół postać używa animacji "right"
-		_animated_sprite.play("right")
+	if direction.length() > 0:
+		var dir = direction.normalized()
+		
+		if dir.y < -0.5: # Góra
+			if dir.x > 0.5:
+				_animated_sprite.play("back-right")
+			elif dir.x < -0.5:
+				_animated_sprite.play("back-left")
+			else:
+				_animated_sprite.play("back")
+		elif dir.y > 0.5: # Dół
+			if dir.x > 0.5:
+				_animated_sprite.play("front-right")
+			elif dir.x < -0.5:
+				_animated_sprite.play("front-left")
+			else:
+				_animated_sprite.play("front")
+		else: # Poziomo
+			if dir.x > 0:
+				_animated_sprite.play("right")
+			elif dir.x < 0:
+				_animated_sprite.play("left")
 	else:
-		# Gdy stoi, używa animacji "front"
-		_animated_sprite.play("front")
+		_animated_sprite.stop()
+		_animated_sprite.frame = 0
 
 func _on_interaction_area_area_entered(area):
 	print("[DEBUG] area_entered: ", area.name, " parent: ", area.get_parent().name)
