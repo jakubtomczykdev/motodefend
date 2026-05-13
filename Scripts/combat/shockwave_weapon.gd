@@ -63,7 +63,8 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	var collision_shape := CollisionShape2D.new()
 	var circle_shape := CircleShape2D.new()
-	circle_shape.radius = 40.0
+	var wave_radius: float = min(weapon_data.weapon_range, 250.0)
+	circle_shape.radius = wave_radius
 	collision_shape.shape = circle_shape
 	wave_area.add_child(collision_shape)
 
@@ -71,6 +72,23 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 	wave_area.body_entered.connect(_on_wave_body_entered.bind(weapon_data, wave_area))
 
 	get_tree().current_scene.add_child(wave_area)
+
+	# Sprawdź czy jacyś wrogowie już są w obszarze (zanim Area2D zacznie się ruszać)
+	for body in wave_area.get_overlapping_bodies():
+		if body.is_in_group("Enemies") and not hit_enemies.has(body):
+			hit_enemies.append(body)
+			if body.has_method("take_damage"):
+				body.take_damage(int(weapon_data.damage))
+			# Iskry przy trafieniu
+			for i in range(2):
+				var spark := ColorRect.new()
+				spark.size = Vector2(5, 5)
+				spark.color = Color(0, 0.8, 1, 0.8)
+				spark.global_position = body.global_position + Vector2(randf_range(-8, 8), randf_range(-8, 8))
+				get_tree().current_scene.add_child(spark)
+				var spark_tween := create_tween()
+				spark_tween.tween_property(spark, "modulate:a", 0.0, 0.2)
+				spark_tween.tween_callback(spark.queue_free)
 
 	hit_enemies.clear()
 
@@ -80,6 +98,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 	t.tween_callback(_on_wave_finished)
 
 	can_attack = false
+	AudioManager.play_sfx("shockwave")
 	attack_timer = weapon_data.attack_speed
 
 func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, wave: Area2D) -> void:
@@ -90,7 +109,7 @@ func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, wave: Area2D) 
 	hit_enemies.append(body)
 
 	if body.has_method("take_damage"):
-		body.take_damage(weapon_data.damage)
+		body.take_damage(int(weapon_data.damage))
 
 	# UNIQUE LOGIC: New Motorola Radio slows down enemies
 	if "Motorola" in weapon_data.weapon_name and body.has_method("apply_slowdown"):

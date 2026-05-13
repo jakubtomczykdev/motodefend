@@ -1,0 +1,2 @@
+# Product Context
+Motodefend - roguelike gra o cyberbezpieczeństwie. Pixel-art, arena shooter. Gracz broni się przed wirusami materializującymi się w realnym świecie. Inspiracja: Motorola Solutions, Katowice SOC.

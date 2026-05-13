@@ -171,10 +171,6 @@ func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
 			if instance.has_method("update_drone"):
 				instance.update_drone(target_pos)
 			continue
-			
-		# Inne bronie tylko jeśli są aktywne (Weapon Swap)
-		if i != active_weapon_index:
-			continue
 
 		if not instance.is_ready():
 			continue

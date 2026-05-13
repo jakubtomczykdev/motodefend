@@ -35,6 +35,7 @@ func fire(player: Node2D, target_pos: Vector2, weapon_data: WeaponBase) -> void:
 	get_tree().current_scene.add_child(projectile)
 
 	can_attack = false
+	AudioManager.play_sfx("blaster_shot")
 	attack_timer = weapon_data.attack_speed
 
 func _process(delta: float) -> void:

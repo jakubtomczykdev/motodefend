@@ -141,6 +141,7 @@ layout_mode = 2
 mouse_filter = 2
 expand_mode = 3
 stretch_mode = 5
+clip_contents = true
 
 [node name="CooldownOverlay1" type="ColorRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1/VBoxContainer"]
 unique_name_in_owner = true
@@ -178,6 +179,7 @@ layout_mode = 2
 mouse_filter = 2
 expand_mode = 3
 stretch_mode = 5
+clip_contents = true
 
 [node name="CooldownOverlay2" type="ColorRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2/VBoxContainer2"]
 unique_name_in_owner = true

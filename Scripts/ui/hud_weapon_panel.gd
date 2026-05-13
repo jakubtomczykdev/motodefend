@@ -11,6 +11,10 @@ extends CanvasLayer
 var weapon_manager: Node = null
 
 func _ready() -> void:
+	# Ustawienia wyswietlania ikon – zapobiegaja wylewaniu sie poza panel
+	_configure_icon(slot1_icon)
+	_configure_icon(slot2_icon)
+	
 	# Ukryj oba sloty na start
 	slot1_icon.visible = false
 	slot2_icon.visible = false
@@ -38,6 +42,14 @@ func _ready() -> void:
 	
 	slot1_panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	slot2_panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+func _configure_icon(icon: TextureRect) -> void:
+	# Wymusza poprawne ustawienia skalowania ikony, nawet jesli ktos
+	# przypadkowo zmienil je w edytorze
+	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL  # = 3
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED   # = 5
+	icon.custom_minimum_size = Vector2(80, 80)
+	icon.clip_contents = true
 
 func _find_weapon_manager() -> void:
 	var players := get_tree().get_nodes_in_group("Player")

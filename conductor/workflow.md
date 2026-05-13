@@ -1,0 +1,2 @@
+# Workflow
+4-okienkowa architektura: Koordynator + 3 Plannery (Alpha/UI-Scenes, Beta/Mechaniki-Walka, Gamma/Testy-QA-Git). Agenty: GAME_PROGRAMMER, UI_DESIGNER, DEBUGGER, GAME_DESIGNER, STORYTELLER, SOUND_DESIGNER, LEVEL_DESIGNER, BALANCER, SECURITY_OFFICER, LIBRARIAN, WATCHMAN, GIT_PUSHER. Komunikacja przez BRAIN Comms.

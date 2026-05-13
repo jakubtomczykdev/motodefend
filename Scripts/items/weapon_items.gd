@@ -59,17 +59,26 @@ class FightingDrone extends WeaponBase:
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/fightingDrone.png")
 
-# Blaster – szybkie pociski energetyczne
+# Blaster – wolna, potężna broń energetyczna
 class Blaster extends WeaponBase:
 	func _init():
 		weapon_name = "Blaster"
 		weapon_type = "blaster"
+<<<<<<< Updated upstream
 		description = "Blaster – super szybka wiązka niebieskich kul w jednej linii"
 		cost = 200
 		rarity = "rare"
 		damage = 2.0
 		attack_speed = 0.05
 		weapon_range = 500.0
+=======
+		description = "Wolna, potężna broń energetyczna. Strzela szeroką wiązką plazmy."
+		cost = 280
+		rarity = "rare"
+		damage = 30.0
+		attack_speed = 2.5
+		weapon_range = 400.0
+>>>>>>> Stashed changes
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/Blaster.png")
 

@@ -191,6 +191,7 @@ func _fire_projectile(direction: Vector2) -> void:
 	get_tree().current_scene.add_child(proj)
 
 	attack_timer = current_weapon.attack_speed
+	AudioManager.play_sfx("drone_shoot")
 
 	# Muzzle flash
 	var flash := ColorRect.new()

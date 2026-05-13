@@ -14,10 +14,6 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 	if not can_attack:
 		return
 
-	# Lunge (doskok) - dodaj pęd graczowi w stronę ataku
-	if player_body:
-		player_body.velocity += direction * 400.0
-
 	var swing_origin := player_body.global_position + direction * 20
 	var start_angle := direction.angle() - 1.2
 	var end_angle := direction.angle() + 1.2
@@ -27,7 +23,7 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 		current_swing_area.queue_free()
 
 	var swing_area: Area2D = Area2D.new()
-	add_child(swing_area)
+	get_tree().current_scene.add_child(swing_area)
 	current_swing_area = swing_area
 	swing_area.global_position = swing_origin
 	swing_area.collision_layer = 0
@@ -89,6 +85,12 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 	)
 
 	can_attack = false
+	AudioManager.play_sfx("sword_swing")
+
+	# Lunge (doskok) - dodaj pęd graczowi w stronę ataku
+	if player_body:
+		player_body.velocity += direction * 400.0
+
 	attack_timer = weapon_data.attack_speed
 
 func _on_swing_body_entered(body: Node2D, weapon_data: WeaponBase) -> void:
@@ -98,7 +100,7 @@ func _on_swing_body_entered(body: Node2D, weapon_data: WeaponBase) -> void:
 		return
 	hit_enemies.append(body)
 	if body.has_method("take_damage"):
-		body.take_damage(weapon_data.damage)
+		body.take_damage(int(weapon_data.damage))
 	_spawn_impact(body)
 
 func _spawn_impact(target: Node2D) -> void:
