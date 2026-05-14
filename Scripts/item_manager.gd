@@ -14,18 +14,23 @@ func _ready() -> void:
 func _initialize_all_items() -> void:
 	all_items.clear()
 
-	# Motorola items
-	all_items.append(MotorolaItems.CrossPatchItem.new())
-	all_items.append(MotorolaItems.PSTAItem.new())
-	all_items.append(MotorolaItems.RadioAPXItem.new())
-	all_items.append(MotorolaItems.CommandCentralItem.new())
-	all_items.append(MotorolaItems.BodyCameraItem.new())
-	all_items.append(MotorolaItems.SolutionHubItem.new())
-	all_items.append(MotorolaItems.RaveItem.new())
-	all_items.append(MotorolaItems.LPRIItem.new())
-	all_items.append(MotorolaItems.PremierOneItem.new())
-	all_items.append(MotorolaItems.VB400Item.new())
-	all_items.append(MotorolaItems.FuntionItem.new())
+	var candidate_items: Array[ItemBase] = [
+		MotorolaItems.CrossPatchItem.new(),
+		MotorolaItems.PSTAItem.new(),
+		MotorolaItems.RadioAPXItem.new(),
+		MotorolaItems.CommandCentralItem.new(),
+		MotorolaItems.BodyCameraItem.new(),
+		MotorolaItems.SolutionHubItem.new(),
+		MotorolaItems.RaveItem.new(),
+		MotorolaItems.LPRIItem.new(),
+		MotorolaItems.PremierOneItem.new(),
+		MotorolaItems.VB400Item.new(),
+		MotorolaItems.FuntionItem.new(),
+	]
+
+	for item in candidate_items:
+		if item.icon != null:
+			all_items.append(item)
 
 func get_random_item(min_rarity: String = "common") -> ItemBase:
 	var available_items: Array[ItemBase] = all_items.filter(func(item: ItemBase): return _is_rarity_at_least(item.rarity, min_rarity))

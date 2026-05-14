@@ -255,6 +255,9 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 
 	current_health -= final_damage
 	damaged.emit(final_damage)
+
+	# SPAWN DAMAGE NUMBER
+	_spawn_damage_number(final_damage)
 	
 	if knockback != Vector2.ZERO:
 		knockback_velocity = knockback * (1.0 - knockback_resistance)
@@ -293,3 +296,27 @@ func apply_slowdown(multiplier: float, duration: float) -> void:
 	move_speed = original_move_speed * multiplier
 	slowdown_timer = duration
 	modulate = Color(0.5, 0.8, 1.0, 1.0) # Light blue tint for slowdown
+
+func _spawn_damage_number(amount: int) -> void:
+	if not is_inside_tree():
+		return
+	var label := Label.new()
+	label.text = str(amount)
+	label.add_theme_font_size_override("font_size", 16 + int(amount / 10.0))
+	label.add_theme_color_override("font_color", Color(1, 0.84, 0, 1))
+	# Outline effect via duplicate shadow
+	var shadow := Label.new()
+	shadow.text = str(amount)
+	shadow.add_theme_font_size_override("font_size", 16 + int(amount / 10.0))
+	shadow.add_theme_color_override("font_color", Color(0, 0, 0, 0.7))
+	shadow.position = Vector2(1, 1)
+	label.add_child(shadow)
+
+	label.global_position = global_position + Vector2(randf_range(-20, 20), -40)
+	get_tree().current_scene.add_child(label)
+
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label, "global_position:y", label.global_position.y - 50, 0.6)
+	tween.tween_property(label, "modulate:a", 0.0, 0.5).set_delay(0.2)
+	tween.chain().tween_callback(label.queue_free)

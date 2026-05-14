@@ -1,10 +1,15 @@
 extends Node2D
+## GameStartHub – ekran startowego huba.
+## Wyświetla falę i złoto z GameData. Obsługuje start gry, bestiariusz i pauzę.
 
 @onready var wave_label: Label = $WaveLabel if has_node("WaveLabel") else null
 @onready var gold_label: Label = $CanvasLayer/GoldLabel if has_node("CanvasLayer") and $CanvasLayer.has_node("GoldLabel") else null
 
 func _ready() -> void:
 	_update_wave_display()
+	_update_gold_display()
+
+func _process(_delta: float) -> void:
 	_update_gold_display()
 
 func _update_wave_display() -> void:

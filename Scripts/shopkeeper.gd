@@ -1,4 +1,9 @@
 extends CharacterBody2D
+## Shopkeeper – NPC otwierający sklep po interakcji.
+## Nie przekazuje golda ręcznie – shop_screen.gd czyta go z GameData przez property getter.
+
+## Ścieżka do sceny sklepu dla fallbacku (poza MainGame)
+const SHOP_SCENE_PATH: String = "res://scenes/Shop.tscn"
 
 @export var npc_name: String = "Automat ze Sprzedażą"
 
@@ -10,10 +15,13 @@ func _ready() -> void:
 	if interact_area:
 		interact_area.add_to_group("Interactable")
 
+## Otwiera sklep. W main_game_controller gold sync odbywa się automatycznie
+## przez shop_screen.gd property getter → GameData.gold.
 func interact() -> void:
-	var main = get_tree().current_scene
+	var main: Node = get_tree().current_scene
 	if main and main.has_method("_open_shop"):
 		main._open_shop()
 	else:
-		# Fallback do zmiany sceny jeśli nie jesteśmy w MainGame
-		get_tree().change_scene_to_file("res://scenes/Shop.tscn")
+		# Fallback: ładuj scenę sklepu jako standalone
+		# shop_screen.gd w _ready() sam odczyta gold z GameData
+		get_tree().change_scene_to_file(SHOP_SCENE_PATH)

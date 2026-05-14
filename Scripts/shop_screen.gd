@@ -5,9 +5,21 @@ signal item_purchased(item: ItemBase)
 signal shop_closed
 signal refresh_requested
 
-@export var starting_gold: int = 100
+## Cached GameData reference for the gold property getter/setter
+var _game_data_ref = null
 
-var current_gold: int
+## SINGLE SOURCE OF TRUTH: gold reads/writes ONLY through GameData.gold
+var gold: int:
+	get:
+		if _game_data_ref == null:
+			_game_data_ref = get_node_or_null("/root/GameData")
+		return _game_data_ref.gold if _game_data_ref else 100
+	set(value):
+		if _game_data_ref == null:
+			_game_data_ref = get_node_or_null("/root/GameData")
+		if _game_data_ref:
+			_game_data_ref.gold = value
+
 var shop_items: Array = []
 var build_system: Node
 var item_manager: Node
@@ -28,7 +40,6 @@ var refresh_cost: int = 25
 func _ready() -> void:
 	back_button.pressed.connect(_on_close_pressed)
 	reroll_button.pressed.connect(_on_refresh_pressed)
-	current_gold = starting_gold
 	_update_gold_label()
 	# Auto-populate with default weapons when shop loaded standalone
 	await get_tree().process_frame
@@ -60,7 +71,7 @@ func _populate_items() -> void:
 	for item in shop_items:
 		var item_ui = item_scene.instantiate()
 		items_container.add_child(item_ui)
-		item_ui.setup_item(item, current_gold)
+		item_ui.setup_item(item, gold)
 		item_ui.item_clicked.connect(_on_item_clicked)
 		item_ui.mouse_entered.connect(_update_preview.bind(item))
 
@@ -84,8 +95,8 @@ func _update_preview(item: ItemBase) -> void:
 	preview_rarity.modulate = color
 
 func _on_item_clicked(item: ItemBase) -> void:
-	if current_gold >= item.cost:
-		current_gold -= item.cost
+	if gold >= item.cost:
+		gold -= item.cost
 		item_purchased.emit(item)
 		_update_gold_label()
 		_update_item_states()
@@ -106,8 +117,8 @@ func _on_item_clicked(item: ItemBase) -> void:
 							break
 
 func _on_refresh_pressed() -> void:
-	if current_gold >= refresh_cost:
-		current_gold -= refresh_cost
+	if gold >= refresh_cost:
+		gold -= refresh_cost
 		_update_gold_label()
 		refresh_requested.emit()
 		if item_manager and item_manager.has_method("get_shop_items") and build_system:
@@ -127,10 +138,10 @@ func _on_refresh_pressed() -> void:
 func _update_item_states() -> void:
 	for child in items_container.get_children():
 		if child.has_method("update_affordability"):
-			child.update_affordability(current_gold)
+			child.update_affordability(gold)
 
 func _update_gold_label() -> void:
-	gold_label.text = "Złoto: " + str(current_gold)
+	gold_label.text = "ZLOTO: %d" % gold
 
 func _on_close_pressed() -> void:
 	if get_parent() == get_tree().root:
@@ -142,12 +153,12 @@ func _on_close_pressed() -> void:
 		shop_closed.emit()
 
 func add_gold(amount: int) -> void:
-	current_gold += amount
+	gold += amount
 	_update_gold_label()
 
 func set_gold(amount: int) -> void:
-	current_gold = amount
+	gold = amount
 	_update_gold_label()
 
 func get_gold() -> int:
-	return current_gold
+	return gold

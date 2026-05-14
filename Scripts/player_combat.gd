@@ -430,3 +430,8 @@ func get_weapon_count() -> int:
 	if weapon_manager and weapon_manager.has_method("get_weapon_count"):
 		return weapon_manager.get_weapon_count()
 	return 0
+
+func get_weapons() -> Array:
+	if weapon_manager and weapon_manager.has_method("get_weapons"):
+		return weapon_manager.get_weapons()
+	return []

@@ -22,7 +22,21 @@ var enemies_label: Label
 
 var game_state: String = "menu" # menu, playing, paused, shop, education, game_over, victory
 var score: int = 0
-var gold: int = 100
+## Cached GameData reference for the gold property getter/setter
+var _game_data_ref = null
+
+## SINGLE SOURCE OF TRUTH: gold reads/writes ONLY through GameData.gold
+var gold: int:
+	get:
+		if _game_data_ref == null:
+			_game_data_ref = get_node_or_null("/root/GameData")
+		return _game_data_ref.gold if _game_data_ref else 100
+	set(value):
+		if _game_data_ref == null:
+			_game_data_ref = get_node_or_null("/root/GameData")
+		if _game_data_ref:
+			_game_data_ref.gold = value
+
 var _last_gold_display: int = -1
 var game_start_time: float = 0.0
 
@@ -34,7 +48,7 @@ func _ready() -> void:
 	wave_manager = get_node_or_null("WaveManager")
 	build_system = get_node_or_null("BuildSystem")
 	item_manager = get_node_or_null("ItemManager")
-	shop_system = get_node_or_null("ShopCanvasLayer/ShopSystem")
+	shop_system = get_node_or_null("ShopCanvasLayer/ShopScreen")
 	educational_system = get_node_or_null("EducationalLayer/EducationalSystem")
 	end_screen = get_node_or_null("EndScreenCanvasLayer/EndScreen")
 	playtime_label = get_node_or_null("HUD/PlaytimeUI")
@@ -110,14 +124,9 @@ func start_game() -> void:
 		build_system.clear_build()
 		print("[MainGame] build cleared OK")
 
-	# Wczytaj gold i HP z GameData, jeśli istnieją – fallback do wartości domyślnych
-	if gd and gd.gold > 0:
-		gold = gd.gold
-	else:
+	# Jeśli GameData nie ma złota (świeża gra) – ustaw domyślne 300 przez setter
+	if gd and gd.gold <= 0:
 		gold = 300
-
-	if shop_system and shop_system.has_method("set_gold"):
-		shop_system.set_gold(gold)
 
 	if player:
 		if player.has_method("heal"):
@@ -192,20 +201,43 @@ func _on_wave_started(wave_number: int) -> void:
 	pass
 
 func _on_wave_ended(wave_number: int) -> void:
-	gold += 10
-	if shop_system: shop_system.add_gold(10)
-	score += wave_number * 100
+	if game_state != "playing":
+		return
 
-	# Zapisz progresję w GameData (persystencja między sesjami)
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
-		gd.current_wave = wave_number
-		gd.gold = gold
-		gd.score = score
+		gd.gold += 10
+	score += wave_number * 100
 
-	# Po każdej fali otwórz sklep
-	_open_shop()
-	return
+	# Zapisz progresję w GameData
+	if gd:
+		gd.current_wave = wave_number
+		gd.score = score
+	
+	# Zapisz bronie gracza do GameData przed zmianą sceny
+	_save_weapons_to_gamedata(gd)
+
+	# Przejdź do GameStartScreen zamiast sklepu
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
+
+func _save_weapons_to_gamedata(gd) -> void:
+	if not gd or not player:
+		return
+	if not player.has_method("get_weapons"):
+		return
+	var current_weapons: Array = player.get_weapons()
+	if current_weapons.is_empty():
+		return
+	
+	const WIC := preload("res://Scripts/items/weapon_items.gd")
+	var all_weapons: Array = WIC.get_all_weapons()
+	gd.pending_weapon_ids.clear()
+	for weapon in current_weapons:
+		for i in range(all_weapons.size()):
+			if all_weapons[i].item_name == weapon.item_name and all_weapons[i].item_type == weapon.item_type:
+				gd.pending_weapon_ids.append(i)
+				break
 
 func _open_shop() -> void:
 	game_state = "shop"
@@ -220,9 +252,6 @@ func _open_shop() -> void:
 		get_tree().paused = true
 
 func _on_shop_closed() -> void:
-	# Zsynchronizuj złoto ze sklepu z głównym stanem
-	if shop_system and shop_system.has_method("get_gold"):
-		gold = shop_system.get_gold()
 	game_state = "playing"
 	get_tree().paused = false
 	if wave_manager:
@@ -300,10 +329,8 @@ func _restart_from_wave_one() -> void:
 	# Reset pozycji gracza na środek
 	player.global_position = Vector2(960, 540)
 	
-	# Reset złota do wartości początkowej
+	# Reset złota do wartości początkowej (setter zapisze do GameData)
 	gold = 300
-	if shop_system and shop_system.has_method("set_gold"):
-		shop_system.set_gold(gold)
 	
 	# Ukryj ekran końcowy
 	if end_screen:
