@@ -17,6 +17,7 @@ func _ready() -> void:
 		interact.add_to_group("Interactable")
 
 func interact() -> void:
+	AudioManager.play_sfx("interact_npc")
 	interaction_count += 1
 	if not intro_shown:
 		_show_intro_sequence()

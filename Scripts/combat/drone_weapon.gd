@@ -30,7 +30,8 @@ func initialize(p_player_ref: Node2D, weapon_data: WeaponBase) -> void:
 			tex = load("res://Assets/newAssets/oldDrone.png") as Texture2D
 		_drone_sprite.texture = tex
 	_drone_sprite.scale = Vector2(0.02, 0.02)
-	add_child(_drone_sprite)
+	if _drone_sprite.get_parent() == null:
+		add_child(_drone_sprite)
 
 	# UNIQUE LOGIC: Fighting Drone is faster and more aggressive
 	if "Bojowy" in weapon_data.item_name or weapon_data.rarity == "legendary":
@@ -43,7 +44,9 @@ func initialize(p_player_ref: Node2D, weapon_data: WeaponBase) -> void:
 	var circle_shape := CircleShape2D.new()
 	circle_shape.radius = 10.0
 	collision_shape.shape = circle_shape
-	add_child(collision_shape)
+	
+	if collision_shape.get_parent() == null:
+		add_child(collision_shape)
 	collision_layer = 0
 	collision_mask = 0
 

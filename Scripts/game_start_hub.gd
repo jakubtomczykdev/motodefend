@@ -8,6 +8,7 @@ extends Node2D
 func _ready() -> void:
 	_update_wave_display()
 	_update_gold_display()
+	AudioManager.play_music(AudioManager.MUSIC_LOBBY)
 
 func _process(_delta: float) -> void:
 	_update_gold_display()
@@ -30,9 +31,11 @@ func _update_gold_display() -> void:
 		gold_label.text = "ZLOTO: %d" % gold
 
 func _on_start_game_button_pressed() -> void:
+	AudioManager.play_sfx("menu_click")
 	get_tree().change_scene_to_file("res://scenes/MainGame.tscn")
 
 func _on_bestiary_button_pressed() -> void:
+	AudioManager.play_sfx("menu_click")
 	var bestiary_scene = preload("res://scenes/BestiaryUI.tscn")
 	var ui = bestiary_scene.instantiate()
 	get_tree().root.add_child(ui)

@@ -7,8 +7,8 @@ signal all_waves_completed
 signal game_over
 
 @export var wave_duration: float = 30.0
-@export var base_enemy_count: int = 3
-@export var enemy_count_multiplier: float = 1.15
+@export var base_enemy_count: int = 10
+@export var enemy_count_multiplier: float = 1.25
 
 var current_wave: int = 0
 var enemies_in_wave: int = 0

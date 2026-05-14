@@ -47,6 +47,11 @@ var weapon_manager: Node
 
 var _reticle: ColorRect
 
+# Zmienne dla systemu kroków
+var _step_timer: float = 0.0
+var _step_interval: float = 0.35 # Czas między krokami (sekundy)
+var _use_step1: bool = true
+
 func _ready() -> void:
 	# Znajdź węzły bezpiecznie
 	if has_node("AnimatedSprite2D"):
@@ -127,6 +132,7 @@ func _physics_process(delta: float) -> void:
 		handle_roll(delta)
 	else:
 		handle_movement(delta)
+		_handle_footsteps(delta)
 	
 	# Apply knockback
 	if knockback_velocity.length() > 10.0:
@@ -138,6 +144,20 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	_clamp_to_screen()
 	update_animation()
+
+func _handle_footsteps(delta: float) -> void:
+	if velocity.length() > 50.0 and not is_rolling:
+		_step_timer -= delta
+		if _step_timer <= 0:
+			var sfx_name := "step1" if _use_step1 else "step2"
+			AudioManager.play_sfx(sfx_name, 0.05)
+			_use_step1 = !_use_step1
+			
+			# Dostosuj interwał do prędkości ruchu
+			var speed_factor := velocity.length() / 300.0
+			_step_timer = _step_interval / max(speed_factor, 0.5)
+	else:
+		_step_timer = 0.0 # Resetuj przy zatrzymaniu, aby pierwszy krok był natychmiastowy po ruszeniu
 
 func handle_input(_delta: float) -> void:
 	var direction := Vector2.ZERO
@@ -283,7 +303,7 @@ func fire_projectile(direction: Vector2) -> void:
 func _spawn_crit_effect(pos: Vector2) -> void:
 	var label := Label.new()
 	label.text = "KRYTYK!"
-	label.modulate = Color(1, 0.8, 0, 1) # Gold
+	label.modulate = Color(1.0, 0.55, 0.0, 1.0) # Orange
 	label.add_theme_font_size_override("font_size", 20)
 	label.global_position = pos + Vector2(-30, -40)
 	get_tree().current_scene.add_child(label)
@@ -337,6 +357,7 @@ func heal(amount: int) -> void:
 	health_changed.emit(current_health, max_health)
 
 func die() -> void:
+	AudioManager.play_sfx("player_death")
 	died.emit()
 	queue_free()
 

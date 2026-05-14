@@ -93,27 +93,35 @@ func _process(delta: float) -> void:
 
 func _connect_signals() -> void:
 	if wave_manager:
-		wave_manager.wave_started.connect(_on_wave_started)
-		wave_manager.wave_ended.connect(_on_wave_ended)
-		wave_manager.all_waves_completed.connect(_on_all_waves_completed)
-		wave_manager.game_over.connect(_on_game_over)
+		if not wave_manager.wave_started.is_connected(_on_wave_started):
+			wave_manager.wave_started.connect(_on_wave_started)
+		if not wave_manager.wave_ended.is_connected(_on_wave_ended):
+			wave_manager.wave_ended.connect(_on_wave_ended)
+		if not wave_manager.all_waves_completed.is_connected(_on_all_waves_completed):
+			wave_manager.all_waves_completed.connect(_on_all_waves_completed)
+		if not wave_manager.game_over.is_connected(_on_game_over):
+			wave_manager.game_over.connect(_on_game_over)
 
-	if player and player.has_signal("died"):
-		player.died.connect(_on_player_died)
-	if player and player.has_signal("health_changed"):
-		player.health_changed.connect(_on_player_health_changed)
+	if player:
+		if player.has_signal("died") and not player.died.is_connected(_on_player_died):
+			player.died.connect(_on_player_died)
+		if player.has_signal("health_changed") and not player.health_changed.is_connected(_on_player_health_changed):
+			player.health_changed.connect(_on_player_health_changed)
 
 	if educational_system:
-		educational_system.education_completed.connect(_on_education_completed)
+		if not educational_system.education_completed.is_connected(_on_education_completed):
+			educational_system.education_completed.connect(_on_education_completed)
 
 	if end_screen:
-		end_screen.restart_requested.connect(_on_restart_requested)
-		end_screen.menu_requested.connect(_on_menu_requested)
+		if not end_screen.restart_requested.is_connected(_on_restart_requested):
+			end_screen.restart_requested.connect(_on_restart_requested)
+		if not end_screen.menu_requested.is_connected(_on_menu_requested):
+			end_screen.menu_requested.connect(_on_menu_requested)
 	
 	if shop_system:
-		if shop_system.has_signal("item_purchased"):
+		if shop_system.has_signal("item_purchased") and not shop_system.item_purchased.is_connected(_on_item_purchased):
 			shop_system.item_purchased.connect(_on_item_purchased)
-		if shop_system.has_signal("shop_closed"):
+		if shop_system.has_signal("shop_closed") and not shop_system.shop_closed.is_connected(_on_shop_closed):
 			shop_system.shop_closed.connect(_on_shop_closed)
 
 func start_game() -> void:
@@ -148,6 +156,7 @@ func start_game() -> void:
 	# System edukacyjny tymczasowo wyłączony – przechodzimy od razu do gry
 	print("[MainGame] starting wave manager...")
 	game_state = "playing"
+	AudioManager.play_music(AudioManager.MUSIC_BATTLE)
 	if wave_manager:
 		wave_manager.start_game()
 		print("[MainGame] wave_manager.start_game() OK")

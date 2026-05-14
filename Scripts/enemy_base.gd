@@ -270,9 +270,12 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 		die()
 
 func die() -> void:
+	AudioManager.play_sfx("enemy_death", 0.1, -15.0) # Very quiet
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
 		gd.gold += score_value
+
+	_spawn_gold_number(score_value)
 
 	if _health_bar and is_instance_valid(_health_bar):
 		_health_bar.queue_free()
@@ -305,7 +308,7 @@ func _spawn_damage_number(amount: int) -> void:
 	var label := Label.new()
 	label.text = str(amount)
 	label.add_theme_font_size_override("font_size", 16 + int(amount / 10.0))
-	label.add_theme_color_override("font_color", Color(1, 0.84, 0, 1))
+	label.add_theme_color_override("font_color", Color(1, 1, 1, 1)) # White for damage
 	# Outline effect via duplicate shadow
 	var shadow := Label.new()
 	shadow.text = str(amount)
@@ -321,4 +324,28 @@ func _spawn_damage_number(amount: int) -> void:
 	tween.set_parallel(true)
 	tween.tween_property(label, "global_position:y", label.global_position.y - 50, 0.6)
 	tween.tween_property(label, "modulate:a", 0.0, 0.5).set_delay(0.2)
+	tween.chain().tween_callback(label.queue_free)
+
+func _spawn_gold_number(amount: int) -> void:
+	if not is_inside_tree() or amount <= 0:
+		return
+	var label := Label.new()
+	label.text = "+" + str(amount) + "g"
+	label.add_theme_font_size_override("font_size", 20)
+	label.add_theme_color_override("font_color", Color(1, 0.84, 0, 1)) # Gold color
+	
+	var shadow := Label.new()
+	shadow.text = "+" + str(amount) + "g"
+	shadow.add_theme_font_size_override("font_size", 20)
+	shadow.add_theme_color_override("font_color", Color(0, 0, 0, 0.7))
+	shadow.position = Vector2(1, 1)
+	label.add_child(shadow)
+
+	label.global_position = global_position + Vector2(0, -60)
+	get_tree().current_scene.call_deferred("add_child", label)
+
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label, "global_position:y", label.global_position.y - 60, 0.8)
+	tween.tween_property(label, "modulate:a", 0.0, 0.8).set_delay(0.4)
 	tween.chain().tween_callback(label.queue_free)

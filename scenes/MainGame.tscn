@@ -1,18 +1,32 @@
-[gd_scene format=3 uid="uid://main_game_scene"]
+[gd_scene format=3 uid="uid://bd0gsthj68j6d"]
 
-[ext_resource type="Script" path="res://Scripts/main_game_controller.gd" id="1_main"]
+[ext_resource type="Script" uid="uid://swyij716uls4" path="res://Scripts/main_game_controller.gd" id="1_main"]
 [ext_resource type="PackedScene" uid="uid://dxqcwr5onpo55" path="res://scenes/playerScene.tscn" id="2_player"]
-[ext_resource type="Script" path="res://Scripts/wave_manager.gd" id="3_wave"]
-[ext_resource type="Script" path="res://Scripts/build_system.gd" id="4_build"]
-[ext_resource type="Script" path="res://Scripts/item_manager.gd" id="5_item"]
+[ext_resource type="Script" uid="uid://crywefm1t8alb" path="res://Scripts/wave_manager.gd" id="3_wave"]
+[ext_resource type="Script" uid="uid://0df6kxv6usef" path="res://Scripts/build_system.gd" id="4_build"]
+[ext_resource type="Script" uid="uid://dailkyrs24a4o" path="res://Scripts/item_manager.gd" id="5_item"]
 [ext_resource type="Shader" uid="uid://dfrrjtrlc4mmk" path="res://matrix.gdshader" id="6_matrix"]
 [ext_resource type="Texture2D" uid="uid://u7e10csgef6y" path="res://icon_tex.png" id="7_icon"]
-[ext_resource type="PackedScene" uid="uid://educational_popup" path="res://scenes/EducationalPopup.tscn" id="8_edu"]
-[ext_resource type="PackedScene" uid="uid://end_screen" path="res://scenes/EndScreen.tscn" id="9_end"]
+[ext_resource type="PackedScene" path="res://scenes/EducationalPopup.tscn" id="8_edu"]
+[ext_resource type="PackedScene" path="res://scenes/EndScreen.tscn" id="9_end"]
+[ext_resource type="Script" uid="uid://csilkk2hpyme7" path="res://Scripts/ui/hud_weapon_panel.gd" id="10_hud_wp"]
 [ext_resource type="PackedScene" path="res://scenes/InventoryUI.tscn" id="10_inv"]
 [ext_resource type="PackedScene" path="res://scenes/Shop.tscn" id="11_shop"]
-[ext_resource type="Texture2D" path="res://Assets/newAssets/bgFuturistic.png" id="bg_tex"]
-[ext_resource type="Script" path="res://Scripts/ui/hud_weapon_panel.gd" id="10_hud_wp"]
+[ext_resource type="Texture2D" uid="uid://bhyo3r36kpw4o" path="res://Assets/newAssets/bgFuturistic.png" id="bg_tex"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
+normal = Vector2(0, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bottom"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_left"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_right"]
+normal = Vector2(-1, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_obstacle"]
+size = Vector2(80, 80)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_matrix"]
 shader = ExtResource("6_matrix")
@@ -22,13 +36,121 @@ shader_parameter/columns = 18.0
 shader_parameter/intensity = 1.0
 shader_parameter/glitch_strength = 0.02
 
-[node name="MainGame" type="Node2D"]
+[node name="MainGame" type="Node2D" unique_id=1111670957]
 script = ExtResource("1_main")
 
-[node name="MenuBackground" type="CanvasLayer" parent="."]
+[node name="MapBoundaries" type="StaticBody2D" parent="." unique_id=1650089044]
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="MapBoundaries" unique_id=1194503416]
+position = Vector2(960, 10)
+shape = SubResource("WorldBoundaryShape2D_top")
+
+[node name="Bottom" type="CollisionShape2D" parent="MapBoundaries" unique_id=855231829]
+position = Vector2(960, 1070)
+shape = SubResource("WorldBoundaryShape2D_bottom")
+
+[node name="Left" type="CollisionShape2D" parent="MapBoundaries" unique_id=91994646]
+position = Vector2(10, 540)
+shape = SubResource("WorldBoundaryShape2D_left")
+
+[node name="Right" type="CollisionShape2D" parent="MapBoundaries" unique_id=125386584]
+position = Vector2(1910, 540)
+shape = SubResource("WorldBoundaryShape2D_right")
+
+[node name="VisualBorder" type="Node2D" parent="." unique_id=311179586]
+z_index = 5
+
+[node name="Top" type="ColorRect" parent="VisualBorder" unique_id=1029557870]
+offset_right = 1920.0
+offset_bottom = 10.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="Bottom" type="ColorRect" parent="VisualBorder" unique_id=1457373226]
+offset_top = 1070.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="Left" type="ColorRect" parent="VisualBorder" unique_id=869661965]
+offset_right = 10.0
+offset_bottom = 1080.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="Right" type="ColorRect" parent="VisualBorder" unique_id=1439285678]
+offset_left = 1910.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="Obstacle1" type="StaticBody2D" parent="." unique_id=986960969]
+visible = false
+position = Vector2(126, 131)
+scale = Vector2(3.639999, 3.1599994)
+collision_mask = 0
+
+[node name="ColorRect" type="ColorRect" parent="Obstacle1" unique_id=377441347]
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle1" unique_id=154594251]
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="Obstacle2" type="StaticBody2D" parent="." unique_id=1863347915]
+visible = false
+position = Vector2(1797, 113)
+scale = Vector2(3.037525, 2.8185234)
+collision_mask = 0
+
+[node name="ColorRect" type="ColorRect" parent="Obstacle2" unique_id=367583989]
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle2" unique_id=580146833]
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="Obstacle3" type="StaticBody2D" parent="." unique_id=1223617348]
+visible = false
+position = Vector2(131, 931)
+scale = Vector2(3.5672793, 3.463604)
+collision_mask = 0
+
+[node name="ColorRect" type="ColorRect" parent="Obstacle3" unique_id=1738415684]
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle3" unique_id=1837575861]
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="Obstacle4" type="StaticBody2D" parent="." unique_id=1273217686]
+visible = false
+position = Vector2(1780, 925)
+scale = Vector2(3.32, 4.0399976)
+collision_mask = 0
+
+[node name="ColorRect" type="ColorRect" parent="Obstacle4" unique_id=43593299]
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle4" unique_id=1276719268]
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="MenuBackground" type="CanvasLayer" parent="." unique_id=1708269400]
 layer = -2
 
-[node name="ColorRect" type="ColorRect" parent="MenuBackground"]
+[node name="ColorRect" type="ColorRect" parent="MenuBackground" unique_id=2073915773]
 material = SubResource("ShaderMaterial_matrix")
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,22 +159,22 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="SOCBackground" type="CanvasLayer" parent="."]
+[node name="SOCBackground" type="CanvasLayer" parent="." unique_id=1565773633]
 layer = -1
 
-[node name="TextureRect" type="TextureRect" parent="SOCBackground"]
-texture = ExtResource("bg_tex")
-expand_mode = 1
-stretch_mode = 5
+[node name="TextureRect" type="TextureRect" parent="SOCBackground" unique_id=938265553]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("bg_tex")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="HUD" type="CanvasLayer" parent="."]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1135412941]
 
-[node name="PlaytimeUI" type="Label" parent="HUD"]
+[node name="PlaytimeUI" type="Label" parent="HUD" unique_id=111989709]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -65,26 +187,22 @@ theme_override_font_sizes/font_size = 24
 text = "CZAS GRY: 00:00"
 horizontal_alignment = 2
 
-[node name="HealthBar" type="ProgressBar" parent="HUD"]
-anchors_preset = 0
+[node name="HealthBar" type="ProgressBar" parent="HUD" unique_id=1539204741]
 offset_left = 20.0
 offset_top = 20.0
 offset_right = 220.0
 offset_bottom = 40.0
-max_value = 100.0
 value = 10.0
 show_percentage = false
 
-[node name="HPLabel" type="Label" parent="HUD"]
-anchors_preset = 0
+[node name="HPLabel" type="Label" parent="HUD" unique_id=1993452076]
 offset_left = 230.0
 offset_top = 20.0
 offset_right = 400.0
 offset_bottom = 40.0
 text = "HP: 10/10"
 
-[node name="GoldLabel" type="Label" parent="HUD"]
-anchors_preset = 0
+[node name="GoldLabel" type="Label" parent="HUD" unique_id=516931161]
 offset_left = 20.0
 offset_top = 70.0
 offset_right = 220.0
@@ -93,8 +211,7 @@ theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_font_sizes/font_size = 24
 text = "ZLOTO: 100"
 
-[node name="EnemiesRemainingLabel" type="Label" parent="HUD"]
-anchors_preset = 0
+[node name="EnemiesRemainingLabel" type="Label" parent="HUD" unique_id=1979966355]
 offset_left = 20.0
 offset_top = 110.0
 offset_right = 220.0
@@ -102,13 +219,12 @@ offset_bottom = 130.0
 theme_override_font_sizes/font_size = 20
 text = "WROGOWIE: 0/0"
 
-[node name="WeaponPanel" type="CanvasLayer" parent="HUD"]
+[node name="WeaponPanel" type="CanvasLayer" parent="HUD" unique_id=1777726099]
 layer = 5
 script = ExtResource("10_hud_wp")
 
-[node name="PanelContainer" type="PanelContainer" parent="HUD/WeaponPanel"]
-layout_mode = 0
-anchors_preset = 12
+[node name="PanelContainer" type="PanelContainer" parent="HUD/WeaponPanel" unique_id=53075821]
+anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -120,15 +236,15 @@ offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HUD/WeaponPanel/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/WeaponPanel/PanelContainer" unique_id=304748436]
 layout_mode = 2
 theme_override_constants/separation = 30
 
-[node name="WeaponSlot1" type="Panel" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer"]
+[node name="WeaponSlot1" type="Panel" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer" unique_id=1408504595]
 custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1" unique_id=1638649295]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -137,36 +253,31 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="WeaponIcon1" type="TextureRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1/VBoxContainer"]
+[node name="WeaponIcon1" type="TextureRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1/VBoxContainer" unique_id=1646816758]
 unique_name_in_owner = true
+clip_contents = true
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 3
 stretch_mode = 5
-clip_contents = true
 
-[node name="CooldownOverlay1" type="ColorRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1/VBoxContainer"]
+[node name="CooldownOverlay1" type="ColorRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1/VBoxContainer" unique_id=1804236548]
 unique_name_in_owner = true
-layout_mode = 0
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 color = Color(0, 0, 0, 0.65)
 
-[node name="WeaponName1" type="Label" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1/VBoxContainer"]
+[node name="WeaponName1" type="Label" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot1/VBoxContainer" unique_id=1689234767]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 horizontal_alignment = 1
 
-[node name="WeaponSlot2" type="Panel" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer"]
+[node name="WeaponSlot2" type="Panel" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer" unique_id=63358013]
 custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2" unique_id=247979645]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -175,77 +286,74 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="WeaponIcon2" type="TextureRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2/VBoxContainer2"]
+[node name="WeaponIcon2" type="TextureRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2/VBoxContainer2" unique_id=355151787]
 unique_name_in_owner = true
+clip_contents = true
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 3
 stretch_mode = 5
-clip_contents = true
 
-[node name="CooldownOverlay2" type="ColorRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2/VBoxContainer2"]
+[node name="CooldownOverlay2" type="ColorRect" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2/VBoxContainer2" unique_id=851040908]
 unique_name_in_owner = true
-layout_mode = 0
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 color = Color(0, 0, 0, 0.65)
 
-[node name="WeaponName2" type="Label" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2/VBoxContainer2"]
+[node name="WeaponName2" type="Label" parent="HUD/WeaponPanel/PanelContainer/HBoxContainer/WeaponSlot2/VBoxContainer2" unique_id=167407991]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 horizontal_alignment = 1
 
-[node name="Player" parent="." instance=ExtResource("2_player")]
+[node name="Player" parent="." unique_id=614373679 instance=ExtResource("2_player")]
 position = Vector2(960, 540)
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
-limit_smoothed = true
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=1043759206]
 limit_left = 0
 limit_top = 0
 limit_right = 1920
 limit_bottom = 1080
+limit_smoothed = true
 
-[node name="WaveManager" type="Node" parent="."]
+[node name="WaveManager" type="Node" parent="." unique_id=721607474]
 script = ExtResource("3_wave")
 
-[node name="BuildSystem" type="Node" parent="."]
+[node name="BuildSystem" type="Node" parent="." unique_id=1262419829]
 script = ExtResource("4_build")
 
-[node name="ItemManager" type="Node" parent="."]
+[node name="ItemManager" type="Node" parent="." unique_id=825733455]
 script = ExtResource("5_item")
 
-[node name="EducationalLayer" type="CanvasLayer" parent="."]
+[node name="EducationalLayer" type="CanvasLayer" parent="." unique_id=787861815]
 layer = 10
 
-[node name="EducationalSystem" parent="EducationalLayer" instance=ExtResource("8_edu")]
+[node name="EducationalSystem" parent="EducationalLayer" unique_id=826146946 instance=ExtResource("8_edu")]
 
-[node name="ShopCanvasLayer" type="CanvasLayer" parent="."]
+[node name="ShopCanvasLayer" type="CanvasLayer" parent="." unique_id=618646997]
 process_mode = 3
 layer = 10
 
-[node name="ShopScreen" parent="ShopCanvasLayer" instance=ExtResource("11_shop")]
+[node name="ShopScreen" parent="ShopCanvasLayer" unique_id=125832302 instance=ExtResource("11_shop")]
 visible = false
+layout_mode = 3
+anchors_preset = 15
 
-[node name="InventoryUI" parent="." instance=ExtResource("10_inv")]
+[node name="InventoryUI" parent="." unique_id=1919843291 instance=ExtResource("10_inv")]
 
-[node name="EndScreenCanvasLayer" type="CanvasLayer" parent="."]
+[node name="EndScreenCanvasLayer" type="CanvasLayer" parent="." unique_id=924138838]
 layer = 15
 
-[node name="EndScreen" parent="EndScreenCanvasLayer" instance=ExtResource("9_end")]
+[node name="EndScreen" parent="EndScreenCanvasLayer" unique_id=914235261 instance=ExtResource("9_end")]
 
-[node name="SpawnTopLeft" type="Marker2D" parent="." groups=["SpawnPoints"]]
-position = Vector2(100, 100)
+[node name="SpawnTopLeft" type="Marker2D" parent="." unique_id=818646506 groups=["SpawnPoints"]]
+position = Vector2(357, 160)
 
-[node name="SpawnTopRight" type="Marker2D" parent="." groups=["SpawnPoints"]]
-position = Vector2(1820, 100)
+[node name="SpawnTopRight" type="Marker2D" parent="." unique_id=626104267 groups=["SpawnPoints"]]
+position = Vector2(1701, 302)
 
-[node name="SpawnBottomLeft" type="Marker2D" parent="." groups=["SpawnPoints"]]
-position = Vector2(100, 980)
+[node name="SpawnBottomLeft" type="Marker2D" parent="." unique_id=364791395 groups=["SpawnPoints"]]
+position = Vector2(340, 662)
 
-[node name="SpawnBottomRight" type="Marker2D" parent="." groups=["SpawnPoints"]]
-position = Vector2(1820, 980)
+[node name="SpawnBottomRight" type="Marker2D" parent="." unique_id=2080838232 groups=["SpawnPoints"]]
+position = Vector2(1672, 775)

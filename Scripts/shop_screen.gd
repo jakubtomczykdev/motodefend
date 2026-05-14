@@ -96,6 +96,7 @@ func _update_preview(item: ItemBase) -> void:
 
 func _on_item_clicked(item: ItemBase) -> void:
 	if gold >= item.cost:
+		AudioManager.play_sfx("buy_item")
 		gold -= item.cost
 		item_purchased.emit(item)
 		_update_gold_label()
@@ -118,6 +119,7 @@ func _on_item_clicked(item: ItemBase) -> void:
 
 func _on_refresh_pressed() -> void:
 	if gold >= refresh_cost:
+		AudioManager.play_sfx("menu_click")
 		gold -= refresh_cost
 		_update_gold_label()
 		refresh_requested.emit()
@@ -144,6 +146,7 @@ func _update_gold_label() -> void:
 	gold_label.text = "ZLOTO: %d" % gold
 
 func _on_close_pressed() -> void:
+	AudioManager.play_sfx("menu_click")
 	if get_parent() == get_tree().root:
 		# Standalone mode - return to hub
 		get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")

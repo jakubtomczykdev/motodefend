@@ -11,11 +11,22 @@ var _current_music_track: String = ""
 
 # Mapa nazw dźwięków na ścieżki — zapobiega błędom "Resource not found"
 var _sfx_paths: Dictionary = {
-	"blaster_shot": "res://Audio/blaster_shot.wav",
-	"drone_shoot": "res://Audio/drone_shoot.wav",
-	"shockwave": "res://Audio/shockwave.wav",
-	"sword_swing": "res://Audio/sword_swing.wav",
+	"blaster_shot": "res://Assets/Sounds/Blaster.mp3",
+	"drone_shoot": "res://Assets/Sounds/Blaster.mp3", # Fallback
+	"shockwave": "res://Assets/Sounds/Sword.mp3", # Fallback
+	"sword_swing": "res://Assets/Sounds/Sword.mp3",
+	"step1": "res://Assets/Sounds/Step1.mp3",
+	"step2": "res://Assets/Sounds/Step2.mp3",
+	"interact_npc": "res://Assets/Sounds/Interakcjazpostacia.mp3",
+	"buy_item": "res://Assets/Sounds/kupienie_przedmiotu.mp3",
+	"menu_click": "res://Assets/Sounds/menu_click.wav",
+	"player_death": "res://Assets/Sounds/smierc_bohatera.mp3",
+	"enemy_death": "res://Assets/Sounds/przeciwnik_smierc.wav",
 }
+
+# Ścieżki muzyki
+const MUSIC_LOBBY = "res://Assets/Sounds/Muzyka_lobby.mp3"
+const MUSIC_BATTLE = "res://Assets/Sounds/muzyka_podczas_walki.mp3"
 
 func _ready() -> void:
 	_create_buses()
@@ -103,7 +114,7 @@ func play_music(track_path: String, fade_in: float = 0.5) -> void:
 	var tween := create_tween()
 	tween.tween_property(player, "volume_db", 0.0, fade_in)
 
-func play_sfx(sfx_path: String, pitch_variation: float = 0.1) -> void:
+func play_sfx(sfx_path: String, pitch_variation: float = 0.1, volume_db: float = 0.0) -> void:
 	var resolved_path: String = _sfx_paths.get(sfx_path, sfx_path)
 	
 	var stream: AudioStream = load(resolved_path)
@@ -114,6 +125,7 @@ func play_sfx(sfx_path: String, pitch_variation: float = 0.1) -> void:
 	var player := AudioStreamPlayer.new()
 	player.stream = stream
 	player.bus = SFX_BUS
+	player.volume_db = volume_db
 	player.pitch_scale = 1.0 + randf_range(-pitch_variation, pitch_variation)
 	add_child(player)
 	player.play()

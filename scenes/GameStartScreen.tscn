@@ -6,11 +6,89 @@
 [ext_resource type="PackedScene" uid="uid://tjeubeg1cp6j" path="res://scenes/cybersecurity_expert.tscn" id="6_7s0oi"]
 [ext_resource type="Script" uid="uid://c0k55lc55dpyb" path="res://Scripts/cybersecurity_expert.gd" id="7_vjy5m"]
 [ext_resource type="Script" uid="uid://glrrl0imiuif" path="res://Scripts/game_start_hub.gd" id="8_hub"]
-[ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://retropix.ttf" id="9_font"]
+[ext_resource type="Script" uid="uid://fv5etw6m4nrg" path="res://Scripts/ui/start_game_trigger.gd" id="10_trigger"]
 [ext_resource type="Texture2D" uid="uid://bg4ia3v3cbgbx" path="res://Assets/Lobby_bg.png" id="bg_tex"]
 
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
+normal = Vector2(0, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bottom"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_left"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_right"]
+normal = Vector2(-1, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_obstacle"]
+size = Vector2(100, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
+size = Vector2(216, 88)
+
 [node name="Node2D" type="Node2D" unique_id=720583781]
+y_sort_enabled = true
 script = ExtResource("8_hub")
+
+[node name="MapBoundaries" type="StaticBody2D" parent="." unique_id=993547456]
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="MapBoundaries" unique_id=1600140728]
+position = Vector2(960, 10)
+shape = SubResource("WorldBoundaryShape2D_top")
+
+[node name="Bottom" type="CollisionShape2D" parent="MapBoundaries" unique_id=1782483281]
+position = Vector2(960, 1070)
+shape = SubResource("WorldBoundaryShape2D_bottom")
+
+[node name="Left" type="CollisionShape2D" parent="MapBoundaries" unique_id=2019637932]
+position = Vector2(10, 540)
+shape = SubResource("WorldBoundaryShape2D_left")
+
+[node name="Right" type="CollisionShape2D" parent="MapBoundaries" unique_id=1832784671]
+position = Vector2(1910, 540)
+shape = SubResource("WorldBoundaryShape2D_right")
+
+[node name="VisualBorder" type="Node2D" parent="." unique_id=15551614]
+z_index = 5
+
+[node name="Top" type="ColorRect" parent="VisualBorder" unique_id=1760733865]
+offset_right = 1920.0
+offset_bottom = 10.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="Bottom" type="ColorRect" parent="VisualBorder" unique_id=1039350752]
+offset_top = 1070.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="Left" type="ColorRect" parent="VisualBorder" unique_id=217714465]
+offset_right = 10.0
+offset_bottom = 1080.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="Right" type="ColorRect" parent="VisualBorder" unique_id=423466597]
+offset_left = 1910.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="Obstacle1" type="StaticBody2D" parent="." unique_id=611869912]
+visible = false
+position = Vector2(946, 189)
+scale = Vector2(19.832539, 1)
+collision_mask = 0
+
+[node name="ColorRect" type="ColorRect" parent="Obstacle1" unique_id=934845380]
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle1" unique_id=2134446690]
+shape = SubResource("RectangleShape2D_obstacle")
 
 [node name="BackgroundLayer" type="CanvasLayer" parent="." unique_id=124791235]
 layer = -1
@@ -24,38 +102,8 @@ grow_vertical = 2
 texture = ExtResource("bg_tex")
 expand_mode = 1
 stretch_mode = 5
-metadata/logic_bricks_graph = {
-"connections": [],
-"next_id": 0,
-"nodes": []
-}
-metadata/logic_bricks_frames = []
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2088068454]
-
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=517861857]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -220.0
-offset_top = -150.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer" unique_id=1201316014]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="StartGameButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=595248239]
-custom_minimum_size = Vector2(180, 60)
-layout_mode = 2
-theme_override_fonts/font = ExtResource("9_font")
-theme_override_font_sizes/font_size = 24
-text = "ROZPOCZNIJ GRĘ"
 
 [node name="GoldLabel" type="Label" parent="CanvasLayer" unique_id=669059220]
 offset_left = 20.0
@@ -66,18 +114,28 @@ theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_font_sizes/font_size = 24
 text = "ZLOTO: 0"
 
-[node name="Player" parent="." unique_id=654260357 instance=ExtResource("2_bml70")]
-position = Vector2(960, 540)
-script = ExtResource("3_bml70")
-speed = 150.0
-
 [node name="SellingMashine" parent="." unique_id=889363064 instance=ExtResource("4_4klen")]
-position = Vector2(1566.9999, 435)
-rotation = 0.62133723
+y_sort_enabled = true
+position = Vector2(1196, 400)
 safe_margin = 0.001
 
 [node name="CybersecurityExpert" parent="." unique_id=594552917 instance=ExtResource("6_7s0oi")]
+y_sort_enabled = true
 position = Vector2(417, 472)
 script = ExtResource("7_vjy5m")
 
-[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]
+[node name="StartGameTrigger" type="Area2D" parent="." unique_id=414210525 groups=["Interactable"]]
+position = Vector2(960, 540)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("10_trigger")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StartGameTrigger" unique_id=572524071]
+position = Vector2(-2, -244)
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="Player" parent="." unique_id=654260357 instance=ExtResource("2_bml70")]
+y_sort_enabled = true
+position = Vector2(960, 740)
+script = ExtResource("3_bml70")
+speed = 150.0

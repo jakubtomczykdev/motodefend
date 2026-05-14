@@ -81,26 +81,26 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 	ring_tween.tween_callback(wave_ring.queue_free).set_delay(0.35)
 
 	# Area2D dla kolizji
-	wave_area = Area2D.new()
-	wave_area.collision_layer = 0
-	wave_area.collision_mask = 1
+	var new_wave_area = Area2D.new()
+	new_wave_area.collision_layer = 0
+	new_wave_area.collision_mask = 1
 
 	var collision_shape := CollisionShape2D.new()
 	var circle_shape := CircleShape2D.new()
 	var wave_radius: float = min(weapon_data.weapon_range, 250.0)
 	circle_shape.radius = wave_radius
 	collision_shape.shape = circle_shape
-	wave_area.add_child(collision_shape)
+	new_wave_area.add_child(collision_shape)
 
-	wave_area.global_position = player_pos
-	wave_area.body_entered.connect(_on_wave_body_entered.bind(weapon_data, wave_area, dmg_mult))
+	new_wave_area.global_position = player_pos
+	new_wave_area.body_entered.connect(_on_wave_body_entered.bind(weapon_data, new_wave_area, dmg_mult))
 
-	get_tree().current_scene.add_child(wave_area)
+	get_tree().current_scene.add_child(new_wave_area)
 
 	# Overlapping bodies sprawdzimy po jednej klatce (fizyka musi się zaktualizować)
 	await get_tree().process_frame
-	if is_instance_valid(wave_area):
-		for body in wave_area.get_overlapping_bodies():
+	if is_instance_valid(new_wave_area):
+		for body in new_wave_area.get_overlapping_bodies():
 			if body.is_in_group("Enemies") and not hit_enemies.has(body):
 				hit_enemies.append(body)
 				if body.has_method("take_damage"):
@@ -119,14 +119,14 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	var end_pos := player_pos + target_dir * weapon_data.weapon_range
 	var t := create_tween()
-	t.tween_property(wave_area, "global_position", end_pos, 0.5)
-	t.tween_callback(_on_wave_finished)
+	t.tween_property(new_wave_area, "global_position", end_pos, 0.5)
+	t.tween_callback(new_wave_area.queue_free)
 
 	can_attack = false
 	AudioManager.play_sfx("shockwave")
 	attack_timer = weapon_data.attack_speed * cooldown_mult
 
-func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, wave: Area2D, dmg_mult: float = 1.0) -> void:
+func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, _wave: Area2D, dmg_mult: float = 1.0) -> void:
 	if not body.is_in_group("Enemies"):
 		return
 	if body in hit_enemies:
@@ -152,7 +152,3 @@ func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, wave: Area2D, 
 		var spark_tween := create_tween()
 		spark_tween.tween_property(spark, "modulate:a", 0.0, 0.2)
 		spark_tween.tween_callback(spark.queue_free)
-
-func _on_wave_finished() -> void:
-	if wave_area and is_instance_valid(wave_area):
-		wave_area.queue_free()
