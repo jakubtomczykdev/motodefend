@@ -12,7 +12,7 @@
 [ext_resource type="Script" uid="uid://csilkk2hpyme7" path="res://Scripts/ui/hud_weapon_panel.gd" id="10_hud_wp"]
 [ext_resource type="PackedScene" path="res://scenes/InventoryUI.tscn" id="10_inv"]
 [ext_resource type="PackedScene" path="res://scenes/Shop.tscn" id="11_shop"]
-[ext_resource type="PackedScene" path="res://scenes/TransitionScreen.tscn" id="12_transition"]
+[ext_resource type="PackedScene" uid="uid://cx6y8v2u7k7m2" path="res://scenes/TransitionScreen.tscn" id="12_transition"]
 [ext_resource type="Texture2D" uid="uid://bhyo3r36kpw4o" path="res://Assets/newAssets/bgFuturistic.png" id="bg_tex"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
@@ -329,14 +329,12 @@ script = ExtResource("5_item")
 
 [node name="EducationalLayer" type="CanvasLayer" parent="." unique_id=787861815]
 layer = 10
-visible = false
 
 [node name="EducationalSystem" parent="EducationalLayer" unique_id=826146946 instance=ExtResource("8_edu")]
 
 [node name="ShopCanvasLayer" type="CanvasLayer" parent="." unique_id=618646997]
 process_mode = 3
 layer = 10
-visible = false
 
 [node name="ShopScreen" parent="ShopCanvasLayer" unique_id=125832302 instance=ExtResource("11_shop")]
 visible = false
@@ -346,17 +344,14 @@ anchors_preset = 15
 [node name="TransitionCanvasLayer" type="CanvasLayer" parent="." unique_id=221646997]
 process_mode = 3
 layer = 12
-visible = false
 
 [node name="TransitionScreen" parent="TransitionCanvasLayer" unique_id=225832302 instance=ExtResource("12_transition")]
 visible = false
 
 [node name="InventoryUI" parent="." unique_id=1919843291 instance=ExtResource("10_inv")]
-visible = false
 
 [node name="EndScreenCanvasLayer" type="CanvasLayer" parent="." unique_id=924138838]
 layer = 15
-visible = false
 
 [node name="EndScreen" parent="EndScreenCanvasLayer" unique_id=914235261 instance=ExtResource("9_end")]
 

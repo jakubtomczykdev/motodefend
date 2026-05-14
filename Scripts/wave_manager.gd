@@ -176,6 +176,10 @@ func _spawn_enemy(enemy_type: String) -> void:
 		return
 
 	var enemy: Node2D = scene.instantiate()
+	
+	if enemy.has_method("scale_stats"):
+		enemy.scale_stats(current_wave)
+
 	var spawn_point: Node2D = spawn_points.pick_random()
 
 	if spawn_point:
@@ -196,7 +200,7 @@ func _spawn_enemy(enemy_type: String) -> void:
 		push_warning("Cannot add enemy - no valid parent found")
 
 func _on_enemy_died() -> void:
-	enemies_remaining -= 1
+	enemies_remaining = max(0, enemies_remaining - 1)
 	update_ui()
 
 	if spawn_queue.is_empty() and enemies_remaining <= 0:

@@ -101,6 +101,9 @@ func _handle_collision(collider: Node) -> void:
 			target_body = target_body.get_parent()
 	
 	if target_body.is_in_group("Enemies"):
+		if target_body.get("is_dead"):
+			return
+			
 		if target_body.has_method("take_damage"):
 			target_body.take_damage(damage)
 		

@@ -70,11 +70,15 @@ func add_weapon(weapon: WeaponBase) -> bool:
 		return false
 
 	var instance: Node = script.new()
-	add_child(instance)
-
+	
 	if weapon.item_type == "drone":
+		# Drony powinny być w korzeniu sceny, by móc swobodnie latać
+		if instance.get_parent() == null:
+			get_tree().current_scene.add_child(instance)
 		instance.initialize(player_ref, weapon)
 	else:
+		if instance.get_parent() == null:
+			add_child(instance)
 		instance.initialize(weapon, player_ref)
 
 	weapon_instances.append(instance)

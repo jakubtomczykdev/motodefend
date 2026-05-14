@@ -32,12 +32,12 @@ const FIGHTINGDRONE_RANGE: float = 500.0
 const FIGHTINGDRONE_COST: int = 300
 # DPS: 68.8 | Typ: pasywny
 
-# Blaster – pociski energetyczne (szybkostrzelny)
-const BLASTER_DAMAGE: float = 120.0
-const BLASTER_ATTACK_SPEED: float = 0.25
-const BLASTER_RANGE: float = 500.0
-const BLASTER_COST: int = 200
-# DPS: 480.0 | Typ: dystansowy
+# Blaster – pociski energetyczne (seria danych)
+const BLASTER_DAMAGE: float = 85.0
+const BLASTER_ATTACK_SPEED: float = 0.45
+const BLASTER_RANGE: float = 550.0
+const BLASTER_COST: int = 220
+# DPS: ~170 (w serii) | Typ: dystansowy (seria)
 
 # Sword – atak w zwarciu
 const SWORD_DAMAGE: float = 75.0

@@ -38,6 +38,20 @@ var original_move_speed: float = 0.0
 
 var _health_bar: ProgressBar
 var _health_bar_scale: float = 1.0
+var is_dead: bool = false
+
+func scale_stats(wave_number: int) -> void:
+	# Skalowanie statystyk wrogów na podstawie numeru fali
+	var health_multiplier := 1.0 + (wave_number - 1) * 0.25 # +25% HP na falę
+	var damage_multiplier := 1.0 + (wave_number - 1) * 0.15 # +15% DMG na falę
+	
+	max_health = int(max_health * health_multiplier)
+	current_health = max_health
+	damage = int(damage * damage_multiplier)
+	
+	if _health_bar:
+		_health_bar.max_value = max_health
+		_health_bar.value = current_health
 
 func _ready() -> void:
 	# Upewnij się, że wróg jest widoczny i w grupie
@@ -246,6 +260,9 @@ func attack() -> void:
 	attack_timer = attack_cooldown
 
 func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
+	if is_dead:
+		return
+		
 	var final_damage := amount
 	
 	if is_boss:
@@ -270,6 +287,10 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 		die()
 
 func die() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	
 	AudioManager.play_sfx("enemy_death", 0.1, -15.0) # Very quiet
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
