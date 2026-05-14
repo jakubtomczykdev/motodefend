@@ -153,7 +153,7 @@ func update_health_bar() -> void:
 			style_fg.bg_color = Color(0.839, 0.149, 0.149)
 		_health_bar.add_theme_stylebox_override("fill", style_fg)
 
-func _on_damaged(amount: int) -> void:
+func _on_damaged(_amount: int) -> void:
 	_spawn_hit_effect()
 	update_health_bar()
 

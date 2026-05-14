@@ -1,0 +1,202 @@
+1. Nieużywane parametry (amount, delta)
+
+Przykłady:
+
+The parameter "amount" is never used in the function "_on_damaged()"
+The parameter "delta" is never used in the function "_process_chase()"
+
+To są tylko warningi, nie krytyczne błędy.
+
+Co oznacza?
+
+Masz funkcję np.:
+
+func _on_damaged(amount):
+
+ale nigdzie w środku funkcji nie używasz amount.
+
+Jak naprawić?
+Opcja 1 — użyj parametru
+
+Jeśli ma być potrzebny:
+
+health -= amount
+Opcja 2 — ukryj warning
+
+Jeśli parametr jest wymagany przez sygnał albo callback:
+
+func _on_damaged(_amount):
+
+lub
+
+func _process_chase(_delta):
+
+Podkreślnik mówi Godotowi:
+
+„wiem, że parametr istnieje, ale celowo go nie używam”.
+
+2. Invalid UID / ext_resource
+
+Przykłady:
+
+invalid UID: uid://trojan_tex
+invalid UID: uid://ransomware_tex
+Co oznacza?
+
+Godot nie może znaleźć zasobu przypisanego do sceny.
+
+Najczęściej:
+
+przeniosłeś pliki ręcznie poza Godotem,
+zmieniłeś nazwę pliku,
+usunąłeś teksturę,
+.import się zepsuł.
+Problematyczne pliki:
+res://Assets/Characters/Trojan.png
+res://Assets/Characters/Ransomware.png
+Jak naprawić?
+Najprościej:
+Otwórz scenę:
+Trojan.tscn
+Ransomware.tscn
+Kliknij sprite/texturę.
+Ponownie przypisz obrazek PNG.
+Alternatywnie:
+
+Usuń folder .godot i uruchom projekt ponownie.
+
+Godot przebuduje importy.
+
+3. Błąd rodzica noda (already has a parent)
+
+Najważniejszy błąd:
+
+Can't add child '@CharacterBody2D@15' to 'MainGame',
+already has a parent 'WeaponManager'
+Co oznacza?
+
+Próbujesz dodać ten sam node drugi raz:
+
+add_child(drone)
+
+ale drone już istnieje w drzewie sceny.
+
+Node w Godocie może mieć tylko jednego parenta.
+
+Typowy problem
+
+Masz coś takiego:
+
+weapon_manager.add_child(drone)
+main_game.add_child(drone)
+
+lub:
+
+add_child(drone)
+
+wywoływane wielokrotnie.
+
+Jak naprawić?
+Opcja 1 — sprawdzaj parenta
+if drone.get_parent() == null:
+    add_child(drone)
+Opcja 2 — twórz nową instancję
+
+Zamiast reużywać tego samego noda:
+
+var drone = drone_scene.instantiate()
+add_child(drone)
+4. Brak pliku dźwięku
+
+Najczęstszy spam:
+
+Resource file not found: res://drone_shoot
+
+oraz:
+
+[AudioManager] Nie znaleziono: drone_shoot
+Co oznacza?
+
+Twój AudioManager próbuje załadować dźwięk:
+
+res://drone_shoot
+
+ale:
+
+plik nie istnieje,
+ścieżka jest błędna,
+brakuje rozszerzenia (.wav, .ogg, .mp3).
+Jak naprawić?
+
+Prawdopodobnie masz coś takiego:
+
+play_sfx("drone_shoot")
+
+a manager robi:
+
+load("res://" + sound_name)
+
+co daje:
+
+res://drone_shoot
+
+bez rozszerzenia.
+
+Poprawnie:
+load("res://Audio/drone_shoot.wav")
+
+lub słownik:
+
+var sounds = {
+    "drone_shoot": preload("res://Audio/drone_shoot.wav")
+}
+5. Signal already connected
+
+Błąd:
+
+Signal 'shop_closed' is already connected
+Co oznacza?
+
+Łączysz sygnał kilka razy:
+
+shop.shop_closed.connect(_on_shop_closed)
+
+a połączenie już istnieje.
+
+Jak naprawić?
+Bezpieczne połączenie:
+if not shop.shop_closed.is_connected(_on_shop_closed):
+    shop.shop_closed.connect(_on_shop_closed)
+Najważniejsze problemy do naprawy
+Krytyczne:
+Can't add child ... already has a parent
+Resource file not found
+Signal already connected
+Niekrytyczne:
+unused parameter
+invalid UID
+Co wygląda na problem architektury?
+
+Masz prawdopodobnie:
+
+wielokrotne tworzenie lub dodawanie drona,
+wielokrotne podłączanie sygnałów,
+AudioManager bez centralnej mapy dźwięków.
+
+To typowe przy:
+
+spawn systemach,
+weapon managerach,
+singletonach/autoloadach.
+Co bym sprawdził najpierw?
+1. drone_weapon.gd:52
+
+Tam powstaje główny błąd.
+
+2. audio_manager.gd:99
+
+Tam jest zła ścieżka do audio.
+
+3. main_game_controller.gd:220
+
+Tam wielokrotnie connectujesz sygnał sklepu.

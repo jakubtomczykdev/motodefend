@@ -75,7 +75,7 @@ func add_weapon(weapon: WeaponBase) -> bool:
 	if weapon.item_type == "drone":
 		instance.initialize(player_ref, weapon)
 	else:
-		instance.initialize(weapon)
+		instance.initialize(weapon, player_ref)
 
 	weapon_instances.append(instance)
 	

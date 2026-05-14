@@ -4,39 +4,65 @@ var current_weapon: WeaponBase
 var can_attack: bool = true
 var attack_timer: float = 0.0
 var projectile_scene: PackedScene = preload("res://scenes/Projectile.tscn")
+var player_ref: Node2D = null
 
-func initialize(weapon_data: WeaponBase) -> void:
+func initialize(weapon_data: WeaponBase, p_player_ref: Node2D = null) -> void:
 	current_weapon = weapon_data
+	player_ref = p_player_ref
 	can_attack = true
 
 func fire(player: Node2D, target_pos: Vector2, weapon_data: WeaponBase) -> void:
 	if not can_attack:
 		return
 
-	var player_pos = player.global_position
-	
-	# Celuj DOKŁADNIE tam, gdzie jest myszka (target_pos)
-	var direction := (target_pos - player_pos).normalized()
+	var spawn_pos: Vector2
+	if player_ref and player_ref.has_node("Muzzle"):
+		spawn_pos = player_ref.get_node("Muzzle").global_position
+	else:
+		spawn_pos = player.global_position + (target_pos - player.global_position).normalized() * 25.0
 
-	# Strzelaj jedną kulą, ale bardzo szybko i w idealnej linii
+	var direction := (target_pos - spawn_pos).normalized()
+
 	var projectile: Area2D = projectile_scene.instantiate()
-	projectile.speed = 1700 # Jeszcze szybciej dla lepszej "strugi"
-	projectile.damage = int(weapon_data.damage)
+	projectile.speed = 1700
+	
+	# Mnożnik obrażeń z build systemu gracza
+	var dmg_mult: float = 1.0
+	if player_ref and "damage" in player_ref:
+		dmg_mult = player_ref.damage / 10.0
+	projectile.damage = int(weapon_data.damage * dmg_mult)
+	
 	projectile.direction = direction
-	projectile.global_position = player_pos + direction * 25
+	projectile.global_position = spawn_pos
 	projectile.owner_node = player
-	
-	# Wizualizacja: Grubsza i dłuższa struga energetyczna
-	projectile.scale = Vector2(0.05, 0.03) 
-	projectile.modulate = Color(0, 0.9, 1.0, 3.0) # Ekstremalnie jasny błękit (neon)
-	
-	# BRAK NAMIERZANIA (Homing usunięty na żądanie)
-	
+
+	# Wizualizacja pocisku – ustawiamy skalę i kolor na Sprite2D
+	var sprite: Sprite2D = projectile.get_node_or_null("Sprite2D")
+	if sprite:
+		sprite.scale = Vector2(1.5, 0.8)
+		sprite.modulate = Color(0.2, 0.95, 1.0, 1.0)
+
 	get_tree().current_scene.add_child(projectile)
+
+	# Efekt muzzle flash
+	_spawn_muzzle_flash(spawn_pos, direction)
 
 	can_attack = false
 	AudioManager.play_sfx("blaster_shot")
 	attack_timer = weapon_data.attack_speed
+
+func _spawn_muzzle_flash(pos: Vector2, direction: Vector2) -> void:
+	var flash := ColorRect.new()
+	flash.size = Vector2(20, 20)
+	flash.color = Color(0.4, 0.95, 1.0, 0.9)
+	flash.global_position = pos - flash.size / 2
+	flash.rotation = direction.angle()
+	get_tree().current_scene.add_child(flash)
+
+	var tween := create_tween()
+	tween.tween_property(flash, "scale", Vector2(0.5, 0.1), 0.08)
+	tween.parallel().tween_property(flash, "modulate:a", 0.0, 0.1)
+	tween.tween_callback(flash.queue_free)
 
 func _process(delta: float) -> void:
 	if not can_attack:

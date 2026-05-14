@@ -12,6 +12,7 @@ var direction: Vector2 = Vector2.RIGHT
 var owner_node: Node2D
 var pierce_count: int = 0
 var time_alive: float = 0.0
+var hit_bodies: Array[Node] = []
 
 var homing_target: Node2D = null
 var homing_strength: float = 0.0
@@ -28,6 +29,7 @@ func _ready() -> void:
 		collision = $CollisionShape2D
 
 	body_entered.connect(_on_body_entered)
+	z_index = 10
 	add_to_group("Projectiles")
 
 func _generate_projectile_texture() -> void:
@@ -69,7 +71,7 @@ func _physics_process(delta: float) -> void:
 		global_position = result.position
 		return
 
-	position += movement
+	global_position += movement
 
 	if direction.length() > 0:
 		rotation = direction.angle()
@@ -84,6 +86,11 @@ func _on_body_entered(body: Node2D) -> void:
 func _handle_collision(collider: Node) -> void:
 	if not is_instance_valid(collider) or collider == owner_node:
 		return
+
+	# Zapobiegaj podwójnemu trafieniu tego samego obiektu
+	if hit_bodies.has(collider):
+		return
+	hit_bodies.append(collider)
 
 	# Szukamy właściwego obiektu do zadania obrażeń (ciało wroga lub jego rodzic/dziecko)
 	var target_body = collider

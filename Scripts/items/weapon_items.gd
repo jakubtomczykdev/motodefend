@@ -83,7 +83,7 @@ class Sword extends WeaponBase:
 		rarity = "common"
 		damage = 12.0
 		attack_speed = 2.0
-		weapon_range = 120.0
+		weapon_range = 200.0
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/sword.png")
 

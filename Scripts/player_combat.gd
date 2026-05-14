@@ -117,6 +117,10 @@ func _process(delta: float) -> void:
 				# Obracaj broń nawet jeśli nie strzelamy
 				if weapon_manager.has_method("rotate_weapon_slots"):
 					weapon_manager.rotate_weapon_slots(target_pos)
+			
+			# Obracaj muzzle w stronę celu (zawsze, niezależnie od ataku)
+			if muzzle:
+				muzzle.look_at(target_pos)
 
 func _physics_process(delta: float) -> void:
 	if is_rolling:

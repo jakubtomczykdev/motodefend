@@ -53,11 +53,11 @@ func update_affordability(gold: int) -> void:
 	if gold < item_data.cost:
 		buy_button.disabled = true
 		buy_button.modulate = Color(1, 1, 1, 0.5)
-		buy_button.text = "INSUFFICIENT_FUNDS"
+		buy_button.text = "Za mało złota"
 	else:
 		buy_button.disabled = false
 		buy_button.modulate = Color(1, 1, 1, 1.0)
-		buy_button.text = "INSTALL_MODULE"
+		buy_button.text = "Kup"
 
 func _on_buy_pressed() -> void:
 	item_clicked.emit(item_data)

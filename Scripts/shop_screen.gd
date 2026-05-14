@@ -65,10 +65,10 @@ func _populate_items() -> void:
 		item_ui.mouse_entered.connect(_update_preview.bind(item))
 
 func _update_preview(item: ItemBase) -> void:
-	preview_name.text = item.item_name.to_upper()
-	preview_rarity.text = "LEVEL_ID: " + item.rarity.to_upper()
+	preview_name.text = item.item_name
+	preview_rarity.text = "Rzadkość: " + item.rarity.capitalize()
 	preview_description.text = item.description
-	preview_cost.text = "REQ_CREDITS: " + str(item.cost)
+	preview_cost.text = "Koszt: " + str(item.cost)
 	
 	if item.icon:
 		preview_icon.texture = item.icon
@@ -130,7 +130,7 @@ func _update_item_states() -> void:
 			child.update_affordability(current_gold)
 
 func _update_gold_label() -> void:
-	gold_label.text = "CREDITS: " + str(current_gold)
+	gold_label.text = "Złoto: " + str(current_gold)
 
 func _on_close_pressed() -> void:
 	if get_parent() == get_tree().root:
@@ -144,3 +144,10 @@ func _on_close_pressed() -> void:
 func add_gold(amount: int) -> void:
 	current_gold += amount
 	_update_gold_label()
+
+func set_gold(amount: int) -> void:
+	current_gold = amount
+	_update_gold_label()
+
+func get_gold() -> int:
+	return current_gold

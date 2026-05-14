@@ -34,9 +34,9 @@ func _ready() -> void:
 	wave_manager = get_node_or_null("WaveManager")
 	build_system = get_node_or_null("BuildSystem")
 	item_manager = get_node_or_null("ItemManager")
-	shop_system = get_node_or_null("ShopSystem")
+	shop_system = get_node_or_null("ShopCanvasLayer/ShopSystem")
 	educational_system = get_node_or_null("EducationalLayer/EducationalSystem")
-	end_screen = get_node_or_null("EndScreen")
+	end_screen = get_node_or_null("EndScreenCanvasLayer/EndScreen")
 	playtime_label = get_node_or_null("HUD/PlaytimeUI")
 	health_bar = get_node_or_null("HUD/HealthBar")
 	hp_label = get_node_or_null("HUD/HPLabel")
@@ -95,6 +95,12 @@ func _connect_signals() -> void:
 	if end_screen:
 		end_screen.restart_requested.connect(_on_restart_requested)
 		end_screen.menu_requested.connect(_on_menu_requested)
+	
+	if shop_system:
+		if shop_system.has_signal("item_purchased"):
+			shop_system.item_purchased.connect(_on_item_purchased)
+		if shop_system.has_signal("shop_closed"):
+			shop_system.shop_closed.connect(_on_shop_closed)
 
 func start_game() -> void:
 	var gd := get_node_or_null("/root/GameData")
@@ -110,7 +116,8 @@ func start_game() -> void:
 	else:
 		gold = 300
 
-	if shop_system: shop_system.add_gold(gold)
+	if shop_system and shop_system.has_method("set_gold"):
+		shop_system.set_gold(gold)
 
 	if player:
 		if player.has_method("heal"):
@@ -167,6 +174,7 @@ func start_game() -> void:
 		
 		_update_player_stats()
 
+	game_start_time = Time.get_unix_time_from_system()
 	game_started.emit()
 	print("[MainGame] start_game END")
 
@@ -195,8 +203,8 @@ func _on_wave_ended(wave_number: int) -> void:
 		gd.gold = gold
 		gd.score = score
 
-	# Po każdej fali wróć do GameStartScreen (system jednej fali per sesja)
-	get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
+	# Po każdej fali otwórz sklep
+	_open_shop()
 	return
 
 func _open_shop() -> void:
@@ -212,6 +220,9 @@ func _open_shop() -> void:
 		get_tree().paused = true
 
 func _on_shop_closed() -> void:
+	# Zsynchronizuj złoto ze sklepu z głównym stanem
+	if shop_system and shop_system.has_method("get_gold"):
+		gold = shop_system.get_gold()
 	game_state = "playing"
 	get_tree().paused = false
 	if wave_manager:
@@ -257,11 +268,10 @@ func _on_game_over() -> void:
 	show_game_over()
 
 func _on_player_died() -> void:
-	# Zapisz do GameData i wróć do GameStartScreen
-	var gd := get_node_or_null("/root/GameData")
-	if gd:
-		gd.current_wave = wave_manager.current_wave if wave_manager else 0
-	get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
+	game_state = "game_over"
+	if wave_manager:
+		wave_manager.is_wave_active = false
+	show_game_over()
 	return
 
 func _on_player_health_changed(_current: int, _max: int) -> void:
@@ -270,8 +280,47 @@ func _on_player_health_changed(_current: int, _max: int) -> void:
 		gd.player_hp = _current
 		gd.player_max_hp = _max
 
+func _restart_from_wave_one() -> void:
+	# Wyczyść wrogów
+	var enemies := get_tree().get_nodes_in_group("Enemies")
+	for enemy in enemies:
+		if is_instance_valid(enemy):
+			enemy.queue_free()
+	
+	# Reset fali do 0 (start_next_wave doda +1 -> fala 1)
+	if wave_manager:
+		wave_manager.current_wave = 0
+		wave_manager.enemies_in_wave = 0
+		wave_manager.enemies_remaining = 0
+	
+	# Przywróć gracza
+	if player:
+		player.current_health = player.max_health
+		player.health_changed.emit(player.current_health, player.max_health)
+	# Reset pozycji gracza na środek
+	player.global_position = Vector2(960, 540)
+	
+	# Reset złota do wartości początkowej
+	gold = 300
+	if shop_system and shop_system.has_method("set_gold"):
+		shop_system.set_gold(gold)
+	
+	# Ukryj ekran końcowy
+	if end_screen:
+		end_screen.visible = false
+	
+	get_tree().paused = false
+	game_state = "playing"
+	
+	# Rozpocznij falę 1
+	if wave_manager:
+		wave_manager.start_next_wave()
+	
+	# Zresetuj czas gry
+	game_start_time = Time.get_unix_time_from_system()
+
 func _on_restart_requested() -> void:
-	get_tree().reload_current_scene()
+	_restart_from_wave_one()
 
 func _on_menu_requested() -> void:
 	get_tree().change_scene_to_file("res://MainMenu.tscn")

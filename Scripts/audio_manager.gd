@@ -9,6 +9,14 @@ const UI_BUS := "UI"
 var _music_players: Array[AudioStreamPlayer] = []
 var _current_music_track: String = ""
 
+# Mapa nazw dźwięków na ścieżki — zapobiega błędom "Resource not found"
+var _sfx_paths: Dictionary = {
+	"blaster_shot": "res://Audio/blaster_shot.wav",
+	"drone_shoot": "res://Audio/drone_shoot.wav",
+	"shockwave": "res://Audio/shockwave.wav",
+	"sword_swing": "res://Audio/sword_swing.wav",
+}
+
 func _ready() -> void:
 	_create_buses()
 
@@ -96,9 +104,11 @@ func play_music(track_path: String, fade_in: float = 0.5) -> void:
 	tween.tween_property(player, "volume_db", 0.0, fade_in)
 
 func play_sfx(sfx_path: String, pitch_variation: float = 0.1) -> void:
-	var stream: AudioStream = load(sfx_path)
+	var resolved_path: String = _sfx_paths.get(sfx_path, sfx_path)
+	
+	var stream: AudioStream = load(resolved_path)
 	if stream == null:
-		push_warning("[AudioManager] Nie znaleziono: " + sfx_path)
+		# Po cichu ignoruj brakujące dźwięki (brak plików audio w projekcie)
 		return
 
 	var player := AudioStreamPlayer.new()

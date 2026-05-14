@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/shop_screen.gd" id="1"]
 
 [node name="ShopScreen" type="Control"]
+process_mode = 3
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -25,7 +26,7 @@ offset_left = 48.0
 offset_top = -20.0
 offset_right = 448.0
 offset_bottom = 20.0
-text = "MOTOROLA // SYSTEMS_SHOP"
+text = "SKLEP"
 
 [node name="GoldLabel" type="Label" parent="TopBar"]
 anchor_left = 1.0
@@ -36,7 +37,7 @@ offset_left = -448.0
 offset_top = -20.0
 offset_right = -48.0
 offset_bottom = 20.0
-text = "CREDITS: 100"
+text = "Złoto: 100"
 horizontal_alignment = 2
 
 [node name="MainArea" type="HBoxContainer" parent="."]
@@ -73,24 +74,24 @@ layout_mode = 2
 
 [node name="PreviewName" type="Label" parent="MainArea/PreviewPanel/PreviewVBox"]
 layout_mode = 2
-text = "SELECT_MODULE"
+text = "Wybierz przedmiot"
 horizontal_alignment = 1
 
 [node name="PreviewRarity" type="Label" parent="MainArea/PreviewPanel/PreviewVBox"]
 layout_mode = 2
-text = "ID: NULL"
+text = "Rzadkość: -"
 horizontal_alignment = 1
 
 [node name="PreviewDescription" type="Label" parent="MainArea/PreviewPanel/PreviewVBox"]
 layout_mode = 2
 size_flags_vertical = 3
-text = "Waiting for input..."
+text = "Najedź kursorem na przedmiot"
 horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="PreviewCost" type="Label" parent="MainArea/PreviewPanel/PreviewVBox"]
 layout_mode = 2
-text = "COST: 000"
+text = "Koszt: -"
 horizontal_alignment = 1
 
 [node name="ItemsContainer" type="HFlowContainer" parent="MainArea"]
@@ -120,9 +121,9 @@ alignment = 1
 [node name="RerollButton" type="Button" parent="BottomBar/HBox"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
-text = "REFRESH_CACHE (25G)"
+text = "Odśwież (25G)"
 
 [node name="BackButton" type="Button" parent="BottomBar/HBox"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
-text = "EXIT_INTERFACE"
+text = "Powrót"

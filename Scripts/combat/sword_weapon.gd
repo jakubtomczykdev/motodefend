@@ -111,7 +111,7 @@ func _on_swing_body_entered(body: Node2D, weapon_data: WeaponBase) -> void:
 		return
 	hit_enemies.append(body)
 	if body.has_method("take_damage"):
-		body.take_damage(int(weapon_data.damage))
+		body.take_damage(int(weapon_data.damage * _swing_dmg_mult))
 	_spawn_impact(body)
 
 func _spawn_impact(target: Node2D) -> void:

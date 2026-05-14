@@ -49,7 +49,6 @@ func initialize(p_player_ref: Node2D, weapon_data: WeaponBase) -> void:
 
 	global_position = player_ref.global_position + Vector2(randf_range(-100, 100), randf_range(-100, 100))
 	_pick_patrol_target()
-	get_tree().current_scene.add_child(self)
 
 func _pick_patrol_target() -> void:
 	var viewport := get_viewport_rect().size
@@ -134,7 +133,7 @@ func _process_patrol(delta: float) -> void:
 		else:
 			_drone_sprite.scale.x = -abs(_drone_sprite.scale.x)
 
-func _process_chase(delta: float) -> void:
+func _process_chase(_delta: float) -> void:
 	if not target_enemy or not is_instance_valid(target_enemy):
 		state = DroneState.PATROLLING
 		return
@@ -184,7 +183,13 @@ func _fire_projectile(direction: Vector2) -> void:
 
 	var proj: Area2D = projectile_scene.instantiate()
 	proj.speed = 400
-	proj.damage = int(current_weapon.damage)
+	
+	# Mnożnik obrażeń z build systemu gracza
+	var dmg_mult: float = 1.0
+	if player_ref and "damage" in player_ref:
+		dmg_mult = player_ref.damage / 10.0
+	proj.damage = int(current_weapon.damage * dmg_mult)
+	
 	proj.direction = direction
 	proj.global_position = global_position
 	proj.owner_node = self

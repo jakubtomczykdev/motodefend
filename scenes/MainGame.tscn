@@ -9,6 +9,8 @@
 [ext_resource type="Texture2D" uid="uid://u7e10csgef6y" path="res://icon_tex.png" id="7_icon"]
 [ext_resource type="PackedScene" uid="uid://educational_popup" path="res://scenes/EducationalPopup.tscn" id="8_edu"]
 [ext_resource type="PackedScene" uid="uid://end_screen" path="res://scenes/EndScreen.tscn" id="9_end"]
+[ext_resource type="PackedScene" path="res://scenes/InventoryUI.tscn" id="10_inv"]
+[ext_resource type="PackedScene" path="res://scenes/Shop.tscn" id="11_shop"]
 [ext_resource type="Texture2D" path="res://Assets/newAssets/bgFuturistic.png" id="bg_tex"]
 [ext_resource type="Script" path="res://Scripts/ui/hud_weapon_panel.gd" id="10_hud_wp"]
 
@@ -221,7 +223,19 @@ layer = 10
 
 [node name="EducationalSystem" parent="EducationalLayer" instance=ExtResource("8_edu")]
 
-[node name="EndScreen" parent="." instance=ExtResource("9_end")]
+[node name="ShopCanvasLayer" type="CanvasLayer" parent="."]
+process_mode = 3
+layer = 10
+
+[node name="ShopSystem" parent="ShopCanvasLayer" instance=ExtResource("11_shop")]
+visible = false
+
+[node name="InventoryUI" parent="." instance=ExtResource("10_inv")]
+
+[node name="EndScreenCanvasLayer" type="CanvasLayer" parent="."]
+layer = 15
+
+[node name="EndScreen" parent="EndScreenCanvasLayer" instance=ExtResource("9_end")]
 
 [node name="SpawnTopLeft" type="Marker2D" parent="." groups=["SpawnPoints"]]
 position = Vector2(100, 100)

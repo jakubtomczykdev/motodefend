@@ -82,22 +82,23 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	get_tree().current_scene.add_child(wave_area)
 
-	# Sprawdź czy jacyś wrogowie już są w obszarze (zanim Area2D zacznie się ruszać)
-	for body in wave_area.get_overlapping_bodies():
-		if body.is_in_group("Enemies") and not hit_enemies.has(body):
-			hit_enemies.append(body)
-			if body.has_method("take_damage"):
-				body.take_damage(int(weapon_data.damage * dmg_mult))
-			# Iskry przy trafieniu (overlap)
-			for i in range(2):
-				var spark := ColorRect.new()
-				spark.size = Vector2(5, 5)
-				spark.color = Color(0, 0.8, 1, 0.8)
-				spark.global_position = body.global_position + Vector2(randf_range(-8, 8), randf_range(-8, 8))
-				get_tree().current_scene.add_child(spark)
-				var spark_tween := create_tween()
-				spark_tween.tween_property(spark, "modulate:a", 0.0, 0.2)
-				spark_tween.tween_callback(spark.queue_free)
+	# Overlapping bodies sprawdzimy po jednej klatce (fizyka musi się zaktualizować)
+	await get_tree().process_frame
+	if is_instance_valid(wave_area):
+		for body in wave_area.get_overlapping_bodies():
+			if body.is_in_group("Enemies") and not hit_enemies.has(body):
+				hit_enemies.append(body)
+				if body.has_method("take_damage"):
+					body.take_damage(int(weapon_data.damage * dmg_mult))
+				for i in range(2):
+					var spark := ColorRect.new()
+					spark.size = Vector2(5, 5)
+					spark.color = Color(0, 0.8, 1, 0.8)
+					spark.global_position = body.global_position + Vector2(randf_range(-8, 8), randf_range(-8, 8))
+					get_tree().current_scene.add_child(spark)
+					var spark_tween := create_tween()
+					spark_tween.tween_property(spark, "modulate:a", 0.0, 0.2)
+					spark_tween.tween_callback(spark.queue_free)
 
 	hit_enemies.clear()
 
