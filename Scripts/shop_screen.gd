@@ -30,6 +30,16 @@ func _ready() -> void:
 	reroll_button.pressed.connect(_on_refresh_pressed)
 	current_gold = starting_gold
 	_update_gold_label()
+	# Auto-populate with default weapons when shop loaded standalone
+	await get_tree().process_frame
+	if shop_items.is_empty():
+		var weapons = WeaponItems.get_all_weapons()
+		if not weapons.is_empty():
+			weapons.shuffle()
+			var count = mini(4, weapons.size())
+			for i in range(count):
+				shop_items.append(weapons[i])
+			_populate_items()
 
 func open_shop(available_items: Array[ItemBase], player_build: Node, manager: Node) -> void:
 	shop_items = available_items
@@ -84,18 +94,35 @@ func _on_item_clicked(item: ItemBase) -> void:
 			build_system.add_item(item)
 		else:
 			var gd = get_node_or_null("/root/GameData")
-			if gd: gd.add_inventory_item(item)
+			if gd:
+				gd.add_inventory_item(item)
+				# Also register weapon for combat restoration via pending_weapon_ids
+				if item is WeaponBase:
+					var all_weps = WeaponItems.get_all_weapons()
+					for i in range(all_weps.size()):
+						if all_weps[i].item_name == item.item_name and all_weps[i].item_type == item.item_type:
+							if not gd.pending_weapon_ids.has(i):
+								gd.pending_weapon_ids.append(i)
+							break
 
 func _on_refresh_pressed() -> void:
 	if current_gold >= refresh_cost:
 		current_gold -= refresh_cost
 		_update_gold_label()
 		refresh_requested.emit()
-		# Uwaga: WaveManager/ItemManager powinien dostarczyć nowe przedmioty przez open_shop
-		# Tutaj emulujemy zamknięcie i otwarcie jeśli dane są dostępne
-		if item_manager and build_system:
-			var new_items = item_manager.get_shop_items(4, 1) # Placeholder wave
+		if item_manager and item_manager.has_method("get_shop_items") and build_system:
+			var new_items = item_manager.get_shop_items(4, 1)
 			open_shop(new_items, build_system, item_manager)
+		else:
+			# Standalone fallback - shuffle and repopulate
+			_clear_items()
+			var weapons = WeaponItems.get_all_weapons()
+			weapons.shuffle()
+			shop_items.clear()
+			var count = mini(4, weapons.size())
+			for i in range(count):
+				shop_items.append(weapons[i])
+			_populate_items()
 
 func _update_item_states() -> void:
 	for child in items_container.get_children():
@@ -106,8 +133,13 @@ func _update_gold_label() -> void:
 	gold_label.text = "CREDITS: " + str(current_gold)
 
 func _on_close_pressed() -> void:
-	visible = false
-	shop_closed.emit()
+	if get_parent() == get_tree().root:
+		# Standalone mode - return to hub
+		get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
+	else:
+		# Child mode (inside MainGame) - just hide
+		visible = false
+		shop_closed.emit()
 
 func add_gold(amount: int) -> void:
 	current_gold += amount

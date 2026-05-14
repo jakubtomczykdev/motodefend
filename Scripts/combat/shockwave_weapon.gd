@@ -5,9 +5,11 @@ var can_attack: bool = true
 var attack_timer: float = 0.0
 var hit_enemies: Array = []
 var wave_area: Area2D
+var player_ref: Node2D = null
 
-func initialize(weapon_data: WeaponBase) -> void:
+func initialize(weapon_data: WeaponBase, p_player_ref: Node2D = null) -> void:
 	current_weapon = weapon_data
+	player_ref = p_player_ref
 	can_attack = true
 
 func is_ready() -> bool:
@@ -25,12 +27,19 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	current_weapon = weapon_data
 
+	# Mnożniki z build systemu (player_ref.damage / 10.0, attack_speed / 1.0)
+	var dmg_mult: float = 1.0
+	var cooldown_mult: float = 1.0
+	if player_ref and "damage" in player_ref and "attack_speed" in player_ref:
+		dmg_mult = player_ref.damage / 10.0
+		cooldown_mult = 1.0 / max(player_ref.attack_speed, 0.1)
+
 	# Wizualna fala - ColorRect rozszerzająca się
 	var wave_visual := ColorRect.new()
 	wave_visual.size = Vector2(1, 1)
 	
 	# Motorola Cyan for New Radio, Default for Old
-	var is_motorola := "Motorola" in weapon_data.weapon_name
+	var is_motorola := "Motorola" in weapon_data.item_name
 	var wave_color := Color(0, 0.941, 1, 0.5) if is_motorola else Color(0.6, 0.7, 0.8, 0.4)
 	
 	wave_visual.color = wave_color
@@ -69,7 +78,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 	wave_area.add_child(collision_shape)
 
 	wave_area.global_position = player_pos
-	wave_area.body_entered.connect(_on_wave_body_entered.bind(weapon_data, wave_area))
+	wave_area.body_entered.connect(_on_wave_body_entered.bind(weapon_data, wave_area, dmg_mult))
 
 	get_tree().current_scene.add_child(wave_area)
 
@@ -78,8 +87,8 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 		if body.is_in_group("Enemies") and not hit_enemies.has(body):
 			hit_enemies.append(body)
 			if body.has_method("take_damage"):
-				body.take_damage(int(weapon_data.damage))
-			# Iskry przy trafieniu
+				body.take_damage(int(weapon_data.damage * dmg_mult))
+			# Iskry przy trafieniu (overlap)
 			for i in range(2):
 				var spark := ColorRect.new()
 				spark.size = Vector2(5, 5)
@@ -99,9 +108,9 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	can_attack = false
 	AudioManager.play_sfx("shockwave")
-	attack_timer = weapon_data.attack_speed
+	attack_timer = weapon_data.attack_speed * cooldown_mult
 
-func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, wave: Area2D) -> void:
+func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, wave: Area2D, dmg_mult: float = 1.0) -> void:
 	if not body.is_in_group("Enemies"):
 		return
 	if body in hit_enemies:
@@ -109,10 +118,10 @@ func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, wave: Area2D) 
 	hit_enemies.append(body)
 
 	if body.has_method("take_damage"):
-		body.take_damage(int(weapon_data.damage))
+		body.take_damage(int(weapon_data.damage * dmg_mult))
 
 	# UNIQUE LOGIC: New Motorola Radio slows down enemies
-	if "Motorola" in weapon_data.weapon_name and body.has_method("apply_slowdown"):
+	if "Motorola" in weapon_data.item_name and body.has_method("apply_slowdown"):
 		body.apply_slowdown(0.4, 2.0) # 60% slow for 2 seconds
 
 	# Iskry przy trafieniu falą

@@ -149,10 +149,14 @@ func start_game() -> void:
 			# Wyczyść zapisane bronie aby nie duplikować przy kolejnej fali
 			gd.pending_weapon_ids.clear()
 		
-		# Jeśli gracz nie ma broni, daj domyślną (Blaster)
+		# Jeśli gracz nie ma broni, daj losową domyślną
 		if player.get_weapon_count() == 0:
-			var default_weapon: WeaponBase = WeaponItemsClass.Blaster.new()
-			player.add_weapon(default_weapon)
+			var all_weps = WeaponItemsClass.get_all_weapons()
+			if all_weps.size() > 0:
+				var rng = RandomNumberGenerator.new()
+				rng.randomize()
+				var default_weapon: WeaponBase = all_weps[rng.randi_range(0, all_weps.size() - 1)]
+				player.add_weapon(default_weapon)
 		
 		# Restore Items (Passives)
 		for item in gd.inventory:
@@ -282,7 +286,7 @@ func _create_weapon_from_id(weapon_id: String) -> WeaponBase:
 	const WIC := preload("res://Scripts/items/weapon_items.gd")
 	var all_weapons: Array = WIC.get_all_weapons()
 	for w in all_weapons:
-		if w.weapon_name == weapon_id:
+		if w.item_name == weapon_id:
 			return w
 	return null
 

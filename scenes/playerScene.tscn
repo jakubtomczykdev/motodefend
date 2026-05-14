@@ -259,29 +259,12 @@ position = Vector2(20, 0)
 
 [node name="WeaponSlot1" type="Sprite2D" parent="." unique_id=386288044]
 unique_name_in_owner = true
-<<<<<<< Updated upstream
-visible = false
-z_index = 5
-position = Vector2(-30, 0)
-scale = Vector2(0.2, 0.2)
+position = Vector2(-35, 0)
+scale = Vector2(0.06, 0.06)
 
 [node name="WeaponSlot2" type="Sprite2D" parent="." unique_id=666911830]
 unique_name_in_owner = true
-visible = false
-z_index = 5
-position = Vector2(30, 0)
-scale = Vector2(0.2, 0.2)
-=======
-position = Vector2(-35, 0)
-scale = Vector2(0.4, 0.4)
-visible = false
-z_index = 5
-
-[node name="WeaponSlot2" type="Sprite2D" parent="."]
-unique_name_in_owner = true
 position = Vector2(35, 0)
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.06, 0.06)
 visible = false
 z_index = 5
-
->>>>>>> Stashed changes

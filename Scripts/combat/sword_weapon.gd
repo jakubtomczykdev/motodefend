@@ -5,14 +5,25 @@ var can_attack: bool = true
 var attack_timer: float = 0.0
 var current_swing_area: Area2D = null
 var hit_enemies: Array = []
+var player_ref: Node2D = null
+var _swing_dmg_mult: float = 1.0
 
-func initialize(weapon_data: WeaponBase) -> void:
+func initialize(weapon_data: WeaponBase, p_player_ref: Node2D = null) -> void:
 	current_weapon = weapon_data
+	player_ref = p_player_ref
 	can_attack = true
 
 func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: WeaponBase) -> void:
 	if not can_attack:
 		return
+
+	# Mnożniki z build systemu (player_ref.damage / 10.0, attack_speed / 1.0)
+	var dmg_mult: float = 1.0
+	var cooldown_mult: float = 1.0
+	if player_ref and "damage" in player_ref and "attack_speed" in player_ref:
+		dmg_mult = player_ref.damage / 10.0
+		cooldown_mult = 1.0 / max(player_ref.attack_speed, 0.1)
+	_swing_dmg_mult = dmg_mult
 
 	var swing_origin := player_body.global_position + direction * 20
 	var start_angle := direction.angle() - 1.2
@@ -57,7 +68,7 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 	var tex := load("res://Assets/newAssets/sword.png") as Texture2D
 	if tex:
 		sword_sprite.texture = tex
-		sword_sprite.scale = Vector2(1.0, 1.0)
+		sword_sprite.scale = Vector2(0.04, 0.04)
 		sword_sprite.offset = Vector2(50, 0)
 		sword_sprite.modulate = Color(0.7, 0.85, 1, 1)
 	swing_area.add_child(sword_sprite)
@@ -70,7 +81,7 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 	flash.rotation = start_angle
 	get_tree().root.add_child(flash)
 	var flash_tween := create_tween()
-	flash_tween.tween_property(flash, "scale", Vector2(2, 0.5), 0.12)
+	flash_tween.tween_property(flash, "scale", Vector2(0.2, 0.05), 0.12)
 	flash_tween.parallel().tween_property(flash, "modulate:a", 0.0, 0.12)
 	flash_tween.tween_callback(flash.queue_free)
 

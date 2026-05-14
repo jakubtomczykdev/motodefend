@@ -64,7 +64,7 @@ func add_weapon(weapon: WeaponBase) -> bool:
 
 	weapons.append(weapon)
 
-	var script: Script = _get_weapon_script(weapon.weapon_type)
+	var script: Script = _get_weapon_script(weapon.item_type)
 	if not script:
 		weapons.pop_back()
 		return false
@@ -72,7 +72,7 @@ func add_weapon(weapon: WeaponBase) -> bool:
 	var instance: Node = script.new()
 	add_child(instance)
 
-	if weapon.weapon_type == "drone":
+	if weapon.item_type == "drone":
 		instance.initialize(player_ref, weapon)
 	else:
 		instance.initialize(weapon)
@@ -167,7 +167,7 @@ func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
 		var weapon_data: WeaponBase = weapons[i]
 		
 		# Drony są zawsze aktywne pasywnie (jeśli ich skrypt to wspiera)
-		if weapon_data.weapon_type == "drone":
+		if weapon_data.item_type == "drone":
 			if instance.has_method("update_drone"):
 				instance.update_drone(target_pos)
 			continue
@@ -175,7 +175,7 @@ func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
 		if not instance.is_ready():
 			continue
 
-		match weapon_data.weapon_type:
+		match weapon_data.item_type:
 			"shockwave":
 				var target_dir := _get_aim_direction(target_pos)
 				instance.activate(player_ref.global_position, weapon_data, target_dir)

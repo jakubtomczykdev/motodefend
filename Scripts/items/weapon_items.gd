@@ -6,8 +6,8 @@ class_name WeaponItems
 # Stare Radio – słaba fala uderzeniowa
 class OldRadio extends WeaponBase:
 	func _init():
-		weapon_name = "Radio"
-		weapon_type = "shockwave"
+		item_name = "Radio"
+		item_type = "shockwave"
 		description = "Stare radio – emituje falę uderzeniową (obrażenia obszarowe)"
 		cost = 90
 		rarity = "common"
@@ -20,8 +20,8 @@ class OldRadio extends WeaponBase:
 # Nowe Radio Motorola – potężna fala uderzeniowa
 class NewRadio extends WeaponBase:
 	func _init():
-		weapon_name = "Radio Motorola"
-		weapon_type = "shockwave"
+		item_name = "Radio Motorola"
+		item_type = "shockwave"
 		description = "Nowe radio Motorola – potężna fala uderzeniowa (obrażenia obszarowe)"
 		cost = 250
 		rarity = "epic"
@@ -34,8 +34,8 @@ class NewRadio extends WeaponBase:
 # Stary Dron – wolno krąży i atakuje
 class OldDrone extends WeaponBase:
 	func _init():
-		weapon_name = "Dron"
-		weapon_type = "drone"
+		item_name = "Dron"
+		item_type = "drone"
 		description = "Stary dron – krąży wokół gracza i automatycznie atakuje"
 		cost = 100
 		rarity = "rare"
@@ -48,8 +48,8 @@ class OldDrone extends WeaponBase:
 # Dron Bojowy – szybki i śmiercionośny
 class FightingDrone extends WeaponBase:
 	func _init():
-		weapon_name = "Dron Bojowy"
-		weapon_type = "drone"
+		item_name = "Dron Bojowy"
+		item_type = "drone"
 		description = "Dron bojowy – krąży wokół gracza i automatycznie atakuje (szybki fire rate)"
 		cost = 300
 		rarity = "legendary"
@@ -59,34 +59,25 @@ class FightingDrone extends WeaponBase:
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/fightingDrone.png")
 
-# Blaster – wolna, potężna broń energetyczna
+# Blaster – szybka broń energetyczna
 class Blaster extends WeaponBase:
 	func _init():
-		weapon_name = "Blaster"
-		weapon_type = "blaster"
-<<<<<<< Updated upstream
+		item_name = "Blaster"
+		item_type = "blaster"
 		description = "Blaster – super szybka wiązka niebieskich kul w jednej linii"
 		cost = 200
 		rarity = "rare"
 		damage = 2.0
 		attack_speed = 0.05
 		weapon_range = 500.0
-=======
-		description = "Wolna, potężna broń energetyczna. Strzela szeroką wiązką plazmy."
-		cost = 280
-		rarity = "rare"
-		damage = 30.0
-		attack_speed = 2.5
-		weapon_range = 400.0
->>>>>>> Stashed changes
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/Blaster.png")
 
 # Miecz – atak w zwarciu
 class Sword extends WeaponBase:
 	func _init():
-		weapon_name = "Miecz"
-		weapon_type = "sword"
+		item_name = "Miecz"
+		item_type = "sword"
 		description = "Miecz – atak w zwarciu (wysokie DPS, ryzykowne użycie)"
 		cost = 100
 		rarity = "common"

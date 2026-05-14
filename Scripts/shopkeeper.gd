@@ -6,9 +6,9 @@ func _ready() -> void:
 	var anim := find_child("AnimatedSprite2D", true, false) as AnimatedSprite2D
 	if anim:
 		anim.play("MashineAnimation")
-	var interact := find_child("InteractArea", true, false) as Area2D
-	if interact:
-		interact.add_to_group("Interactable")
+	var interact_area := find_child("InteractArea", true, false) as Area2D
+	if interact_area:
+		interact_area.add_to_group("Interactable")
 
 func interact() -> void:
 	var main = get_tree().current_scene

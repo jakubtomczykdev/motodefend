@@ -9,5 +9,5 @@ func _ready() -> void:
 	all_weapons = WeaponItemsClass.get_all_weapons()
 	print("[DEBUG] all_weapons size: ", all_weapons.size())
 	for w in all_weapons:
-		print("[DEBUG] weapon: ", w.weapon_name)
+		print("[DEBUG] weapon: ", w.item_name)
 	print("[DEBUG] _ready() end")

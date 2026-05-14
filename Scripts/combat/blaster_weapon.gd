@@ -27,7 +27,7 @@ func fire(player: Node2D, target_pos: Vector2, weapon_data: WeaponBase) -> void:
 	projectile.owner_node = player
 	
 	# Wizualizacja: Grubsza i dłuższa struga energetyczna
-	projectile.scale = Vector2(1.2, 0.8) 
+	projectile.scale = Vector2(0.05, 0.03) 
 	projectile.modulate = Color(0, 0.9, 1.0, 3.0) # Ekstremalnie jasny błękit (neon)
 	
 	# BRAK NAMIERZANIA (Homing usunięty na żądanie)

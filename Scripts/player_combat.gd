@@ -418,7 +418,7 @@ func interact() -> void:
 func add_weapon(weapon: WeaponBase) -> bool:
 	if weapon_manager and weapon_manager.has_method("add_weapon"):
 		var result: bool = weapon_manager.add_weapon(weapon)
-		print("[DEBUG] player_combat.add_weapon called for ", weapon.weapon_name, " result=", result)
+		print("[DEBUG] player_combat.add_weapon called for ", weapon.item_name, " result=", result)
 		return result
 	return false
 
