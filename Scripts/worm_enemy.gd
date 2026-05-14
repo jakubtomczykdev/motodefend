@@ -1,8 +1,8 @@
 extends EnemyBase
 ## Specyficzna logika dla Worma - rozmnażanie się
 
-@export var split_chance: float = 0.2
-@export var split_timer_max: float = 8.0
+@export var split_chance: float = 0.1
+@export var split_timer_max: float = 12.0
 var split_timer: float = 0.0
 
 func _ready() -> void:
@@ -18,6 +18,10 @@ func _physics_process(delta: float) -> void:
 		split_timer = split_timer_max * randf_range(0.8, 1.2)
 
 func _try_split() -> void:
+	# Losowa szansa na podział
+	if randf() > split_chance:
+		return
+	
 	# Sprawdź limit wrogów (opcjonalnie, by nie zapchać pamięci)
 	var enemies := get_tree().get_nodes_in_group("Enemies")
 	if enemies.size() > 50:

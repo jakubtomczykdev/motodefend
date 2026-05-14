@@ -6,9 +6,9 @@ signal wave_ended(wave_number: int)
 signal all_waves_completed
 signal game_over
 
-@export var wave_duration: float = 20.0
-@export var base_enemy_count: int = 5
-@export var enemy_count_multiplier: float = 1.1
+@export var wave_duration: float = 30.0
+@export var base_enemy_count: int = 3
+@export var enemy_count_multiplier: float = 1.15
 
 var current_wave: int = 0
 var enemies_in_wave: int = 0
@@ -195,6 +195,8 @@ func end_wave() -> void:
 	wave_ended.emit(current_wave)
 
 func check_wave_completion() -> void:
+	if not is_wave_active:
+		return
 	if enemies_remaining <= 0:
 		end_wave()
 
