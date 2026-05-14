@@ -7,6 +7,19 @@ var hit_enemies: Array = []
 var wave_area: Area2D
 var player_ref: Node2D = null
 
+func _apply_screen_shake(intensity: float = 5.0) -> void:
+	var viewport := get_viewport()
+	if not viewport:
+		return
+	var camera := viewport.get_camera_2d()
+	if not camera:
+		return
+	var orig_pos := camera.position
+	var tween := create_tween()
+	tween.set_loops(3)
+	tween.tween_property(camera, "position", orig_pos + Vector2(randf_range(-intensity, intensity), randf_range(-intensity, intensity)), 0.03)
+	tween.tween_property(camera, "position", orig_pos, 0.03)
+
 func initialize(weapon_data: WeaponBase, p_player_ref: Node2D = null) -> void:
 	current_weapon = weapon_data
 	player_ref = p_player_ref
@@ -120,6 +133,8 @@ func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, wave: Area2D, 
 
 	if body.has_method("take_damage"):
 		body.take_damage(int(weapon_data.damage * dmg_mult))
+
+	_apply_screen_shake(4.0)
 
 	# UNIQUE LOGIC: New Motorola Radio slows down enemies
 	if "Motorola" in weapon_data.item_name and body.has_method("apply_slowdown"):

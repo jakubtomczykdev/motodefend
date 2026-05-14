@@ -8,6 +8,19 @@ var hit_enemies: Array = []
 var player_ref: Node2D = null
 var _swing_dmg_mult: float = 1.0
 
+func _apply_screen_shake(intensity: float = 6.0) -> void:
+	var viewport := get_viewport()
+	if not viewport:
+		return
+	var camera := viewport.get_camera_2d()
+	if not camera:
+		return
+	var orig_pos := camera.position
+	var tween := create_tween()
+	tween.set_loops(3)
+	tween.tween_property(camera, "position", orig_pos + Vector2(randf_range(-intensity, intensity), randf_range(-intensity, intensity)), 0.03)
+	tween.tween_property(camera, "position", orig_pos, 0.03)
+
 func initialize(weapon_data: WeaponBase, p_player_ref: Node2D = null) -> void:
 	current_weapon = weapon_data
 	player_ref = p_player_ref
@@ -100,9 +113,9 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 
 	# Lunge (doskok) - dodaj pęd graczowi w stronę ataku
 	if player_body:
-		player_body.velocity += direction * 400.0
+		player_body.velocity += direction * 600.0
 
-	attack_timer = weapon_data.attack_speed
+	attack_timer = weapon_data.attack_speed * cooldown_mult
 
 func _on_swing_body_entered(body: Node2D, weapon_data: WeaponBase) -> void:
 	if not body.is_in_group("Enemies"):
@@ -112,6 +125,7 @@ func _on_swing_body_entered(body: Node2D, weapon_data: WeaponBase) -> void:
 	hit_enemies.append(body)
 	if body.has_method("take_damage"):
 		body.take_damage(int(weapon_data.damage * _swing_dmg_mult))
+	_apply_screen_shake(8.0)
 	_spawn_impact(body)
 
 func _spawn_impact(target: Node2D) -> void:

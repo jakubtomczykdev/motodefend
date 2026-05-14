@@ -11,8 +11,8 @@ class OldRadio extends WeaponBase:
 		description = "Stare radio – emituje falę uderzeniową (obrażenia obszarowe)"
 		cost = 90
 		rarity = "common"
-		damage = 12.0
-		attack_speed = 3.0
+		damage = 45.0
+		attack_speed = 1.6
 		weapon_range = 150.0
 		is_old_variant = true
 		icon = load("res://Assets/newAssets/oldRadio.png")
@@ -25,9 +25,9 @@ class NewRadio extends WeaponBase:
 		description = "Nowe radio Motorola – potężna fala uderzeniowa (obrażenia obszarowe)"
 		cost = 250
 		rarity = "epic"
-		damage = 20.0
-		attack_speed = 2.0
-		weapon_range = 250.0
+		damage = 80.0
+		attack_speed = 1.2
+		weapon_range = 320.0
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/newRadio.png")
 
@@ -39,8 +39,8 @@ class OldDrone extends WeaponBase:
 		description = "Stary dron – krąży wokół gracza i automatycznie atakuje"
 		cost = 100
 		rarity = "rare"
-		damage = 8.0
-		attack_speed = 2.0
+		damage = 30.0
+		attack_speed = 1.2
 		weapon_range = 300.0
 		is_old_variant = true
 		icon = load("res://Assets/newAssets/oldDrone.png")
@@ -53,22 +53,22 @@ class FightingDrone extends WeaponBase:
 		description = "Dron bojowy – krąży wokół gracza i automatycznie atakuje (szybki fire rate)"
 		cost = 300
 		rarity = "legendary"
-		damage = 12.0
-		attack_speed = 1.2
-		weapon_range = 400.0
+		damage = 55.0
+		attack_speed = 0.8
+		weapon_range = 500.0
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/fightingDrone.png")
 
-# Blaster – szybka broń energetyczna
+# Blaster – pojedynczy, potężny pocisk energii
 class Blaster extends WeaponBase:
 	func _init():
 		item_name = "Blaster"
 		item_type = "blaster"
-		description = "Blaster – super szybka wiązka niebieskich kul w jednej linii"
+		description = "Blaster – pojedynczy, potężny pocisk energii"
 		cost = 200
 		rarity = "rare"
-		damage = 2.0
-		attack_speed = 0.05
+		damage = 120.0
+		attack_speed = 0.25
 		weapon_range = 500.0
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/Blaster.png")
@@ -81,9 +81,9 @@ class Sword extends WeaponBase:
 		description = "Miecz – atak w zwarciu (wysokie DPS, ryzykowne użycie)"
 		cost = 100
 		rarity = "common"
-		damage = 12.0
-		attack_speed = 2.0
-		weapon_range = 200.0
+		damage = 75.0
+		attack_speed = 0.7
+		weapon_range = 260.0
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/sword.png")
 
