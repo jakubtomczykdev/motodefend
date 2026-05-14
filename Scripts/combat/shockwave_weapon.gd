@@ -8,6 +8,8 @@ var wave_area: Area2D
 var player_ref: Node2D = null
 
 func _apply_screen_shake(intensity: float = 5.0) -> void:
+	if not is_inside_tree():
+		return
 	var viewport := get_viewport()
 	if not viewport:
 		return

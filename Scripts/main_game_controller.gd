@@ -217,8 +217,20 @@ func _on_wave_ended(wave_number: int) -> void:
 	# Zapisz bronie gracza do GameData przed zmianą sceny
 	_save_weapons_to_gamedata(gd)
 
-	# Przejdź do GameStartScreen zamiast sklepu
+	# Zatrzymaj wave manager natychmiast
+	if wave_manager:
+		wave_manager.set_process(false)
+		wave_manager.set_physics_process(false)
+
+	# Opóźnij zmianę sceny o jedną klatkę aby uniknąć crashy przy sprzątaniu nodów
+	game_state = "transitioning"
 	get_tree().paused = false
+	call_deferred("_transition_to_hub")
+
+func _transition_to_hub() -> void:
+	# Final safety check
+	if not is_inside_tree():
+		return
 	get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
 
 func _save_weapons_to_gamedata(gd) -> void:

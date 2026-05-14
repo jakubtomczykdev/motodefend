@@ -9,6 +9,8 @@ var player_ref: Node2D = null
 var _swing_dmg_mult: float = 1.0
 
 func _apply_screen_shake(intensity: float = 6.0) -> void:
+	if not is_inside_tree():
+		return
 	var viewport := get_viewport()
 	if not viewport:
 		return

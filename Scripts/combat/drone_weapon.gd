@@ -59,6 +59,8 @@ func _pick_patrol_target() -> void:
 	patrol_wait_timer = randf_range(0.5, 2.0)
 
 func _physics_process(delta: float) -> void:
+	if not is_inside_tree():
+		return
 	if not player_ref or not is_instance_valid(player_ref):
 		queue_free()
 		return

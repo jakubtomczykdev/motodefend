@@ -158,6 +158,8 @@ func _on_damaged(_amount: int) -> void:
 	update_health_bar()
 
 func _spawn_hit_effect() -> void:
+	if not is_inside_tree():
+		return
 	# Stwórz efekt trafienia - małe kolorowe prostokąty rozlatujące się
 	for i in range(4):
 		var spark := ColorRect.new()
