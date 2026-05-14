@@ -25,12 +25,12 @@ var build_system: Node
 var item_manager: Node
 
 @onready var gold_label: Label = $TopBar/GoldLabel
-@onready var items_container: HFlowContainer = $MainArea/ItemsContainer
+@onready var items_container: HBoxContainer = $MainArea/ItemsContainer
 @onready var preview_icon: TextureRect = $MainArea/PreviewPanel/PreviewVBox/PreviewIcon
-@onready var preview_name: Label = $MainArea/PreviewPanel/PreviewVBox/PreviewName
-@onready var preview_rarity: Label = $MainArea/PreviewPanel/PreviewVBox/PreviewRarity
-@onready var preview_description: Label = $MainArea/PreviewPanel/PreviewVBox/PreviewDescription
-@onready var preview_cost: Label = $MainArea/PreviewPanel/PreviewVBox/PreviewCost
+@onready var preview_name: Label = $MainArea/PreviewPanel/PreviewVBox/DetailsVBox/PreviewName
+@onready var preview_rarity: Label = $MainArea/PreviewPanel/PreviewVBox/DetailsVBox/PreviewRarity
+@onready var preview_description: Label = $MainArea/PreviewPanel/PreviewVBox/DetailsVBox/PreviewDescription
+@onready var preview_cost: Label = $MainArea/PreviewPanel/PreviewVBox/DetailsVBox/PreviewCost
 @onready var back_button: Button = $BottomBar/HBox/BackButton
 @onready var reroll_button: Button = $BottomBar/HBox/RerollButton
 

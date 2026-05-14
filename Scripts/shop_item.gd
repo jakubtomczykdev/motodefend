@@ -6,6 +6,7 @@ signal item_clicked(item: ItemBase)
 @onready var icon_texture: TextureRect = $VBox/IconContainer/IconTexture
 @onready var name_label: Label = $VBox/NameLabel
 @onready var rarity_chip: Label = $VBox/RarityChip
+@onready var description_label: Label = $VBox/DescriptionLabel
 @onready var cost_label: Label = $VBox/CostBox/CostLabel
 @onready var buy_button: Button = $VBox/BuyButton
 
@@ -23,6 +24,9 @@ func setup_item(item: ItemBase, current_gold: int) -> void:
 	item_data = item
 	name_label.text = item.item_name.to_upper()
 	cost_label.text = str(item.cost)
+	
+	if description_label:
+		description_label.text = item.description
 	
 	if item.icon:
 		icon_texture.texture = item.icon

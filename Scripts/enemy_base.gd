@@ -320,7 +320,8 @@ func _spawn_damage_number(amount: int) -> void:
 	label.global_position = global_position + Vector2(randf_range(-20, 20), -40)
 	get_tree().current_scene.add_child(label)
 
-	var tween := create_tween()
+	var tween := get_tree().create_tween()
+	tween.bind_node(label)
 	tween.set_parallel(true)
 	tween.tween_property(label, "global_position:y", label.global_position.y - 50, 0.6)
 	tween.tween_property(label, "modulate:a", 0.0, 0.5).set_delay(0.2)
@@ -344,7 +345,8 @@ func _spawn_gold_number(amount: int) -> void:
 	label.global_position = global_position + Vector2(0, -60)
 	get_tree().current_scene.call_deferred("add_child", label)
 
-	var tween := create_tween()
+	var tween := get_tree().create_tween()
+	tween.bind_node(label)
 	tween.set_parallel(true)
 	tween.tween_property(label, "global_position:y", label.global_position.y - 60, 0.8)
 	tween.tween_property(label, "modulate:a", 0.0, 0.8).set_delay(0.4)

@@ -308,7 +308,9 @@ func _spawn_crit_effect(pos: Vector2) -> void:
 	label.global_position = pos + Vector2(-30, -40)
 	get_tree().current_scene.add_child(label)
 	
-	var tween := create_tween()
+	var tween := get_tree().create_tween()
+	tween.bind_node(label)
+	tween.set_parallel(true)
 	tween.tween_property(label, "scale", Vector2(1.5, 1.5), 0.1)
 	tween.tween_property(label, "global_position:y", label.global_position.y - 60, 0.4)
 	tween.parallel().tween_property(label, "modulate:a", 0.0, 0.5)
@@ -344,6 +346,8 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	current_health -= amount
 	health_changed.emit(current_health, max_health)
 	
+	_spawn_damage_number(amount)
+	
 	if knockback != Vector2.ZERO:
 		knockback_velocity = knockback
 	
@@ -361,6 +365,32 @@ func die() -> void:
 	died.emit()
 	queue_free()
 
+func _spawn_damage_number(amount: int) -> void:
+	if not is_inside_tree():
+		return
+	var label := Label.new()
+	label.text = str(amount)
+	label.add_theme_font_size_override("font_size", 24)
+	label.add_theme_color_override("font_color", Color(0.9, 0.1, 0.1, 1.0)) # Red for player damage
+	
+	# Shadow/Outline
+	var shadow := Label.new()
+	shadow.text = str(amount)
+	shadow.add_theme_font_size_override("font_size", 24)
+	shadow.add_theme_color_override("font_color", Color(0, 0, 0, 0.7))
+	shadow.position = Vector2(1, 1)
+	label.add_child(shadow)
+
+	label.global_position = global_position + Vector2(randf_range(-10, 10), -40)
+	get_tree().current_scene.add_child(label)
+
+	var tween := get_tree().create_tween()
+	tween.bind_node(label)
+	tween.set_parallel(true)
+	tween.tween_property(label, "global_position:y", label.global_position.y - 60, 0.7)
+	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_delay(0.3)
+	tween.chain().tween_callback(label.queue_free)
+
 func _spawn_dodge_label() -> void:
 	var label := Label.new()
 	label.text = "UNIK!"
@@ -368,7 +398,8 @@ func _spawn_dodge_label() -> void:
 	label.global_position = global_position + Vector2(-20, -50)
 	get_tree().current_scene.add_child(label)
 	
-	var tween := create_tween()
+	var tween := get_tree().create_tween()
+	tween.bind_node(label)
 	tween.tween_property(label, "global_position:y", label.global_position.y - 40, 0.5)
 	tween.parallel().tween_property(label, "modulate:a", 0.0, 0.6)
 	tween.tween_callback(label.queue_free)
