@@ -26,6 +26,7 @@ var item_manager: Node
 
 @onready var gold_label: Label = $TopBar/GoldLabel
 @onready var items_container: HBoxContainer = $MainArea/ItemsContainer
+@onready var view_title: Label = $MainArea/ViewTitle
 @onready var preview_icon: TextureRect = $MainArea/PreviewPanel/PreviewVBox/PreviewIcon
 @onready var preview_name: Label = $MainArea/PreviewPanel/PreviewVBox/DetailsVBox/PreviewName
 @onready var preview_rarity: Label = $MainArea/PreviewPanel/PreviewVBox/DetailsVBox/PreviewRarity
@@ -33,35 +34,48 @@ var item_manager: Node
 @onready var preview_cost: Label = $MainArea/PreviewPanel/PreviewVBox/DetailsVBox/PreviewCost
 @onready var back_button: Button = $BottomBar/HBox/BackButton
 @onready var reroll_button: Button = $BottomBar/HBox/RerollButton
+@onready var inventory_button: Button = $BottomBar/HBox/InventoryButton
+@onready var weapon_count_label: Label = $TopBar/WeaponCountLabel
 
 var item_scene: PackedScene = preload("res://scenes/ShopItem.tscn")
 var refresh_cost: int = 25
+var showing_inventory: bool = false
 
 func _ready() -> void:
 	back_button.pressed.connect(_on_close_pressed)
 	reroll_button.pressed.connect(_on_refresh_pressed)
-	_update_gold_label()
+	if inventory_button:
+		inventory_button.pressed.connect(_toggle_inventory)
+	_update_ui()
+	
 	# Auto-populate with default weapons when shop loaded standalone
 	await get_tree().process_frame
 	if shop_items.is_empty():
-		var weapons = WeaponItems.get_all_weapons()
-		if not weapons.is_empty():
-			weapons.shuffle()
-			var count = mini(4, weapons.size())
-			for i in range(count):
-				shop_items.append(weapons[i])
-			_populate_items()
+		_refresh_shop_items()
+	else:
+		_populate_items()
 
 func open_shop(available_items: Array[ItemBase], player_build: Node, manager: Node) -> void:
 	shop_items = available_items
 	build_system = player_build
 	item_manager = manager
+	showing_inventory = false
 
-	_clear_items()
-	_populate_items()
-	_update_gold_label()
+	_refresh_view()
+	_update_ui()
 
 	visible = true
+
+func _refresh_view() -> void:
+	_clear_items()
+	if showing_inventory:
+		view_title.text = "TWOJE WYPOSAŻENIE"
+		_populate_inventory()
+		inventory_button.text = "Pokaż SKLEP"
+	else:
+		view_title.text = "DOSTĘPNA TECHNOLOGIA"
+		_populate_items()
+		inventory_button.text = "Moje EQ (%d/6)" % _get_current_weapon_count()
 
 func _clear_items() -> void:
 	for child in items_container.get_children():
@@ -75,11 +89,70 @@ func _populate_items() -> void:
 		item_ui.item_clicked.connect(_on_item_clicked)
 		item_ui.mouse_entered.connect(_update_preview.bind(item))
 
+func _populate_inventory() -> void:
+	var player = get_tree().get_first_node_in_group("Player")
+	var owned_items = []
+	
+	if player and player.has_method("get_weapons"):
+		owned_items = player.get_weapons()
+	else:
+		var gd = get_node_or_null("/root/GameData")
+		if gd:
+			var all_weps = WeaponItems.get_all_weapons()
+			for wid in gd.pending_weapon_ids:
+				if wid < all_weps.size():
+					owned_items.append(all_weps[wid])
+
+	for item in owned_items:
+		var item_ui = item_scene.instantiate()
+		items_container.add_child(item_ui)
+		item_ui.set_as_inventory_item()
+		item_ui.setup_item(item, gold)
+		item_ui.item_clicked.connect(_on_inventory_item_sold)
+		item_ui.mouse_entered.connect(_update_preview.bind(item))
+
+func _on_inventory_item_sold(item: ItemBase) -> void:
+	var gd = get_node_or_null("/root/GameData")
+	if not gd: return
+	
+	var refund = int(item.cost * 0.5)
+	
+	# Usuń z gracza
+	var player = get_tree().get_first_node_in_group("Player")
+	if player and player.has_node("WeaponManager"):
+		var p_weapons = player.get_weapons()
+		for i in range(p_weapons.size()):
+			if p_weapons[i].item_name == item.item_name:
+				player.get_node("WeaponManager").remove_weapon(i)
+				break
+	
+	# Usuń z GameData
+	var all_weps = WeaponItems.get_all_weapons()
+	for i in range(gd.pending_weapon_ids.size()):
+		var wid = gd.pending_weapon_ids[i]
+		if all_weps[wid].item_name == item.item_name:
+			gd.pending_weapon_ids.remove_at(i)
+			break
+			
+	gold += refund
+	AudioManager.play_sfx("buy_item")
+	_refresh_view()
+	_update_ui()
+
+func _toggle_inventory() -> void:
+	showing_inventory = !showing_inventory
+	_refresh_view()
+	AudioManager.play_sfx("menu_click")
+
 func _update_preview(item: ItemBase) -> void:
 	preview_name.text = item.item_name
 	preview_rarity.text = "Rzadkość: " + item.rarity.capitalize()
 	preview_description.text = item.description
-	preview_cost.text = "Koszt: " + str(item.cost)
+	
+	if showing_inventory:
+		preview_cost.text = "Wartość sprzedaży: " + str(int(item.cost * 0.5))
+	else:
+		preview_cost.text = "Koszt: " + str(item.cost)
 	
 	if item.icon:
 		preview_icon.texture = item.icon
@@ -96,72 +169,102 @@ func _update_preview(item: ItemBase) -> void:
 
 func _on_item_clicked(item: ItemBase) -> void:
 	if gold >= item.cost:
+		# Check weapon limit
+		if item is WeaponBase:
+			var weapon_count = _get_current_weapon_count()
+			if weapon_count >= 6:
+				AudioManager.play_sfx("menu_click")
+				return
+
 		AudioManager.play_sfx("buy_item")
 		gold -= item.cost
 		item_purchased.emit(item)
-		_update_gold_label()
-		_update_item_states()
-
+		
 		if build_system:
 			build_system.add_item(item)
 		else:
 			var gd = get_node_or_null("/root/GameData")
 			if gd:
 				gd.add_inventory_item(item)
-				# Also register weapon for combat restoration via pending_weapon_ids
 				if item is WeaponBase:
 					var all_weps = WeaponItems.get_all_weapons()
 					for i in range(all_weps.size()):
 						if all_weps[i].item_name == item.item_name and all_weps[i].item_type == item.item_type:
-							if not gd.pending_weapon_ids.has(i):
-								gd.pending_weapon_ids.append(i)
+							gd.pending_weapon_ids.append(i)
 							break
+		
+		var player = get_tree().get_first_node_in_group("Player")
+		if player and item is WeaponBase and player.has_method("add_weapon"):
+			player.add_weapon(item)
+
+		_update_ui()
+		_update_item_states()
 
 func _on_refresh_pressed() -> void:
 	if gold >= refresh_cost:
 		AudioManager.play_sfx("menu_click")
 		gold -= refresh_cost
-		_update_gold_label()
+		_update_ui()
 		refresh_requested.emit()
-		if item_manager and item_manager.has_method("get_shop_items") and build_system:
-			var new_items = item_manager.get_shop_items(4, 1)
-			open_shop(new_items, build_system, item_manager)
-		else:
-			# Standalone fallback - shuffle and repopulate
-			_clear_items()
-			var weapons = WeaponItems.get_all_weapons()
-			weapons.shuffle()
-			shop_items.clear()
-			var count = mini(4, weapons.size())
-			for i in range(count):
-				shop_items.append(weapons[i])
-			_populate_items()
+		_refresh_shop_items()
+
+func _refresh_shop_items() -> void:
+	if item_manager and item_manager.has_method("get_shop_items") and build_system:
+		shop_items = item_manager.get_shop_items(4, 1)
+	else:
+		var weapons = WeaponItems.get_all_weapons()
+		weapons.shuffle()
+		shop_items.clear()
+		var count = mini(4, weapons.size())
+		for i in range(count):
+			shop_items.append(weapons[i])
+	
+	showing_inventory = false
+	_refresh_view()
+
+func _get_current_weapon_count() -> int:
+	var player = get_tree().get_first_node_in_group("Player")
+	if player and player.has_method("get_weapon_count"):
+		return player.get_weapon_count()
+	
+	var gd = get_node_or_null("/root/GameData")
+	if gd:
+		return gd.pending_weapon_ids.size()
+	return 0
 
 func _update_item_states() -> void:
 	for child in items_container.get_children():
 		if child.has_method("update_affordability"):
 			child.update_affordability(gold)
 
-func _update_gold_label() -> void:
+func _update_ui() -> void:
 	gold_label.text = "ZLOTO: %d" % gold
+	if weapon_count_label:
+		var count = _get_current_weapon_count()
+		weapon_count_label.text = "BRONIE: %d / 6" % count
+		if count >= 6: weapon_count_label.modulate = Color(1, 0.4, 0.4)
+		else: weapon_count_label.modulate = Color(0.7, 0.8, 1.0)
+	
+	if inventory_button:
+		var count = _get_current_weapon_count()
+		if not showing_inventory:
+			inventory_button.text = "Moje EQ (%d/6)" % count
 
 func _on_close_pressed() -> void:
 	AudioManager.play_sfx("menu_click")
 	if get_parent() == get_tree().root:
-		# Standalone mode - return to hub
 		get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
 	else:
-		# Child mode (inside MainGame) - just hide
 		visible = false
 		shop_closed.emit()
 
 func add_gold(amount: int) -> void:
 	gold += amount
-	_update_gold_label()
+	_update_ui()
 
 func set_gold(amount: int) -> void:
 	gold = amount
-	_update_gold_label()
+	_update_ui()
 
 func get_gold() -> int:
 	return gold

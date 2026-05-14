@@ -8,7 +8,7 @@ class OldRadio extends WeaponBase:
 	func _init():
 		item_name = "Radio"
 		item_type = "shockwave"
-		description = "Stare radio – emituje falę uderzeniową (obrażenia obszarowe)"
+		description = "Stare radio emituje falę uderzeniową (obrażenia obszarowe)"
 		cost = 90
 		rarity = "common"
 		damage = 45.0
@@ -17,12 +17,12 @@ class OldRadio extends WeaponBase:
 		is_old_variant = true
 		icon = load("res://Assets/newAssets/oldRadio.png")
 
-# Nowe Radio Motorola – potężna fala uderzeniowa
+# Nowe Radio Motorola potężna fala uderzeniowa
 class NewRadio extends WeaponBase:
 	func _init():
 		item_name = "Radio Motorola"
 		item_type = "shockwave"
-		description = "Nowe radio Motorola – potężna fala uderzeniowa (obrażenia obszarowe)"
+		description = "Nowe radio Motorola potężna fala uderzeniowa (obrażenia obszarowe)"
 		cost = 250
 		rarity = "epic"
 		damage = 80.0
@@ -31,12 +31,12 @@ class NewRadio extends WeaponBase:
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/newRadio.png")
 
-# Stary Dron – wolno krąży i atakuje
+# Stary Dron wolno krąży i atakuje
 class OldDrone extends WeaponBase:
 	func _init():
 		item_name = "Dron"
 		item_type = "drone"
-		description = "Stary dron – krąży wokół gracza i automatycznie atakuje"
+		description = "Stary dron krąży wokół gracza i automatycznie atakuje"
 		cost = 100
 		rarity = "rare"
 		damage = 30.0
@@ -45,12 +45,12 @@ class OldDrone extends WeaponBase:
 		is_old_variant = true
 		icon = load("res://Assets/newAssets/oldDrone.png")
 
-# Dron Bojowy – szybki i śmiercionośny
+# Dron Bojowy szybki i śmiercionośny
 class FightingDrone extends WeaponBase:
 	func _init():
 		item_name = "Dron Bojowy"
 		item_type = "drone"
-		description = "Dron bojowy – krąży wokół gracza i automatycznie atakuje (szybki fire rate)"
+		description = "Dron bojowy krąży wokół gracza i automatycznie atakuje (szybki fire rate)"
 		cost = 300
 		rarity = "legendary"
 		damage = 55.0
@@ -59,12 +59,12 @@ class FightingDrone extends WeaponBase:
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/fightingDrone.png")
 
-# Blaster – pojedynczy, potężny pocisk energii
+# Blaster pojedynczy, potężny pocisk energii
 class Blaster extends WeaponBase:
 	func _init():
 		item_name = "Blaster"
 		item_type = "blaster"
-		description = "Blaster – pojedynczy, potężny pocisk energii"
+		description = "Blaster pojedynczy, potężny pocisk energii"
 		cost = 200
 		rarity = "rare"
 		damage = 120.0
@@ -73,12 +73,12 @@ class Blaster extends WeaponBase:
 		is_old_variant = false
 		icon = load("res://Assets/newAssets/Blaster.png")
 
-# Miecz – atak w zwarciu
+# Miecz atak w zwarciu
 class Sword extends WeaponBase:
 	func _init():
 		item_name = "Miecz"
 		item_type = "sword"
-		description = "Miecz – atak w zwarciu (wysokie DPS, ryzykowne użycie)"
+		description = "Miecz atak w zwarciu (wysokie DPS, ryzykowne użycie)"
 		cost = 100
 		rarity = "common"
 		damage = 75.0

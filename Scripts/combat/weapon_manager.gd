@@ -1,7 +1,7 @@
 extends Node
 ## Zarządza broniami gracza – sloty, instancje, aktywacja
 
-@export var max_weapons: int = 2
+@export var max_weapons: int = 6
 
 var weapons: Array[WeaponBase] = []
 var weapon_slots: Array[Sprite2D] = []
@@ -129,7 +129,7 @@ func get_weapon_count() -> int:
 
 ## Aktualizuje widoczność i ikony sprite'ów slotów broni
 func update_weapon_sprites() -> void:
-	for i: int in range(max_weapons):
+	for i: int in range(weapon_slots.size()):
 		if i < weapon_slots.size() and weapon_slots[i]:
 			if i < weapons.size():
 				weapon_slots[i].visible = true

@@ -13,7 +13,7 @@ var _current_music_track: String = ""
 var _sfx_paths: Dictionary = {
 	"blaster_shot": "res://Assets/Sounds/Blaster.mp3",
 	"drone_shoot": "res://Assets/Sounds/Blaster.mp3", # Fallback
-	"shockwave": "res://Assets/Sounds/Sword.mp3", # Fallback
+	"shockwave": "res://Assets/Sounds/Blaster.mp3", # Changed from Sword.mp3 to Blaster.mp3
 	"sword_swing": "res://Assets/Sounds/Sword.mp3",
 	"step1": "res://Assets/Sounds/Step1.mp3",
 	"step2": "res://Assets/Sounds/Step2.mp3",

@@ -42,14 +42,38 @@ horizontal_alignment = 2
 theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_font_sizes/font_size = 24
 
+[node name="WeaponCountLabel" type="Label" parent="TopBar"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -20.0
+offset_right = 200.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.7098, 0.7765, 0.9412, 1)
+theme_override_font_sizes/font_size = 18
+text = "BRONIE: 0 / 6"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="MainArea" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 48.0
-offset_top = 128.0
+offset_top = 100.0
 offset_right = -48.0
-offset_bottom = -128.0
-theme_override_constants/separation = 32
+offset_bottom = -100.0
+theme_override_constants/separation = 24
+
+[node name="ViewTitle" type="Label" parent="MainArea"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.9412, 0.9882, 1)
+theme_override_font_sizes/font_size = 28
+text = "DOSTĘPNA TECHNOLOGIA"
+horizontal_alignment = 1
 
 [node name="ItemsContainer" type="HBoxContainer" parent="MainArea"]
 layout_mode = 2
@@ -58,7 +82,7 @@ theme_override_constants/separation = 20
 alignment = 1
 
 [node name="PreviewPanel" type="Panel" parent="MainArea"]
-custom_minimum_size = Vector2(0, 250)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
 [node name="PreviewVBox" type="HBoxContainer" parent="MainArea/PreviewPanel"]
@@ -116,9 +140,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -300.0
+offset_left = -450.0
 offset_top = -25.0
-offset_right = 300.0
+offset_right = 450.0
 offset_bottom = 25.0
 theme_override_constants/separation = 40
 alignment = 1
@@ -127,6 +151,12 @@ alignment = 1
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 text = "Odśwież (25G)"
+
+[node name="InventoryButton" type="Button" parent="BottomBar/HBox"]
+custom_minimum_size = Vector2(250, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7098, 0.7765, 0.9412, 1)
+text = "Moje EQ (0/6)"
 
 [node name="BackButton" type="Button" parent="BottomBar/HBox"]
 custom_minimum_size = Vector2(200, 50)

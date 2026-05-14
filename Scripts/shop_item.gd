@@ -11,6 +11,7 @@ signal item_clicked(item: ItemBase)
 @onready var buy_button: Button = $VBox/BuyButton
 
 var item_data: ItemBase
+var is_inventory_mode: bool = false
 
 func _ready() -> void:
 	if buy_button:
@@ -23,7 +24,12 @@ func _ready() -> void:
 func setup_item(item: ItemBase, current_gold: int) -> void:
 	item_data = item
 	name_label.text = item.item_name.to_upper()
-	cost_label.text = str(item.cost)
+	
+	if is_inventory_mode:
+		var sell_price = int(item.cost * 0.5)
+		cost_label.text = str(sell_price)
+	else:
+		cost_label.text = str(item.cost)
 	
 	if description_label:
 		description_label.text = item.description
@@ -54,6 +60,12 @@ func _update_rarity_style(rarity: String) -> void:
 	add_theme_stylebox_override("panel", style)
 
 func update_affordability(gold: int) -> void:
+	if is_inventory_mode:
+		buy_button.disabled = false
+		buy_button.modulate = Color(1, 0.4, 0.4, 1.0)
+		buy_button.text = "SPRZEDAJ"
+		return
+
 	if gold < item_data.cost:
 		buy_button.disabled = true
 		buy_button.modulate = Color(1, 1, 1, 0.5)
@@ -62,6 +74,12 @@ func update_affordability(gold: int) -> void:
 		buy_button.disabled = false
 		buy_button.modulate = Color(1, 1, 1, 1.0)
 		buy_button.text = "Kup"
+
+func set_as_inventory_item() -> void:
+	is_inventory_mode = true
+	if is_node_ready():
+		buy_button.text = "SPRZEDAJ"
+		buy_button.modulate = Color(1, 0.4, 0.4, 1.0)
 
 func _on_buy_pressed() -> void:
 	item_clicked.emit(item_data)

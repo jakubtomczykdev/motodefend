@@ -13,6 +13,7 @@ var build_system: Node
 var item_manager: Node
 var shop_system: Control
 var educational_system: Control
+var transition_screen: Control
 var end_screen: Control
 var playtime_label: Label
 var health_bar: ProgressBar
@@ -20,7 +21,7 @@ var hp_label: Label
 var gold_label: Label
 var enemies_label: Label
 
-var game_state: String = "menu" # menu, playing, paused, shop, education, game_over, victory
+var game_state: String = "menu" # menu, playing, paused, shop, education, game_over, victory, transition
 var score: int = 0
 ## Cached GameData reference for the gold property getter/setter
 var _game_data_ref = null
@@ -50,6 +51,7 @@ func _ready() -> void:
 	item_manager = get_node_or_null("ItemManager")
 	shop_system = get_node_or_null("ShopCanvasLayer/ShopScreen")
 	educational_system = get_node_or_null("EducationalLayer/EducationalSystem")
+	transition_screen = get_node_or_null("TransitionCanvasLayer/TransitionScreen")
 	end_screen = get_node_or_null("EndScreenCanvasLayer/EndScreen")
 	playtime_label = get_node_or_null("HUD/PlaytimeUI")
 	health_bar = get_node_or_null("HUD/HealthBar")
@@ -60,6 +62,7 @@ func _ready() -> void:
 	_connect_signals()
 
 	if educational_system: educational_system.visible = false
+	if transition_screen: transition_screen.visible = false
 
 	# Rozpocznij grę automatycznie po załadowaniu sceny
 	start_game()
@@ -123,6 +126,12 @@ func _connect_signals() -> void:
 			shop_system.item_purchased.connect(_on_item_purchased)
 		if shop_system.has_signal("shop_closed") and not shop_system.shop_closed.is_connected(_on_shop_closed):
 			shop_system.shop_closed.connect(_on_shop_closed)
+
+	if transition_screen:
+		if not transition_screen.next_wave_requested.is_connected(_on_next_wave_requested):
+			transition_screen.next_wave_requested.connect(_on_next_wave_requested)
+		if not transition_screen.lobby_requested.is_connected(_on_lobby_requested):
+			transition_screen.lobby_requested.connect(_on_lobby_requested)
 
 func start_game() -> void:
 	var gd := get_node_or_null("/root/GameData")
@@ -226,15 +235,49 @@ func _on_wave_ended(wave_number: int) -> void:
 	# Zapisz bronie gracza do GameData przed zmianą sceny
 	_save_weapons_to_gamedata(gd)
 
-	# Zatrzymaj wave manager natychmiast
-	if wave_manager:
-		wave_manager.set_process(false)
-		wave_manager.set_physics_process(false)
+	# Cleanup lingering animations and projectiles
+	_cleanup_battlefield()
 
-	# Opóźnij zmianę sceny o jedną klatkę aby uniknąć crashy przy sprzątaniu nodów
-	game_state = "transitioning"
+	game_state = "transition"
+	get_tree().paused = true
+	
+	if transition_screen:
+		transition_screen.show_transition(wave_number, score, gold)
+
+func _on_next_wave_requested() -> void:
+	if transition_screen:
+		transition_screen.hide_transition()
+	
+	get_tree().paused = false
+	game_state = "playing"
+	if wave_manager:
+		wave_manager.start_next_wave()
+
+func _on_lobby_requested() -> void:
 	get_tree().paused = false
 	call_deferred("_transition_to_hub")
+
+func _cleanup_battlefield() -> void:
+	# Usuń wszystkie pociski
+	var projectiles = get_tree().get_nodes_in_group("Projectiles")
+	for p in projectiles:
+		if is_instance_valid(p):
+			p.queue_free()
+	
+	# Zatrzymaj animacje wrogów i usuń pozostałych wrogów (na wszelki wypadek)
+	var enemies = get_tree().get_nodes_in_group("Enemies")
+	for e in enemies:
+		if is_instance_valid(e):
+			e.queue_free()
+	
+	# Usuń tymczasowe efekty wizualne (np. ColorRecty używane jako iskry/fale)
+	# Szukamy ich w scenie głównej - zwykle są dodawane bezpośrednio do current_scene
+	for child in get_tree().current_scene.get_children():
+		if child is ColorRect and not child.name == "DimBG": # Nie usuwamy tła pauzy
+			# Sprawdź czy to nie jest element UI (HUD jest w CanvasLayer, więc ColorRecty w MainGame to efekty)
+			child.queue_free()
+		elif child is Area2D and ("wave" in child.name.to_lower() or "swing" in child.name.to_lower()):
+			child.queue_free()
 
 func _transition_to_hub() -> void:
 	# Final safety check

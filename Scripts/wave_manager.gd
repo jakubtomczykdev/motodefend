@@ -16,6 +16,11 @@ var enemies_remaining: int = 0
 var is_wave_active: bool = false
 var wave_elapsed: float = 0.0
 
+# System rozłożonego spawnowania
+var spawn_queue: Array[String] = []
+var spawn_timer: float = 0.0
+@export var spawn_interval: float = 1.0 # Czas między spawnem kolejnych wrogów
+
 var player_node: Node2D
 var spawn_points: Array[Node2D] = []
 
@@ -58,8 +63,18 @@ func _process(delta: float) -> void:
 		wave_elapsed += delta
 		update_timer_ui()
 
-		if wave_elapsed >= wave_duration:
-			end_wave()
+		# Rozłożone spawnowanie w czasie
+		if not spawn_queue.is_empty():
+			spawn_timer -= delta
+			if spawn_timer <= 0:
+				# Oblicz ile wrogów zespawnować naraz (zwiększa się co 3 fale)
+				var burst_size = 1 + int(current_wave / 4)
+				for i in range(burst_size):
+					if not spawn_queue.is_empty():
+						var enemy_type = spawn_queue.pop_front()
+						_spawn_enemy(enemy_type)
+				
+				spawn_timer = spawn_interval
 
 		check_wave_completion()
 
@@ -108,10 +123,15 @@ func start_next_wave() -> void:
 	current_wave += 1
 	is_wave_active = true
 	wave_elapsed = 0.0
+	spawn_timer = 0.0
+	spawn_queue.clear()
 
 	var wave_config := _get_wave_config(current_wave)
 	enemies_in_wave = wave_config.enemy_count
 	enemies_remaining = enemies_in_wave
+	
+	# Oblicz interwał spawnu - przyspiesza z każdą falą
+	spawn_interval = max(0.2, 1.5 - (current_wave * 0.05))
 
 	_spawn_wave(wave_config)
 	wave_started.emit(current_wave)
@@ -135,17 +155,14 @@ func _get_wave_config(wave: int) -> Dictionary:
 	return config
 
 func _spawn_wave(config: Dictionary) -> void:
-	# Spawnuj normalnych wrogów
-	var _boss_spawned := false
-
+	# Kolejkuj normalnych wrogów zamiast spawnować ich natychmiast
 	for i in range(config.enemy_count):
 		var enemy_type: String = config.enemy_types.pick_random()
-		_spawn_enemy(enemy_type)
+		spawn_queue.append(enemy_type)
 
-	# Dodaj bossa jeśli wymagane
+	# Dodaj bossa do kolejki jeśli wymagane
 	if config.has_boss:
-		_spawn_enemy("apt_boss")
-		_boss_spawned = true
+		spawn_queue.append("apt_boss")
 
 func _spawn_enemy(enemy_type: String) -> void:
 	var scene_path: String = str(enemy_scenes.get(enemy_type, ""))
@@ -182,7 +199,7 @@ func _on_enemy_died() -> void:
 	enemies_remaining -= 1
 	update_ui()
 
-	if enemies_remaining <= 0:
+	if spawn_queue.is_empty() and enemies_remaining <= 0:
 		end_wave()
 
 func end_wave() -> void:
@@ -197,7 +214,8 @@ func end_wave() -> void:
 func check_wave_completion() -> void:
 	if not is_wave_active:
 		return
-	if enemies_remaining <= 0:
+	# Fala kończy się tylko gdy kolejka jest pusta I wszyscy wrogowie nie żyją
+	if spawn_queue.is_empty() and enemies_remaining <= 0:
 		end_wave()
 
 func update_ui() -> void:
@@ -209,8 +227,9 @@ func update_ui() -> void:
 
 func update_timer_ui() -> void:
 	if timer_ui:
-		var remaining: float = maxf(0.0, wave_duration - wave_elapsed)
-		timer_ui.text = "POZOSTAŁO: %.1fs" % remaining
+		timer_ui.visible = false
+		# var remaining: float = maxf(0.0, wave_duration - wave_elapsed)
+		# timer_ui.text = "POZOSTAŁO: %.1fs" % remaining
 
 func get_wave_progress() -> float:
 	if enemies_in_wave == 0:
