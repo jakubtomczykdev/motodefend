@@ -210,6 +210,11 @@ func _on_education_completed() -> void:
 		game_state = "playing"
 		get_tree().paused = false
 		if wave_manager: wave_manager.start_game()
+	elif game_state == "education_pre_wave":
+		game_state = "playing"
+		get_tree().paused = false
+		if wave_manager:
+			wave_manager.start_next_wave()
 	elif game_state == "education":
 		game_state = "playing"
 		get_tree().paused = false
@@ -248,10 +253,16 @@ func _on_next_wave_requested() -> void:
 	if transition_screen:
 		transition_screen.hide_transition()
 	
-	get_tree().paused = false
-	game_state = "playing"
-	if wave_manager:
-		wave_manager.start_next_wave()
+	# Zamiast od razu startować falę - pokaż ekran edukacyjny
+	game_state = "education_pre_wave"
+	if educational_system and wave_manager:
+		educational_system.show_pre_wave_education(wave_manager.current_wave + 1)
+	else:
+		# Fallback jeśli brak systemu edukacyjnego
+		get_tree().paused = false
+		game_state = "playing"
+		if wave_manager:
+			wave_manager.start_next_wave()
 
 func _on_lobby_requested() -> void:
 	get_tree().paused = false

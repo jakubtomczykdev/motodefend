@@ -143,10 +143,23 @@ func _get_wave_config(wave: int) -> Dictionary:
 	# Oblicz liczbę wrogów
 	config.enemy_count = int(base_enemy_count * pow(enemy_count_multiplier, wave - 1))
 
-	# Określ typy wrogów - TYLKO TYPY Z FINALNYMI GRAFIKAMI DLA DEMO
-	config.enemy_types = ["worm", "trojan", "ransomware"]
+	# Typy wrogów zgodne z edukacją pre-wave
+	if wave == 1 or wave == 2:
+		config.enemy_types = ["worm"]
+	elif wave == 3 or wave == 4:
+		config.enemy_types = ["trojan"]
+	elif wave == 6 or wave == 7:
+		config.enemy_types = ["ransomware"]
+	elif wave == 8 or wave == 9:
+		config.enemy_types = ["spyware"]
+	elif wave == 11 or wave == 12:
+		config.enemy_types = ["phishing"]
+	elif wave >= 13:
+		config.enemy_types = ["sql"]
+	else:
+		config.enemy_types = ["worm", "trojan", "ransomware"]
 
-	# Co 5 fal: Boss (używa esa.png, więc jest OK)
+	# Co 5 fal: Boss
 	if wave % 5 == 0:
 		config.has_boss = true
 	else:

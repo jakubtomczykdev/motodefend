@@ -26,7 +26,7 @@ var educational_content: Dictionary = {
 		"real_world": "Przykład: Colonial Pipeline (2021) - atak sparaliżował największy rurociąg paliw w USA, powodując braki benzyny."
 	},
 	"spyware": {
-		"title": "SPYWARE - SZPIEGOWANIE I KRAŹDŹ DANYCH",
+		"title": "SPYWARE - SZPIEGOWANIE I KRADZIEŻ DANYCH",
 		"description": "Spyware to złośliwe oprogramowanie, które potajemnie zbiera informacje o użytkowniku. Może rejestrować naciśnięcia klawiszy, robić zrzuty ekranu i śledzić aktywność.",
 		"impact": "Spyware kradze hasła, dane finansowe, informacje osobiste i tajemnice firmowe. Może być wykorzystany do szantażu i kradzieży tożsamości.",
 		"prevention": "Ochrona: firewall, antyspyware, ostrożność z pobieraniem, VPN, unikanie podejrzanych stron.",
@@ -166,6 +166,60 @@ func show_wave_info(wave_number: int) -> void:
 	is_paused = true
 	get_tree().paused = true
 	visible = true
+
+func show_pre_wave_education(wave_number: int) -> void:
+	var content: Dictionary = _get_pre_wave_content(wave_number)
+
+	if title_label:
+		title_label.text = str(content.get("title", "NADCHODZĄCE ZAGROŻENIE"))
+	if description_label:
+		description_label.text = "CO CIĘ CZEKA:\n" + str(content.get("description", ""))
+	if impact_label:
+		impact_label.text = "DLACZEGO TO NIEBEZPIECZNE:\n" + str(content.get("impact", ""))
+	if prevention_label:
+		prevention_label.text = "JAK SIĘ Z TYM UPORAĆ:\n" + str(content.get("prevention", ""))
+	if real_world_label:
+		real_world_label.text = "PRZYKŁAD Z RZECZYWISTOŚCI:\n" + str(content.get("real_world", ""))
+
+	if continue_button:
+		continue_button.text = "PRZYGOTUJ SIĘ DO OBRONY"
+
+	is_paused = true
+	get_tree().paused = true
+	visible = true
+
+func _get_pre_wave_content(wave: int) -> Dictionary:
+	var enemy_type := _get_enemy_type_for_wave(wave)
+	if educational_content.has(enemy_type):
+		var base: Dictionary = educational_content[enemy_type].duplicate()
+		base["title"] = "FALA %d - %s" % [wave, base["title"]]
+		base["description"] = "Nadchodząca fala przynosi nowe zagrożenie!\n\n" + base["description"]
+		return base
+	return {
+		"title": "FALA %d - NIEZNANE ZAGROŻENIE" % wave,
+		"description": "Nadchodząca fala przynosi nieznane zagrożenia cybernetyczne. Bądź czujny i przygotuj się na wszystko!",
+		"impact": "Nieznane zagrożenia mogą wykorzystywać luki zero-day i nieprzetestowane wektory ataku.",
+		"prevention": "Zachowaj ostrożność, używaj wielowarstwowej ochrony i regularnie aktualizuj systemy.",
+		"real_world": "Ataki zero-day są jednymi z najgroźniejszych, ponieważ nie ma jeszcze patchy na odkryte luki."
+	}
+
+func _get_enemy_type_for_wave(wave: int) -> String:
+	if wave == 1 or wave == 2:
+		return "worm"
+	elif wave == 3 or wave == 4:
+		return "trojan"
+	elif wave % 5 == 0:
+		return "apt_boss"
+	elif wave == 6 or wave == 7:
+		return "ransomware"
+	elif wave == 8 or wave == 9:
+		return "spyware"
+	elif wave == 11 or wave == 12:
+		return "phishing"
+	elif wave >= 13:
+		return "sql"
+	else:
+		return "worm"
 
 func _get_wave_info(wave: int) -> Dictionary:
 	if wave == 1:
