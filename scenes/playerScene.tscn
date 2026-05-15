@@ -147,7 +147,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"front",
-"speed": 1.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -186,7 +186,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"left",
-"speed": 2.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -197,7 +197,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"right",
-"speed": 3.0
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u8vrl"]
@@ -219,8 +219,7 @@ metadata/logic_bricks_frames = []
 position = Vector2(0, 12.697)
 scale = Vector2(0.42307696, 0.45775202)
 sprite_frames = SubResource("SpriteFrames_u8vrl")
-animation = &"left"
-frame_progress = 0.39374238
+animation = &"back"
 metadata/logic_bricks_graph = {
 "connections": [],
 "next_id": 0,
