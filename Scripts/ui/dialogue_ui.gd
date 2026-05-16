@@ -8,7 +8,7 @@ signal dialogue_finished
 @onready var dialogue_label: RichTextLabel = %DialogueLabel
 @onready var next_button: Button = %NextButton
 
-var bestiary_scene = preload("res://scenes/BestiaryUI.tscn")
+
 var dialogue_queue: Array[String] = []
 var current_speaker_name: String = ""
 var current_speaker_portrait: Texture2D = null
@@ -43,11 +43,6 @@ func _show_next_line() -> void:
 
 func _on_next_button_pressed() -> void:
 	_show_next_line()
-
-func _on_bestiary_button_pressed() -> void:
-	var bestiary = bestiary_scene.instantiate()
-	get_parent().add_child(bestiary)
-	bestiary.open_bestiary()
 
 func _finish_dialogue() -> void:
 	visible = false

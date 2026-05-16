@@ -70,16 +70,6 @@ layout_mode = 2
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 18
 text = "SOC TABLET - POŁĄCZENIE ZABEZPIECZONE"
-
-[node name="BestiaryButton" type="Button" parent="Control/TabletFrame/VBoxContainer/TabletHeader/HBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(180, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 18
-text = "[ OTWÓRZ BESTIARIUSZ ]"
-
 [node name="Padding2" type="Control" parent="Control/TabletFrame/VBoxContainer/TabletHeader/HBoxContainer"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
@@ -150,5 +140,5 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[connection signal="pressed" from="Control/TabletFrame/VBoxContainer/TabletHeader/HBoxContainer/BestiaryButton" to="." method="_on_bestiary_button_pressed"]
+
 [connection signal="pressed" from="Control/TabletFrame/VBoxContainer/MainContent/TextContent/HBoxContainer/NextButton" to="." method="_on_next_button_pressed"]
