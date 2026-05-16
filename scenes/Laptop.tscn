@@ -13,6 +13,7 @@ script = ExtResource("2_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.35, 0.35)
+texture = ExtResource("1_laptop")
 
 [node name="BestiaryLabel" type="Label" parent="."]
 offset_left = -75.0
