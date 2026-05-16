@@ -253,6 +253,11 @@ func _on_next_wave_requested() -> void:
 	if transition_screen:
 		transition_screen.hide_transition()
 	
+	# Przywróć widoczność broni
+	if player and player.weapon_manager:
+		if player.weapon_manager.has_method("update_weapon_sprites"):
+			player.weapon_manager.update_weapon_sprites()
+	
 	# Zamiast od razu startować falę - pokaż ekran edukacyjny
 	game_state = "education_pre_wave"
 	if educational_system and wave_manager:

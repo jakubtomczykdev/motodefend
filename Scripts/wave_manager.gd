@@ -264,9 +264,21 @@ func end_wave() -> void:
 func check_wave_completion() -> void:
 	if not is_wave_active:
 		return
-	# Fala kończy się tylko gdy kolejka jest pusta I wszyscy wrogowie nie żyją
-	if spawn_queue.is_empty() and enemies_remaining <= 0:
-		end_wave()
+	
+	# Fala kończy się gdy kolejka jest pusta I wszyscy wrogowie nie żyją
+	if spawn_queue.is_empty():
+		# Fail-safe: Sprawdź rzeczywistą liczbę wrogów w grupie
+		var actual_enemies = get_tree().get_nodes_in_group("Enemies")
+		if actual_enemies.is_empty():
+			if enemies_remaining > 0:
+				print("[WaveManager] Fail-safe: Reconciling enemies_remaining from %d to 0" % enemies_remaining)
+				enemies_remaining = 0
+				update_ui()
+			end_wave()
+		elif enemies_remaining <= 0:
+			# Jeśli licznik mówi 0, ale wrogowie są - zsynchronizuj w górę (rzadki przypadek błędu rejestracji)
+			enemies_remaining = actual_enemies.size()
+			update_ui()
 
 func update_ui() -> void:
 	if wave_ui:

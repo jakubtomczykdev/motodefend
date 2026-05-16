@@ -41,6 +41,27 @@ func _on_bestiary_button_pressed() -> void:
 	get_tree().root.add_child(ui)
 	ui.open_bestiary()
 
+func _open_shop() -> void:
+	if has_node("ShopCanvasLayer"):
+		return
+	var shop_layer = CanvasLayer.new()
+	shop_layer.name = "ShopCanvasLayer"
+	shop_layer.layer = 50
+	add_child(shop_layer)
+	
+	var shop_scene = load("res://scenes/Shop.tscn")
+	var shop = shop_scene.instantiate()
+	shop.name = "ShopScreen"
+	shop_layer.add_child(shop)
+	
+	shop.shop_closed.connect(_on_shop_closed)
+	get_tree().paused = true
+
+func _on_shop_closed() -> void:
+	get_tree().paused = false
+	if has_node("ShopCanvasLayer"):
+		get_node("ShopCanvasLayer").queue_free()
+
 func _input(event: InputEvent) -> void:
 	if (event.is_action_pressed("ui_cancel") or 
 		(event is InputEventKey and event.keycode == KEY_ESCAPE and event.pressed)):

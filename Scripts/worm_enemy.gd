@@ -45,21 +45,27 @@ func _try_split() -> void:
 	if randf() > split_chance:
 		return
 	
-	# Sprawdź limit wrogów (opcjonalnie, by nie zapchać pamięci)
+	# Sprawdź limit wrogów
 	var enemies := get_tree().get_nodes_in_group("Enemies")
 	if enemies.size() > 50:
 		return
 		
-	# Stwórz kopię
-	var new_worm := duplicate()
-	# Resetuj stan kopii
-	new_worm.current_health = max_health
+	# Zamiast duplicate(), lepiej załadować scenę fali lub stworzyć nową instancję tej samej klasy
+	# ale najbezpieczniej dla logiki gry jest zrespawnować nową czystą instancję
+	var scene_path = "res://scenes/Enemies/Worm.tscn"
+	var worm_scene = load(scene_path)
+	if not worm_scene: return
+
+	var new_worm = worm_scene.instantiate()
 	new_worm.global_position = global_position + Vector2(randf_range(-50, 50), randf_range(-50, 50))
 	
 	get_parent().add_child(new_worm)
 	
-	# Powiadom WaveManager o nowym wrogu, jeśli to możliwe
-	var wave_managers := get_tree().get_nodes_in_group("WaveManager")
+	# Powiadom WaveManager o nowym wrogu
+	var wave_managers = get_tree().get_nodes_in_group("WaveManager")
 	for wm in wave_managers:
 		if wm.has_method("register_extra_enemy"):
 			wm.register_extra_enemy()
+		# Bardzo ważne: podłącz sygnał died nowej instancji do WaveManagera
+		if new_worm.has_signal("died") and wm.has_method("_on_enemy_died"):
+			new_worm.died.connect(wm._on_enemy_died)

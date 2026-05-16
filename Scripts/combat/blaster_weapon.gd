@@ -74,11 +74,6 @@ func _fire_burst_shot(target_pos: Vector2, weapon_data: WeaponBase) -> void:
 	get_tree().current_scene.add_child(projectile)
 	_spawn_muzzle_flash(spawn_pos, direction)
 	
-	# Recoil effect
-	if player_ref is CharacterBody2D:
-		if "knockback_velocity" in player_ref:
-			player_ref.knockback_velocity -= direction * 40.0
-
 	AudioManager.play_sfx("blaster_shot", 0.15)
 	
 	burst_count += 1

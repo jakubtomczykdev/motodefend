@@ -85,7 +85,7 @@ func _ready() -> void:
 	
 	# Standardize collision layers: Layer 2 = Enemies
 	collision_layer = 2 
-	collision_mask = 1 | 4 # Walls | Projectiles
+	collision_mask = 1 | 4 # Walls | Player (Layer 3)
 	
 	# Znajdź węzły bezpiecznie
 	if has_node("AnimatedSprite2D"):
@@ -99,8 +99,14 @@ func _ready() -> void:
 		collision = $CollisionShape2D
 	if has_node("DetectionArea"):
 		detection_area = $DetectionArea
+		if detection_area:
+			detection_area.collision_layer = 0
+			detection_area.collision_mask = 4 # Player (Layer 3)
 	if has_node("AttackArea"):
 		attack_area = $AttackArea
+		if attack_area:
+			attack_area.collision_layer = 0
+			attack_area.collision_mask = 4 # Player (Layer 3)
 
 	current_health = max_health
 	original_move_speed = move_speed

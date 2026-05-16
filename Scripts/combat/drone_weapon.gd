@@ -6,15 +6,16 @@ var current_weapon: WeaponBase
 var player_ref: Node2D
 var state: DroneState = DroneState.PATROLLING
 var attack_timer: float = 0.0
-var target_enemy: Node2D = null
+var target_pos: Vector2 = Vector2.ZERO
+var current_target: Node2D = null
 
 var _drone_sprite: Sprite2D
 var move_speed: float = 180.0
 var patrol_target: Vector2
 var patrol_wait_timer: float = 0.0
-var detection_range: float = 350.0
-var shoot_range: float = 200.0
-var return_range: float = 400.0
+var detection_range: float = 600.0 # Increased for mouse targeting
+var shoot_range: float = 350.0   # Increased for mouse targeting
+var return_range: float = 500.0
 var projectile_scene: PackedScene = preload("res://scenes/Projectile.tscn")
 
 func initialize(p_player_ref: Node2D, weapon_data: WeaponBase) -> void:
@@ -36,8 +37,8 @@ func initialize(p_player_ref: Node2D, weapon_data: WeaponBase) -> void:
 	# UNIQUE LOGIC: Fighting Drone is faster and more aggressive
 	if "Bojowy" in weapon_data.item_name or weapon_data.rarity == "legendary":
 		move_speed = 250.0
-		detection_range = 500.0
-		shoot_range = 300.0
+		detection_range = 800.0
+		shoot_range = 450.0
 		_drone_sprite.modulate = Color(1.2, 1.2, 1.2, 1.0) # Glow effect
 
 	var collision_shape := CollisionShape2D.new()
@@ -61,12 +62,19 @@ func _pick_patrol_target() -> void:
 	)
 	patrol_wait_timer = randf_range(0.5, 2.0)
 
+func update_drone(_p_target_pos: Vector2) -> void:
+	# Drones are now autonomous, but we keep the method for compatibility
+	pass
+
 func _physics_process(delta: float) -> void:
 	if not is_inside_tree():
 		return
 	if not player_ref or not is_instance_valid(player_ref):
 		queue_free()
 		return
+
+	# Auto-target nearest enemy
+	_find_nearest_target()
 
 	attack_timer -= delta
 
@@ -83,38 +91,43 @@ func _physics_process(delta: float) -> void:
 	_check_transitions()
 
 func _check_transitions() -> void:
-	var enemy := _find_closest_enemy()
 	var dist_to_player := global_position.distance_to(player_ref.global_position)
 
 	if dist_to_player > return_range:
 		state = DroneState.RETURNING
+		current_target = null
 		return
 
-	if enemy:
-		var dist_to_enemy := global_position.distance_to(enemy.global_position)
-		if dist_to_enemy <= shoot_range and attack_timer <= 0:
-			target_enemy = enemy
+	if is_instance_valid(current_target) and not current_target.get("is_dead"):
+		var enemy_pos = current_target.global_position
+		var dist_to_target := global_position.distance_to(enemy_pos)
+		
+		if dist_to_target <= shoot_range and attack_timer <= 0:
 			state = DroneState.SHOOTING
-		elif dist_to_player > 100:
-			target_enemy = enemy
+			target_pos = enemy_pos
+		elif dist_to_target < detection_range:
 			state = DroneState.CHASING
+			target_pos = enemy_pos
 		else:
-			target_enemy = enemy
-			state = DroneState.CHASING
-	elif state != DroneState.PATROLLING and state != DroneState.RETURNING:
+			state = DroneState.PATROLLING
+			current_target = null
+	else:
 		state = DroneState.PATROLLING
+		current_target = null
 
-func _find_closest_enemy() -> Node2D:
-	var enemies: Array[Node] = get_tree().get_nodes_in_group("Enemies")
-	var closest: Node2D = null
-	var closest_dist := detection_range
-	for enemy: Node in enemies:
-		if enemy is Node2D:
-			var dist := global_position.distance_to(enemy.global_position)
-			if dist < closest_dist:
-				closest_dist = dist
-				closest = enemy
-	return closest
+func _find_nearest_target() -> void:
+	var enemies = get_tree().get_nodes_in_group("Enemies")
+	var closest_enemy = null
+	var min_dist = detection_range
+	
+	for enemy in enemies:
+		if is_instance_valid(enemy) and not enemy.get("is_dead"):
+			var dist = global_position.distance_to(enemy.global_position)
+			if dist < min_dist:
+				min_dist = dist
+				closest_enemy = enemy
+	
+	current_target = closest_enemy
 
 func _process_patrol(delta: float) -> void:
 	if patrol_wait_timer > 0:
@@ -139,11 +152,7 @@ func _process_patrol(delta: float) -> void:
 			_drone_sprite.scale.x = -abs(_drone_sprite.scale.x)
 
 func _process_chase(_delta: float) -> void:
-	if not target_enemy or not is_instance_valid(target_enemy):
-		state = DroneState.PATROLLING
-		return
-
-	var dir := (target_enemy.global_position - global_position).normalized()
+	var dir := (target_pos - global_position).normalized()
 	velocity = dir * move_speed
 	move_and_slide()
 
@@ -154,21 +163,14 @@ func _process_chase(_delta: float) -> void:
 		else:
 			_drone_sprite.scale.x = -abs(_drone_sprite.scale.x)
 	
-	# More aggressive chasing: accelerate if far
-	if global_position.distance_to(target_enemy.global_position) > shoot_range:
+	if global_position.distance_to(target_pos) > shoot_range:
 		velocity *= 1.3
 
 func _process_shoot(delta: float) -> void:
-	if not target_enemy or not is_instance_valid(target_enemy):
-		state = DroneState.PATROLLING
-		if _drone_sprite:
-			_drone_sprite.modulate = Color(1, 1, 1, 1)
-		return
-
-	var dir := (target_enemy.global_position - global_position).normalized()
+	var dir := (target_pos - global_position).normalized()
 	_fire_projectile(dir)
 
-	var dist_to_target := global_position.distance_to(target_enemy.global_position)
+	var dist_to_target := global_position.distance_to(target_pos)
 	if dist_to_target > shoot_range * 1.3:
 		state = DroneState.CHASING
 	else:

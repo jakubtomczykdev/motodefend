@@ -111,12 +111,8 @@ func _process(delta: float) -> void:
 		if weapon_manager and weapon_manager.has_method("activate_all_weapons"):
 			var target_pos := get_global_mouse_position()
 			
-			# Brotato-style: Always try to activate weapons. 
-			# If attacking, use mouse. Otherwise use auto-targeting (Vector2.ZERO).
-			if Input.is_action_pressed("attack"):
-				weapon_manager.activate_all_weapons(target_pos)
-			else:
-				weapon_manager.activate_all_weapons(Vector2.ZERO)
+			# Zawsze używamy pozycji myszy do aktywacji broni
+			weapon_manager.activate_all_weapons(target_pos)
 			
 			# Obracaj muzzle w stronę celu (zawsze, niezależnie od ataku)
 			if muzzle:

@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 ## Zarządza broniami gracza – sloty, instancje, aktywacja
 
 @export var max_weapons: int = 6
@@ -29,18 +29,29 @@ func _process(delta: float) -> void:
 	_current_orbit_angle += delta * orbit_speed
 	_update_weapon_positions(delta)
 
-## Podłącza sloty broni z zewnątrz (pozostawione dla kompatybilności, ale będziemy nimi sterować)
+## Podłącza sloty broni z zewnątrz (pozostawione dla kompatybilności)
 func setup_slots(slot1: Sprite2D, slot2: Sprite2D = null) -> void:
-	# W nowym systemie wolimy dynamiczne sloty, ale jeśli dostaniemy zewnętrzne, dodamy je
+	# W nowym systemie wolimy dynamiczne sloty zarządzane przez Node2D
+	# Jeśli dostaniemy zewnętrzne sloty, spróbujemy je zaadoptować
 	if slot1 and not weapon_slots.has(slot1):
+		if slot1.get_parent() and slot1.get_parent() != self:
+			slot1.get_parent().remove_child(slot1)
+			add_child(slot1)
 		weapon_slots.append(slot1)
 	if slot2 and not weapon_slots.has(slot2):
+		if slot2.get_parent() and slot2.get_parent() != self:
+			slot2.get_parent().remove_child(slot2)
+			add_child(slot2)
 		weapon_slots.append(slot2)
 	update_weapon_sprites()
 
 func _get_or_create_slot(index: int) -> Sprite2D:
+	# Jeśli tablica jest mniejsza, wypełnij ją nullami
+	while weapon_slots.size() <= index:
+		weapon_slots.append(null)
+
 	# Jeśli mamy już slot na tym indeksie, zwróć go
-	if index < weapon_slots.size() and is_instance_valid(weapon_slots[index]):
+	if is_instance_valid(weapon_slots[index]):
 		return weapon_slots[index]
 	
 	# W przeciwnym razie stwórz nowy
@@ -49,10 +60,6 @@ func _get_or_create_slot(index: int) -> Sprite2D:
 	new_slot.z_index = 1
 	add_child(new_slot)
 	
-	# Jeśli tablica jest mniejsza, wypełnij ją nullami
-	while weapon_slots.size() <= index:
-		weapon_slots.append(null)
-	
 	weapon_slots[index] = new_slot
 	return new_slot
 
@@ -60,15 +67,14 @@ func _update_weapon_positions(delta: float) -> void:
 	var count = weapons.size()
 	if count == 0: return
 	
-	# Znajdź cel do celowania (najbliższy wróg lub mysz)
-	var closest_enemy = _find_closest_enemy(800.0)
-	var target_pos = closest_enemy.global_position if closest_enemy else player_ref.get_global_mouse_position()
+	# Zawsze celuj w stronę myszy
+	var target_pos = get_global_mouse_position()
 	
 	var angle_step = (2.0 * PI) / count
 	
 	for i in range(count):
 		var slot = _get_or_create_slot(i)
-		if not slot: continue
+		if not is_instance_valid(slot): continue
 		
 		# Oblicz pozycję w orbicie
 		var angle = i * angle_step + _current_orbit_angle
@@ -77,7 +83,7 @@ func _update_weapon_positions(delta: float) -> void:
 		# Płynne przesuwanie do pozycji (lerp dla organicznego ruchu)
 		slot.position = slot.position.lerp(offset, delta * 15.0)
 		
-		# Celowanie w stronę celu
+		# Celowanie w stronę myszy
 		var aim_dir = (target_pos - slot.global_position).normalized()
 		slot.rotation = aim_dir.angle()
 		
@@ -156,6 +162,21 @@ func _get_weapon_script(weapon_type: String) -> Script:
 			return load("res://Scripts/combat/sword_weapon.gd")
 	return null
 
+## Czyści stan broni na koniec fali (zatrzymuje animacje, resetuje stany)
+func cleanup_for_wave_end() -> void:
+	for instance in weapon_instances:
+		if is_instance_valid(instance):
+			# Jeśli broń ma metodę resetowania/zatrzymywania, wywołaj ją
+			if "is_bursting" in instance:
+				instance.is_bursting = false
+			if "hit_enemies" in instance:
+				instance.hit_enemies.clear()
+	
+	# Ukryj sloty na czas przejścia
+	for slot in weapon_slots:
+		if is_instance_valid(slot):
+			slot.visible = false
+
 ## Usuwa broń o podanym indeksie
 func remove_weapon(index: int) -> void:
 	if index < 0 or index >= weapon_instances.size():
@@ -208,19 +229,15 @@ func update_weapon_sprites() -> void:
 		else:
 			slot.visible = false
 
-## Obraca sloty broni w kierunku celu (Legacy, teraz obsługiwane w _process)
+## Obraca sloty broni w kierunku celu (Legacy)
 func rotate_weapon_slots(_target_pos: Vector2) -> void:
 	pass
 
 ## Wołane co klatkę – aktywuje wszystkie gotowe bronie
 func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
-	# Jeśli target_pos to ZERO, znajdź najbliższego wroga
+	# Jeśli target_pos to ZERO, użyj pozycji myszy
 	if target_pos == Vector2.ZERO:
-		var closest = _find_closest_enemy(1000.0)
-		if closest:
-			target_pos = closest.global_position
-		else:
-			target_pos = player_ref.get_global_mouse_position()
+		target_pos = get_global_mouse_position()
 
 	for i: int in range(weapon_instances.size()):
 		var instance: Node = weapon_instances[i]
@@ -238,9 +255,9 @@ func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
 		if not instance.is_ready():
 			continue
 
-		# Używamy globalnej pozycji slotu dla wylotu pocisku/ataku jeśli to możliwe
+		# Używamy globalnej pozycji slotu dla wylotu pocisku/ataku
 		var slot = _get_or_create_slot(i)
-		var attack_origin = slot.global_position if is_instance_valid(slot) else player_ref.global_position
+		var attack_origin = slot.global_position if is_instance_valid(slot) else global_position
 
 		match weapon_data.item_type:
 			"shockwave":
@@ -259,11 +276,11 @@ func _find_closest_enemy(max_range: float = INF) -> Node2D:
 	var closest_dist: float = max_range
 	for enemy: Node in enemies:
 		if enemy is Node2D:
-			# Ignoruj martwych wrogów jeśli mają taką właściwość
+			# Ignoruj martwych wrogów
 			if "is_dead" in enemy and enemy.is_dead:
 				continue
 				
-			var dist: float = player_ref.global_position.distance_to(enemy.global_position)
+			var dist: float = global_position.distance_to(enemy.global_position)
 			if dist < closest_dist:
 				closest_dist = dist
 				closest = enemy
