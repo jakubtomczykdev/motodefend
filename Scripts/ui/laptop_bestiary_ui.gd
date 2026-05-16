@@ -91,9 +91,9 @@ func _populate_list() -> void:
 		enemy_list.add_item(enemy.name, enemy.icon)
 		# Alternating row colors
 		if i % 2 == 0:
-			enemy_list.set_item_custom_bg_color(i, Color(0.03, 0.05, 0.1, 1))
+			enemy_list.set_item_custom_bg_color(i, Color(0.08, 0.12, 0.22, 1))
 		else:
-			enemy_list.set_item_custom_bg_color(i, Color(0.045, 0.075, 0.13, 1))
+			enemy_list.set_item_custom_bg_color(i, Color(0.1, 0.16, 0.28, 1))
 
 func _display_enemy(index: int) -> void:
 	var data = enemies_data[index]
