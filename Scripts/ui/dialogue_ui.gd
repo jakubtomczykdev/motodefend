@@ -3,14 +3,12 @@ extends CanvasLayer
 
 signal dialogue_finished
 
-@onready var portrait: TextureRect = %Portrait
 @onready var name_label: Label = %NameLabel
 @onready var dialogue_label: RichTextLabel = %DialogueLabel
 @onready var next_indicator: Label = %NextIndicator
 
 var dialogue_queue: Array[String] = []
 var current_speaker_name: String = ""
-var current_speaker_portrait: Texture2D = null
 var is_typing: bool = false
 var full_current_text: String = ""
 var typewriter_tween: Tween = null
@@ -22,15 +20,9 @@ func _ready() -> void:
 
 func start_dialogue(speaker_name: String, portrait_tex: Texture2D, lines: Array[String]) -> void:
 	current_speaker_name = speaker_name
-	current_speaker_portrait = portrait_tex
 	dialogue_queue = lines.duplicate()
 	
 	name_label.text = current_speaker_name
-	if portrait_tex:
-		portrait.texture = portrait_tex
-		portrait.visible = true
-	else:
-		portrait.visible = false
 	
 	visible = true
 	get_tree().paused = true

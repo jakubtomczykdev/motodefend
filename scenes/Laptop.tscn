@@ -5,7 +5,7 @@
 [ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://retropix.ttf" id="3_font"]
 
 [sub_resource type="RectangleShape2D" id="rect_shape"]
-size = Vector2(352, 193)
+size = Vector2(121, 117)
 
 [node name="Laptop" type="Node2D" unique_id=398700053]
 y_sort_enabled = true
@@ -31,5 +31,5 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" unique_id=144357017]
-position = Vector2(-109, 36.5)
+position = Vector2(-0.5, 5.5)
 shape = SubResource("rect_shape")

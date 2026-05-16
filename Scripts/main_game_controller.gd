@@ -320,6 +320,7 @@ func _save_weapons_to_gamedata(gd) -> void:
 				break
 
 func _open_shop() -> void:
+	if game_state == "shop": return
 	game_state = "shop"
 	var shop_items: Array[ItemBase] = []
 	if item_manager and wave_manager:
@@ -327,13 +328,17 @@ func _open_shop() -> void:
 		shop_items = item_manager.get_shop_items(4, wave_manager.current_wave)
 
 	if shop_system:
+		get_tree().paused = true
 		if shop_system.has_method("open_shop"):
 			shop_system.open_shop(shop_items, build_system, item_manager)
-		get_tree().paused = true
+		else:
+			shop_system.visible = true
 
 func _on_shop_closed() -> void:
 	game_state = "playing"
 	get_tree().paused = false
+	# Small delay to ensure physics and other systems catch up
+	await get_tree().process_frame
 	if wave_manager:
 		wave_manager.start_next_wave()
 

@@ -6,7 +6,6 @@ extends CanvasLayer
 @onready var enemy_name: Label = %EnemyName
 @onready var lore_label: RichTextLabel = %LoreLabel
 @onready var definition_label: RichTextLabel = %DefinitionLabel
-@onready var scan_line: ColorRect = $Control/ScreenContent/ScanLine
 
 var enemies_data = [
 	{
@@ -82,7 +81,6 @@ func _ready() -> void:
 	_populate_list()
 	if not enemies_data.is_empty():
 		_display_enemy(0)
-	_start_scan_animation()
 
 func _populate_list() -> void:
 	enemy_list.clear()
@@ -113,8 +111,6 @@ func _on_close_button_pressed() -> void:
 	_cleanup_and_close()
 
 func _cleanup_and_close() -> void:
-	if scan_line:
-		scan_line.visible = false
 	visible = false
 	get_tree().paused = false
 	queue_free()
@@ -123,12 +119,3 @@ func _input(event: InputEvent) -> void:
 	if visible and event.is_action_pressed("ui_cancel"):
 		_cleanup_and_close()
 		get_viewport().set_input_as_handled()
-
-func _start_scan_animation() -> void:
-	if not scan_line:
-		return
-	scan_line.visible = true
-	var tween := create_tween()
-	tween.set_loops()
-	tween.tween_property(scan_line, "position:y", 0.0, 0.0)
-	tween.tween_property(scan_line, "position:y", 542.0, 2.5)
