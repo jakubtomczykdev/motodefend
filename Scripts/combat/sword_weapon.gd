@@ -67,9 +67,6 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 	swing_area.body_entered.connect(_on_swing_body_entered.bind(weapon_data))
 	swing_area.area_entered.connect(_on_swing_body_entered.bind(weapon_data))
 
-	var arc_tween := create_tween()
-	arc_tween.set_parallel(true)
-
 	# Wizualny łuk cięcia - 8 segmentów tworzących dłuższą smugę
 	for i in range(8):
 		var seg := ColorRect.new()
