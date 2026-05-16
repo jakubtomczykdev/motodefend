@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://glrrl0imiuif" path="res://Scripts/game_start_hub.gd" id="8_hub"]
 [ext_resource type="Script" uid="uid://fv5etw6m4nrg" path="res://Scripts/ui/start_game_trigger.gd" id="10_trigger"]
 [ext_resource type="Texture2D" uid="uid://bg4ia3v3cbgbx" path="res://Assets/Lobby_bg.png" id="bg_tex"]
+[ext_resource type="PackedScene" path="res://scenes/Laptop.tscn" id="11_laptop"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
 normal = Vector2(0, 1)
@@ -139,3 +140,6 @@ y_sort_enabled = true
 position = Vector2(960, 740)
 script = ExtResource("3_bml70")
 speed = 150.0
+
+[node name="Laptop" parent="." instance=ExtResource("11_laptop")]
+position = Vector2(1450, 500)
