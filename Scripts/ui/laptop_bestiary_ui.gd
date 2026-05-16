@@ -101,4 +101,4 @@ func _start_scan_animation() -> void:
 	var tween := create_tween()
 	tween.set_loops()
 	tween.tween_property(scan_line, "position:y", 0.0, 0.0)
-	tween.tween_property(scan_line, "position:y", 567.0, 2.5)
+	tween.tween_property(scan_line, "position:y", 543.0, 2.5)

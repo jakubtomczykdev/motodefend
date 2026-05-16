@@ -1,8 +1,32 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://Scripts/ui/laptop_bestiary_ui.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://retropix.ttf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://bnelfappvg6h0" path="res://Assets/laptopCloseView.png" id="3_laptop"]
+
+[sub_resource type="StyleBoxFlat" id="style_screen"]
+bg_color = Color(0.039, 0.059, 0.078, 1)
+border_width_left = 1
+border_width_right = 1
+border_width_top = 1
+border_width_bottom = 1
+border_color = Color(0.153, 0.4, 0.384, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="style_enemylist"]
+bg_color = Color(0.024, 0.035, 0.047, 1)
+border_width_left = 0
+border_width_right = 1
+border_width_top = 0
+border_width_bottom = 0
+border_color = Color(0.153, 0.4, 0.384, 0.5)
+corner_radius_top_left = 0
+corner_radius_top_right = 0
+corner_radius_bottom_left = 0
+corner_radius_bottom_right = 0
 
 [node name="LaptopBestiaryUI" type="CanvasLayer"]
 layer = 10
@@ -24,7 +48,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.75)
+color = Color(0, 0, 0, 0.78)
 mouse_filter = 1
 
 [node name="LaptopImage" type="TextureRect" parent="Control"]
@@ -44,134 +68,48 @@ texture = ExtResource("3_laptop")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ScreenContent" type="Control" parent="Control/LaptopImage"]
+[node name="ScreenContent" type="Panel" parent="Control/LaptopImage"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -399.0
-offset_top = -441.0
-offset_right = 399.0
-offset_bottom = 126.0
+offset_left = -453.0
+offset_top = -379.0
+offset_right = 441.0
+offset_bottom = 163.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+theme_override_styles/panel = SubResource("style_screen")
 
-[node name="WebcamDot" type="ColorRect" parent="Control/LaptopImage/ScreenContent"]
-layout_mode = 0
-offset_left = 393.0
-offset_top = 4.0
-offset_right = 399.0
-offset_bottom = 10.0
-color = Color(0.906, 0.298, 0.235, 0.9)
-mouse_filter = 2
-
-[node name="TitleLabel" type="Label" parent="Control/LaptopImage/ScreenContent"]
+[node name="TitleBar" type="HBoxContainer" parent="Control/LaptopImage/ScreenContent"]
 layout_mode = 1
 anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -180.0
-offset_top = 12.0
-offset_right = 180.0
-offset_bottom = 36.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(0.306, 0.804, 0.769, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 20
-text = "CYBER BESTIARIUSZ"
-horizontal_alignment = 1
-
-[node name="ContentRow" type="HBoxContainer" parent="Control/LaptopImage/ScreenContent"]
-layout_mode = 1
-anchors_preset = 15
+anchor_left = 0.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 42.0
-offset_bottom = -20.0
+offset_bottom = 34.0
 grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 0
 
-[node name="MarginLeft" type="Control" parent="Control/LaptopImage/ScreenContent/ContentRow"]
-custom_minimum_size = Vector2(6, 0)
+[node name="PadLeft" type="Control" parent="Control/LaptopImage/ScreenContent/TitleBar"]
+custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="EnemyList" type="ItemList" parent="Control/LaptopImage/ScreenContent/ContentRow"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 0)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.816, 1, 1, 1)
-theme_override_colors/font_selected_color = Color(0, 0.1, 0.15, 1)
-theme_override_colors/guide_color = Color(0.306, 0.804, 0.769, 0.35)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 15
-theme_override_styles/panel = null
-allow_reselect = true
-
-[node name="DetailsContainer" type="VBoxContainer" parent="Control/LaptopImage/ScreenContent/ContentRow"]
+[node name="TitleLabel" type="Label" parent="Control/LaptopImage/ScreenContent/TitleBar"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 6
-
-[node name="TopRow" type="HBoxContainer" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsContainer"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="EnemySprite" type="TextureRect" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsContainer/TopRow"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(110, 110)
-layout_mode = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="RightCol" type="VBoxContainer" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsContainer/TopRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 3
-
-[node name="EnemyName" type="Label" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsContainer/TopRow/RightCol"]
-unique_name_in_owner = true
-layout_mode = 2
+size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.306, 0.804, 0.769, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 18
+text = "CYBER BESTIARIUSZ v2.1"
+vertical_alignment = 1
 
-[node name="LoreLabel" type="RichTextLabel" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsContainer/TopRow/RightCol"]
-unique_name_in_owner = true
+[node name="CloseBtn" type="Button" parent="Control/LaptopImage/ScreenContent/TitleBar"]
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/default_color = Color(0.69, 0.733, 0.812, 1)
-theme_override_fonts/normal_font = ExtResource("2_font")
-theme_override_font_sizes/normal_font_size = 12
-bbcode_enabled = true
-scroll_active = false
-
-[node name="DefinitionLabel" type="RichTextLabel" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/default_color = Color(0.753, 0.816, 0.878, 1)
-theme_override_fonts/normal_font = ExtResource("2_font")
-theme_override_font_sizes/normal_font_size = 12
-bbcode_enabled = true
-scroll_active = false
-
-[node name="MarginRight" type="Control" parent="Control/LaptopImage/ScreenContent/ContentRow"]
-custom_minimum_size = Vector2(6, 0)
-layout_mode = 2
-
-[node name="CloseBtn" type="Button" parent="Control/LaptopImage/ScreenContent"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -32.0
-offset_top = 8.0
-offset_bottom = 28.0
-grow_horizontal = 0
+custom_minimum_size = Vector2(34, 34)
 theme_override_colors/font_color = Color(0.906, 0.298, 0.235, 1)
 theme_override_colors/font_hover_color = Color(1, 0.5, 0.5, 1)
 theme_override_fonts/font = ExtResource("2_font")
@@ -183,14 +121,127 @@ theme_override_styles/focus = null
 flat = true
 text = "[X]"
 
+[node name="Separator" type="ColorRect" parent="Control/LaptopImage/ScreenContent"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.0
+anchor_right = 1.0
+offset_top = 34.0
+offset_bottom = 36.0
+grow_horizontal = 2
+color = Color(0.153, 0.4, 0.384, 0.6)
+mouse_filter = 2
+
+[node name="ContentRow" type="HBoxContainer" parent="Control/LaptopImage/ScreenContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 38.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="EnemyList" type="ItemList" parent="Control/LaptopImage/ScreenContent/ContentRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(235, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.753, 0.816, 0.878, 1)
+theme_override_colors/font_selected_color = Color(0, 0.08, 0.12, 1)
+theme_override_colors/font_hovered_color = Color(0.878, 0.941, 0.98, 1)
+theme_override_colors/guide_color = Color(0.306, 0.804, 0.769, 0.25)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 15
+theme_override_styles/panel = SubResource("style_enemylist")
+allow_reselect = true
+auto_height = false
+
+[node name="VSeparator" type="ColorRect" parent="Control/LaptopImage/ScreenContent/ContentRow"]
+custom_minimum_size = Vector2(2, 0)
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.153, 0.4, 0.384, 0.45)
+mouse_filter = 2
+
+[node name="DetailsScroll" type="ScrollContainer" parent="Control/LaptopImage/ScreenContent/ContentRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 0
+
+[node name="DetailsBox" type="VBoxContainer" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="TopRow" type="HBoxContainer" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsScroll/DetailsBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 120)
+theme_override_constants/separation = 10
+
+[node name="EnemySprite" type="TextureRect" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsScroll/DetailsBox/TopRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RightCol" type="VBoxContainer" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsScroll/DetailsBox/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="EnemyName" type="Label" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsScroll/DetailsBox/TopRow/RightCol"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.306, 0.804, 0.769, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = " "
+
+[node name="LoreLabel" type="RichTextLabel" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsScroll/DetailsBox/TopRow/RightCol"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.69, 0.733, 0.812, 1)
+theme_override_fonts/normal_font = ExtResource("2_font")
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+scroll_active = false
+fit_content = true
+
+[node name="DefHeader" type="Label" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsScroll/DetailsBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.306, 0.804, 0.769, 0.8)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 13
+text = "[ OPIS ZAGROŻENIA ]"
+
+[node name="DefinitionLabel" type="RichTextLabel" parent="Control/LaptopImage/ScreenContent/ContentRow/DetailsScroll/DetailsBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.753, 0.816, 0.878, 1)
+theme_override_fonts/normal_font = ExtResource("2_font")
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+scroll_active = false
+fit_content = true
+
 [node name="ScanLine" type="ColorRect" parent="Control/LaptopImage/ScreenContent"]
 layout_mode = 0
 offset_left = 0.0
 offset_top = 0.0
-offset_right = 798.0
-offset_bottom = 3.0
-color = Color(0.306, 0.804, 0.769, 0.2)
+offset_right = 894.0
+offset_bottom = 4.0
+color = Color(0.306, 0.804, 0.769, 0.15)
 mouse_filter = 2
 
 [connection signal="item_selected" from="Control/LaptopImage/ScreenContent/ContentRow/EnemyList" to="." method="_on_enemy_list_item_selected"]
-[connection signal="pressed" from="Control/LaptopImage/ScreenContent/CloseBtn" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Control/LaptopImage/ScreenContent/TitleBar/CloseBtn" to="." method="_on_close_button_pressed"]
