@@ -19,17 +19,9 @@ func _ready() -> void:
 ## przez shop_screen.gd property getter → GameData.gold.
 func interact() -> void:
 	var main: Node = get_tree().current_scene
-	
-	# Zapisz pozycję gracza przed wyjściem do standalone shopu
-	var gd := get_node_or_null("/root/GameData")
-	var player = get_tree().get_first_node_in_group("Player")
-	if gd and player:
-		gd.last_player_position = player.global_position
-		gd.should_restore_position = true
-		gd.return_scene = main.scene_file_path
-	
 	if main and main.has_method("_open_shop"):
 		main._open_shop()
 	else:
 		# Fallback: ładuj scenę sklepu jako standalone
+		# shop_screen.gd w _ready() sam odczyta gold z GameData
 		get_tree().change_scene_to_file(SHOP_SCENE_PATH)

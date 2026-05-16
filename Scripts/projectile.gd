@@ -56,12 +56,11 @@ func _physics_process(delta: float) -> void:
 
 	var movement := direction * speed * delta
 	
-	# RAYCAST COLLISION (dla bardzo szybkich pocisków)
+	# RAYCAST COLLISION (dla bardzo szybkich pocisków - zapobiega przelatywaniu przez sprite)
 	var space_state := get_world_2d().direct_space_state
-	var query := PhysicsRayQueryParameters2D.create(global_position, global_position + movement * 1.5) # Lekki bufor zasięgu
-	query.collide_with_areas = false # FIX: Don't hit detection/attack areas
+	var query := PhysicsRayQueryParameters2D.create(global_position, global_position + movement)
+	query.collide_with_areas = true
 	query.collide_with_bodies = true
-	query.collision_mask = collision_mask
 	
 	# Wykluczamy siebie i właściciela
 	var exclude := [self]

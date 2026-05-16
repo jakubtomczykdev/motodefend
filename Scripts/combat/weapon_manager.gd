@@ -60,8 +60,9 @@ func _update_weapon_positions(delta: float) -> void:
 	var count = weapons.size()
 	if count == 0: return
 	
-	# WYMUSZENIE: Zawsze celuj w stronę myszki dla orientacji graficznej wszystkich slotów orbitalnych
-	var target_pos = player_ref.get_global_mouse_position()
+	# Znajdź cel do celowania (najbliższy wróg lub mysz)
+	var closest_enemy = _find_closest_enemy(800.0)
+	var target_pos = closest_enemy.global_position if closest_enemy else player_ref.get_global_mouse_position()
 	
 	var angle_step = (2.0 * PI) / count
 	
@@ -76,7 +77,7 @@ func _update_weapon_positions(delta: float) -> void:
 		# Płynne przesuwanie do pozycji (lerp dla organicznego ruchu)
 		slot.position = slot.position.lerp(offset, delta * 15.0)
 		
-		# Celowanie w stronę kursora (wymuszone śledzenie myszy)
+		# Celowanie w stronę celu
 		var aim_dir = (target_pos - slot.global_position).normalized()
 		slot.rotation = aim_dir.angle()
 		
@@ -213,9 +214,13 @@ func rotate_weapon_slots(_target_pos: Vector2) -> void:
 
 ## Wołane co klatkę – aktywuje wszystkie gotowe bronie
 func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
-	# Jeśli target_pos to ZERO (fallback), użyj myszki
+	# Jeśli target_pos to ZERO, znajdź najbliższego wroga
 	if target_pos == Vector2.ZERO:
-		target_pos = player_ref.get_global_mouse_position()
+		var closest = _find_closest_enemy(1000.0)
+		if closest:
+			target_pos = closest.global_position
+		else:
+			target_pos = player_ref.get_global_mouse_position()
 
 	for i: int in range(weapon_instances.size()):
 		var instance: Node = weapon_instances[i]
@@ -224,7 +229,7 @@ func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
 
 		var weapon_data: WeaponBase = weapons[i]
 		
-		# Drony są inteligentne – same szukają wrogów
+		# Drony są zawsze aktywne pasywnie
 		if weapon_data.item_type == "drone":
 			if instance.has_method("update_drone"):
 				instance.update_drone(target_pos)
@@ -233,7 +238,7 @@ func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
 		if not instance.is_ready():
 			continue
 
-		# Używamy globalnej pozycji slotu dla wylotu pocisku/ataku
+		# Używamy globalnej pozycji slotu dla wylotu pocisku/ataku jeśli to możliwe
 		var slot = _get_or_create_slot(i)
 		var attack_origin = slot.global_position if is_instance_valid(slot) else player_ref.global_position
 
@@ -242,11 +247,7 @@ func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
 				var target_dir: Vector2 = (target_pos - attack_origin).normalized()
 				instance.activate(attack_origin, weapon_data, target_dir)
 			"blaster":
-				# Przekazujemy attack_origin do blastera, żeby strzelał ze slotu
-				if instance.has_method("fire_from_origin"):
-					instance.fire_from_origin(player_ref, attack_origin, target_pos, weapon_data)
-				else:
-					instance.fire(player_ref, target_pos, weapon_data)
+				instance.fire(player_ref, target_pos, weapon_data)
 			"sword":
 				var direction: Vector2 = (target_pos - attack_origin).normalized()
 				instance.swing(player_ref, direction, weapon_data)

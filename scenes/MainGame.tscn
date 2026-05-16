@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" path="res://scenes/EndScreen.tscn" id="9_end"]
 [ext_resource type="Script" uid="uid://csilkk2hpyme7" path="res://Scripts/ui/hud_weapon_panel.gd" id="10_hud_wp"]
 [ext_resource type="PackedScene" path="res://scenes/InventoryUI.tscn" id="10_inv"]
-[ext_resource type="PackedScene" uid="uid://c08csr311bgr6" path="res://scenes/Shop.tscn" id="11_shop"]
+[ext_resource type="PackedScene" path="res://scenes/Shop.tscn" id="11_shop"]
 [ext_resource type="PackedScene" uid="uid://cx6y8v2u7k7m2" path="res://scenes/TransitionScreen.tscn" id="12_transition"]
 [ext_resource type="Texture2D" uid="uid://bhyo3r36kpw4o" path="res://Assets/newAssets/bgFuturistic.png" id="bg_tex"]
 
@@ -338,6 +338,8 @@ layer = 10
 
 [node name="ShopScreen" parent="ShopCanvasLayer" unique_id=125832302 instance=ExtResource("11_shop")]
 visible = false
+layout_mode = 3
+anchors_preset = 15
 
 [node name="TransitionCanvasLayer" type="CanvasLayer" parent="." unique_id=221646997]
 process_mode = 3

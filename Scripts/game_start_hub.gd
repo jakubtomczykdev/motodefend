@@ -9,14 +9,6 @@ func _ready() -> void:
 	_update_wave_display()
 	_update_gold_display()
 	AudioManager.play_music(AudioManager.MUSIC_LOBBY)
-	
-	# Przywróć pozycję gracza jeśli wracamy ze sklepu
-	var gd := get_node_or_null("/root/GameData")
-	if gd and gd.should_restore_position:
-		var player = get_tree().get_first_node_in_group("Player")
-		if player:
-			player.global_position = gd.last_player_position
-		gd.should_restore_position = false
 
 func _process(_delta: float) -> void:
 	_update_gold_display()

@@ -99,16 +99,8 @@ func _ready() -> void:
 		collision = $CollisionShape2D
 	if has_node("DetectionArea"):
 		detection_area = $DetectionArea
-		detection_area.collision_layer = 0 # Don't block projectiles
-		detection_area.collision_mask = 4 # Only detect Player
 	if has_node("AttackArea"):
 		attack_area = $AttackArea
-		# FIX: Ensure AttackArea detects Player (Layer 3 = bit 4)
-		attack_area.collision_layer = 0 # Don't block projectiles
-		attack_area.collision_mask = 4 
-		# FIX: Un-scale the attack area if parent is scaled
-		if scale.x != 1.0 or scale.y != 1.0:
-			attack_area.scale = Vector2(1.0/scale.x, 1.0/scale.y)
 
 	current_health = max_health
 	original_move_speed = move_speed
@@ -166,9 +158,6 @@ func _physics_process(delta: float) -> void:
 	
 	if is_boss:
 		handle_boss_special(delta)
-	
-	# Separation force: prevent sticking to other enemies and player
-	_apply_separation_forces(delta)
 	
 	# Apply knockback
 	if knockback_velocity.length() > 10.0:
@@ -256,23 +245,6 @@ func _special_attack_aoe_blast() -> void:
 		warning.queue_free()
 	).set_delay(1.0)
 
-
-func _apply_separation_forces(delta: float) -> void:
-	var push_force := Vector2.ZERO
-	# Use a more efficient way to get nearby enemies if possible, but for now group is fine
-	var neighbors := get_tree().get_nodes_in_group("Enemies")
-	for neighbor in neighbors:
-		if neighbor != self and is_instance_valid(neighbor) and neighbor is Node2D:
-			var dist := global_position.distance_to(neighbor.global_position)
-			if dist < 45.0: # Separation distance
-				push_force += (global_position - neighbor.global_position).normalized() * (45.0 - dist) * 2.0
-	
-	if player and is_instance_valid(player):
-		var dist := global_position.distance_to(player.global_position)
-		if dist < 55.0: # Minimum distance to player
-			push_force += (global_position - player.global_position).normalized() * (55.0 - dist) * 3.0
-			
-	velocity += push_force * delta * 80.0
 
 func _update_health_bar_position() -> void:
 	if _health_bar and is_instance_valid(_health_bar):
@@ -372,44 +344,20 @@ func handle_attack_cooldown(delta: float) -> void:
 		if attack_timer <= 0:
 			can_attack = true
 	
-	if can_attack:
-		# FALLBACK: Robust proximity check if player is extremely close
-		if player and is_instance_valid(player):
-			var dist = global_position.distance_to(player.global_position)
-			if dist < 65.0: # Base melee range
-				attack()
-				return
-
-		if not players_in_attack_range.is_empty():
-			attack()
+	if can_attack and not players_in_attack_range.is_empty():
+		attack()
 
 func attack() -> void:
-	if not can_attack:
+	if not can_attack or players_in_attack_range.is_empty():
 		return
 	
-	var hit_any := false
-	
-	# Check explicit proximity first (most reliable)
-	if player and is_instance_valid(player):
-		var dist = global_position.distance_to(player.global_position)
-		if dist < 80.0: # Slightly larger than the fallback check for consistency
-			var kb_dir = (player.global_position - global_position).normalized()
-			if kb_dir == Vector2.ZERO: kb_dir = Vector2.UP
-			player.take_damage(damage, kb_dir * 450.0)
-			hit_any = true
-	
-	# Check targets in range (from Area2D)
-	if not hit_any:
-		for target in players_in_attack_range:
-			if is_instance_valid(target) and target.has_method("take_damage"):
-				var kb_dir = (target.global_position - global_position).normalized()
-				if kb_dir == Vector2.ZERO: kb_dir = Vector2.UP
-				target.take_damage(damage, kb_dir * 450.0)
-				hit_any = true
-	
-	if hit_any:
-		can_attack = false
-		attack_timer = attack_cooldown
+	var target = players_in_attack_range[0]
+	if is_instance_valid(target) and target.has_method("take_damage"):
+		var kb_dir = (target.global_position - global_position).normalized()
+		target.take_damage(damage, kb_dir * 300.0)
+
+	can_attack = false
+	attack_timer = attack_cooldown
 
 func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	if is_dead:
