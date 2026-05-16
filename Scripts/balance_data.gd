@@ -51,6 +51,6 @@ const SWORD_COST: int = 100
 const STARTING_GOLD: int = 100
 const REROLL_COST: int = 25
 const WAVE_GOLD_REWARD: int = 10
-const MAX_WEAPON_SLOTS: int = 2
+const MAX_WEAPON_SLOTS: int = 6
 const BASE_PLAYER_HP: int = 10
 const HP_PER_WAVE: int = 9

@@ -143,25 +143,45 @@ func _get_wave_config(wave: int) -> Dictionary:
 	# Oblicz liczbę wrogów
 	config.enemy_count = int(base_enemy_count * pow(enemy_count_multiplier, wave - 1))
 
-	# Typy wrogów zgodne z edukacją pre-wave
-	if wave == 1 or wave == 2:
+	# Typy wrogów zgodne z falami
+	if wave <= 2:
 		config.enemy_types = ["worm"]
-	elif wave == 3 or wave == 4:
+	elif wave <= 4:
 		config.enemy_types = ["trojan"]
-	elif wave == 6 or wave == 7:
+	elif wave == 5:
+		config.enemy_types = ["worm"]
+	elif wave <= 7:
 		config.enemy_types = ["ransomware"]
-	elif wave == 8 or wave == 9:
+	elif wave <= 9:
 		config.enemy_types = ["spyware"]
-	elif wave == 11 or wave == 12:
+	elif wave == 10:
+		config.enemy_types = ["trojan"]
+	elif wave <= 12:
 		config.enemy_types = ["phishing"]
-	elif wave >= 13:
+	elif wave <= 14:
 		config.enemy_types = ["sql"]
+	elif wave == 15:
+		config.enemy_types = ["ransomware"]
 	else:
-		config.enemy_types = ["worm", "trojan", "ransomware"]
+		config.enemy_types = ["worm", "trojan", "ransomware", "spyware", "phishing", "sql"]
 
 	# Co 5 fal: Boss
 	if wave % 5 == 0:
 		config.has_boss = true
+		if wave == 5:
+			config.boss_type = "giant_worm"
+		elif wave == 10:
+			config.boss_type = "giant_trojan"
+		elif wave == 15:
+			config.boss_type = "giant_ransomware"
+		elif wave == 20:
+			config.boss_type = "giant_spyware"
+		elif wave == 25:
+			config.boss_type = "giant_phishing"
+		elif wave == 30:
+			config.boss_type = "giant_sql"
+		else:
+			config.boss_type = "apt_boss"
 	else:
 		config.has_boss = false
 
@@ -175,12 +195,22 @@ func _spawn_wave(config: Dictionary) -> void:
 
 	# Dodaj bossa do kolejki jeśli wymagane
 	if config.has_boss:
-		spawn_queue.append("apt_boss")
+		if config.has("boss_type"):
+			spawn_queue.append(config.boss_type)
+		else:
+			spawn_queue.append("apt_boss")
 
 func _spawn_enemy(enemy_type: String) -> void:
-	var scene_path: String = str(enemy_scenes.get(enemy_type, ""))
+	var is_giant_boss = false
+	var actual_enemy_type = enemy_type
+	
+	if enemy_type.begins_with("giant_"):
+		is_giant_boss = true
+		actual_enemy_type = enemy_type.replace("giant_", "")
+		
+	var scene_path: String = str(enemy_scenes.get(actual_enemy_type, ""))
 	if scene_path == "":
-		push_warning("Brak sceny dla wroga: " + enemy_type)
+		push_warning("Brak sceny dla wroga: " + actual_enemy_type)
 		return
 
 	var scene := load(scene_path) as PackedScene
@@ -192,6 +222,9 @@ func _spawn_enemy(enemy_type: String) -> void:
 	
 	if enemy.has_method("scale_stats"):
 		enemy.scale_stats(current_wave)
+		
+	if is_giant_boss and enemy.has_method("make_giant_boss"):
+		enemy.make_giant_boss()
 
 	var spawn_point: Node2D = spawn_points.pick_random()
 

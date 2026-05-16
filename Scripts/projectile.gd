@@ -21,6 +21,10 @@ var sprite: Sprite2D
 var collision: CollisionShape2D
 
 func _ready() -> void:
+	# Standardize collision layers: Layer 4 = Projectiles
+	collision_layer = 8 
+	collision_mask = 2 | 1 # Enemies | Walls
+
 	if has_node("Sprite2D"):
 		sprite = $Sprite2D
 		if sprite and not sprite.texture:
@@ -101,7 +105,7 @@ func _handle_collision(collider: Node) -> void:
 			target_body = target_body.get_parent()
 	
 	if target_body.is_in_group("Enemies"):
-		if target_body.get("is_dead"):
+		if target_body.get("is_dead") == true:
 			return
 			
 		if target_body.has_method("take_damage"):
@@ -113,7 +117,12 @@ func _handle_collision(collider: Node) -> void:
 			queue_free()
 		else:
 			pierce_count += 1
-	elif collider is StaticBody2D or collider is TileMap:
+	elif target_body.is_in_group("Player"):
+		if target_body.has_method("take_damage"):
+			var kb_dir = direction
+			target_body.take_damage(damage, kb_dir * 100.0)
+		queue_free()
+	elif collider is StaticBody2D or collider is TileMap or (collider is PhysicsBody2D and collider.collision_layer & 1):
 		# Ściana
 		queue_free()
 	# Inne Area2D (np. pociski) ignorujemy

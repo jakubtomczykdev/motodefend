@@ -4,10 +4,33 @@ extends EnemyBase
 @export var split_chance: float = 0.1
 @export var split_timer_max: float = 12.0
 var split_timer: float = 0.0
+var wave_time: float = 0.0
 
 func _ready() -> void:
 	super._ready()
 	split_timer = split_timer_max * randf_range(0.8, 1.2)
+	wave_time = randf() * PI * 2
+
+func handle_ai(delta: float) -> void:
+	if not player:
+		super.handle_ai(delta)
+		return
+
+	var distance := global_position.distance_to(player.global_position)
+	if distance < detection_range:
+		wave_time += delta * 5.0
+		var dir_to_player = (player.global_position - global_position).normalized()
+		var side_offset = dir_to_player.rotated(PI/2) * sin(wave_time) * 0.7
+		
+		velocity = (dir_to_player + side_offset).normalized() * move_speed
+		
+		if sprite and "scale" in sprite:
+			if velocity.x > 0:
+				sprite.scale.x = abs(sprite.scale.x)
+			elif velocity.x < 0:
+				sprite.scale.x = -abs(sprite.scale.x)
+	else:
+		_handle_wander(delta)
 
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)

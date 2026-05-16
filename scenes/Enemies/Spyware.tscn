@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bji01vijbmblb"]
 
-[ext_resource type="Script" uid="uid://buc3ertw6atds" path="res://Scripts/enemy_base.gd" id="1"]
+[ext_resource type="Script" path="res://Scripts/spyware_enemy.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://phishing_tex" path="res://Assets/Characters/phishing.png" id="2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]

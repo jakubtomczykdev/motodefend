@@ -36,6 +36,11 @@ var players_in_attack_range: Array[Node2D] = []
 var slowdown_timer: float = 0.0
 var original_move_speed: float = 0.0
 
+# Special Boss Attack variables
+var boss_special_timer: float = 0.0
+var boss_special_cooldown: float = 10.0
+var enemy_type_name: String = ""
+
 var _health_bar: ProgressBar
 var _health_bar_scale: float = 1.0
 var is_dead: bool = false
@@ -53,10 +58,34 @@ func scale_stats(wave_number: int) -> void:
 		_health_bar.max_value = max_health
 		_health_bar.value = current_health
 
+func make_giant_boss() -> void:
+	is_boss = true
+	scale = Vector2(2.5, 2.5)
+	max_health *= 5
+	current_health = max_health
+	damage *= 2
+	score_value *= 5
+	move_speed *= 0.8
+	boss_special_timer = 5.0 # First special attack after 5 seconds
+	
+	if _health_bar and is_instance_valid(_health_bar):
+		_health_bar_scale = 1.0 / max(scale.x, 0.01)
+		_health_bar.scale = Vector2(_health_bar_scale, _health_bar_scale)
+		_health_bar.max_value = max_health
+		_health_bar.value = current_health
+		_update_health_bar_position()
+
 func _ready() -> void:
 	# Upewnij się, że wróg jest widoczny i w grupie
 	visible = true
 	add_to_group("Enemies")
+	
+	# Detect type from name or scene
+	enemy_type_name = name.to_lower()
+	
+	# Standardize collision layers: Layer 2 = Enemies
+	collision_layer = 2 
+	collision_mask = 1 | 4 # Walls | Projectiles
 	
 	# Znajdź węzły bezpiecznie
 	if has_node("AnimatedSprite2D"):
@@ -127,6 +156,9 @@ func _physics_process(delta: float) -> void:
 	handle_ai(delta)
 	handle_attack_cooldown(delta)
 	
+	if is_boss:
+		handle_boss_special(delta)
+	
 	# Apply knockback
 	if knockback_velocity.length() > 10.0:
 		velocity += knockback_velocity
@@ -145,6 +177,74 @@ func _physics_process(delta: float) -> void:
 	# Health bar podąża za wrogiem
 	if _health_bar and is_instance_valid(_health_bar):
 		_update_health_bar_position()
+
+func handle_boss_special(delta: float) -> void:
+	boss_special_timer -= delta
+	if boss_special_timer <= 0:
+		execute_special_attack()
+		boss_special_timer = boss_special_cooldown
+
+func execute_special_attack() -> void:
+	if is_dead: return
+	
+	# Determine attack based on type
+	if "worm" in enemy_type_name:
+		_special_attack_projectile_ring()
+	elif "trojan" in enemy_type_name or "ransomware" in enemy_type_name:
+		_special_attack_aoe_blast()
+	else:
+		_special_attack_projectile_ring() # Fallback
+
+func _special_attack_projectile_ring() -> void:
+	var projectile_scene = load("res://scenes/Projectile.tscn")
+	if not projectile_scene: return
+	
+	var count = 12
+	for i in range(count):
+		var angle = (PI * 2 / count) * i
+		var dir = Vector2(cos(angle), sin(angle))
+		
+		var p = projectile_scene.instantiate()
+		p.global_position = global_position
+		p.direction = dir
+		p.damage = int(damage * 0.5)
+		p.speed = 300.0
+		# Ensure it hits the player
+		p.collision_mask = 1 # Player layer
+		p.add_to_group("EnemyProjectiles")
+		get_tree().current_scene.add_child(p)
+
+func _special_attack_aoe_blast() -> void:
+	# Create a visual warning circle
+	var warning = ColorRect.new()
+	warning.color = Color(1, 0, 0, 0.3)
+	warning.size = Vector2(400, 400)
+	warning.pivot_offset = warning.size / 2
+	warning.global_position = global_position - warning.pivot_offset
+	# Rounded look
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(1, 0, 0, 0.3)
+	style.corner_radius_top_left = 200
+	style.corner_radius_top_right = 200
+	style.corner_radius_bottom_left = 200
+	style.corner_radius_bottom_right = 200
+	warning.add_theme_stylebox_override("panel", style)
+	
+	get_tree().current_scene.add_child(warning)
+	
+	var tween = create_tween()
+	tween.tween_property(warning, "scale", Vector2(0.1, 0.1), 0.0)
+	tween.tween_property(warning, "scale", Vector2(1.0, 1.0), 1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(func():
+		# Deal damage if player inside
+		if player and is_instance_valid(player):
+			var dist = global_position.distance_to(player.global_position)
+			if dist < 200.0:
+				var kb = (player.global_position - global_position).normalized() * 500.0
+				player.take_damage(int(damage * 1.5), kb)
+		warning.queue_free()
+	).set_delay(1.0)
+
 
 func _update_health_bar_position() -> void:
 	if _health_bar and is_instance_valid(_health_bar):
@@ -328,6 +428,7 @@ func _spawn_damage_number(amount: int) -> void:
 		return
 	var label := Label.new()
 	label.text = str(amount)
+	label.z_index = 5 # UI above most gameplay but below main overlays
 	label.add_theme_font_size_override("font_size", 16 + int(amount / 10.0))
 	label.add_theme_color_override("font_color", Color(1, 1, 1, 1)) # White for damage
 	# Outline effect via duplicate shadow
@@ -353,6 +454,7 @@ func _spawn_gold_number(amount: int) -> void:
 		return
 	var label := Label.new()
 	label.text = "+" + str(amount) + "g"
+	label.z_index = 4 # Below damage numbers, above basic graphics
 	label.add_theme_font_size_override("font_size", 20)
 	label.add_theme_color_override("font_color", Color(1, 0.84, 0, 1)) # Gold color
 	

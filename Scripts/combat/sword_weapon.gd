@@ -52,16 +52,20 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 	get_tree().current_scene.add_child(swing_area)
 	current_swing_area = swing_area
 	swing_area.global_position = swing_origin
-	swing_area.collision_layer = 0
-	swing_area.collision_mask = 1
+	swing_area.collision_layer = 8 # Projectiles
+	swing_area.collision_mask = 2 # Enemies
 
 	var collision_shape: CollisionShape2D = CollisionShape2D.new()
 	var rect_shape: RectangleShape2D = RectangleShape2D.new()
-	rect_shape.size = Vector2(weapon_data.weapon_range, 60) # Szybsze wyłapywanie
+	rect_shape.size = Vector2(weapon_data.weapon_range, 80) # Szybsze wyłapywanie
 	collision_shape.shape = rect_shape
 	collision_shape.position = Vector2(weapon_data.weapon_range / 2, 0)
 	swing_area.add_child(collision_shape)
 	hit_enemies.clear()
+
+	# Connect signals for immediate detection
+	swing_area.body_entered.connect(_on_swing_body_entered.bind(weapon_data))
+	swing_area.area_entered.connect(_on_swing_body_entered.bind(weapon_data))
 
 	var arc_tween := create_tween()
 	arc_tween.set_parallel(true)
@@ -119,16 +123,23 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 
 	attack_timer = weapon_data.attack_speed * cooldown_mult
 
-func _on_swing_body_entered(body: Node2D, weapon_data: WeaponBase) -> void:
-	if not body.is_in_group("Enemies"):
+func _on_swing_body_entered(target: Node2D, weapon_data: WeaponBase) -> void:
+	var enemy = target
+	if not enemy.is_in_group("Enemies"):
+		if enemy.get_parent() and enemy.get_parent().is_in_group("Enemies"):
+			enemy = enemy.get_parent()
+		else:
+			return
+
+	if hit_enemies.has(enemy):
 		return
-	if hit_enemies.has(body):
-		return
-	hit_enemies.append(body)
-	if body.has_method("take_damage"):
-		body.take_damage(int(weapon_data.damage * _swing_dmg_mult))
+	hit_enemies.append(enemy)
+
+	if enemy.has_method("take_damage"):
+		enemy.take_damage(int(weapon_data.damage * _swing_dmg_mult))
+	
 	_apply_screen_shake(8.0)
-	_spawn_impact(body)
+	_spawn_impact(enemy)
 
 func _spawn_impact(target: Node2D) -> void:
 	if not is_instance_valid(target):
@@ -150,12 +161,6 @@ func _process(delta: float) -> void:
 		attack_timer -= delta
 		if attack_timer <= 0.0:
 			can_attack = true
-	
-	# Ciągłe sprawdzanie trafień podczas trwania zamachu
-	if current_swing_area and is_instance_valid(current_swing_area):
-		var bodies = current_swing_area.get_overlapping_bodies()
-		for body in bodies:
-			_on_swing_body_entered(body, current_weapon)
 
 func is_ready() -> bool:
 	return can_attack

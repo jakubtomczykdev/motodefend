@@ -82,8 +82,8 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	# Area2D dla kolizji
 	var new_wave_area = Area2D.new()
-	new_wave_area.collision_layer = 0
-	new_wave_area.collision_mask = 1
+	new_wave_area.collision_layer = 8 # Projectiles
+	new_wave_area.collision_mask = 2 # Enemies
 
 	var collision_shape := CollisionShape2D.new()
 	var circle_shape := CircleShape2D.new()
@@ -94,6 +94,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	new_wave_area.global_position = player_pos
 	new_wave_area.body_entered.connect(_on_wave_body_entered.bind(weapon_data, new_wave_area, dmg_mult))
+	new_wave_area.area_entered.connect(_on_wave_body_entered.bind(weapon_data, new_wave_area, dmg_mult))
 
 	get_tree().current_scene.add_child(new_wave_area)
 
@@ -126,28 +127,33 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 	AudioManager.play_sfx("shockwave")
 	attack_timer = weapon_data.attack_speed * cooldown_mult
 
-func _on_wave_body_entered(body: Node2D, weapon_data: WeaponBase, _wave: Area2D, dmg_mult: float = 1.0) -> void:
-	if not body.is_in_group("Enemies"):
-		return
-	if body in hit_enemies:
-		return
-	hit_enemies.append(body)
+func _on_wave_body_entered(target: Node2D, weapon_data: WeaponBase, _wave: Area2D, dmg_mult: float = 1.0) -> void:
+	var enemy = target
+	if not enemy.is_in_group("Enemies"):
+		if enemy.get_parent() and enemy.get_parent().is_in_group("Enemies"):
+			enemy = enemy.get_parent()
+		else:
+			return
 
-	if body.has_method("take_damage"):
-		body.take_damage(int(weapon_data.damage * dmg_mult))
+	if enemy in hit_enemies:
+		return
+	hit_enemies.append(enemy)
+
+	if enemy.has_method("take_damage"):
+		enemy.take_damage(int(weapon_data.damage * dmg_mult))
 
 	_apply_screen_shake(4.0)
 
 	# UNIQUE LOGIC: New Motorola Radio slows down enemies
-	if "Motorola" in weapon_data.item_name and body.has_method("apply_slowdown"):
-		body.apply_slowdown(0.4, 2.0) # 60% slow for 2 seconds
+	if "Motorola" in weapon_data.item_name and enemy.has_method("apply_slowdown"):
+		enemy.apply_slowdown(0.4, 2.0) # 60% slow for 2 seconds
 
 	# Iskry przy trafieniu falą
 	for i in range(2):
 		var spark := ColorRect.new()
 		spark.size = Vector2(5, 5)
 		spark.color = Color(0, 0.8, 1, 0.8)
-		spark.global_position = body.global_position + Vector2(randf_range(-8, 8), randf_range(-8, 8))
+		spark.global_position = enemy.global_position + Vector2(randf_range(-8, 8), randf_range(-8, 8))
 		get_tree().current_scene.add_child(spark)
 		var spark_tween := create_tween()
 		spark_tween.tween_property(spark, "modulate:a", 0.0, 0.2)

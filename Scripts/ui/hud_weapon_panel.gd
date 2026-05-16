@@ -1,55 +1,30 @@
 extends CanvasLayer
-## Panel broni w HUD – pokazuje 2 założone bronie z cooldownami
+## Panel broni w HUD – pokazuje do 6 założonych broni z cooldownami
 
-@onready var slot1_icon: TextureRect = %WeaponIcon1
-@onready var slot1_name: Label = %WeaponName1
-@onready var slot1_cooldown: ColorRect = %CooldownOverlay1
-@onready var slot2_icon: TextureRect = %WeaponIcon2
-@onready var slot2_name: Label = %WeaponName2
-@onready var slot2_cooldown: ColorRect = %CooldownOverlay2
+@onready var slots_container: HBoxContainer = $PanelContainer/HBoxContainer
+@onready var panel_container: PanelContainer = $PanelContainer
 
 var weapon_manager: Node = null
+var weapon_slots_ui: Array = []
 
 func _ready() -> void:
-	# Ustawienia wyswietlania ikon – zapobiegaja wylewaniu sie poza panel
-	_configure_icon(slot1_icon)
-	_configure_icon(slot2_icon)
-	
-	# Ukryj oba sloty na start
-	slot1_icon.visible = false
-	slot2_icon.visible = false
-	slot1_cooldown.visible = false
-	slot2_cooldown.visible = false
-	
-	# Wymuś poprawne rozmiary ikon (zabezpieczenie przed edycją sceny)
-	slot1_icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
-	slot1_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	slot1_icon.custom_minimum_size = Vector2(80, 80)
-	slot2_icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
-	slot2_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	slot2_icon.custom_minimum_size = Vector2(80, 80)
+	# Ukryj panel na start, dopóki nie znajdziemy managera
+	panel_container.visible = false
 	
 	# Znajdz WeaponManager gracza po 1 klatce
 	await get_tree().process_frame
 	_find_weapon_manager()
 	
-	# Dodaj obsługę kliknięć
-	var slot1_panel := slot1_icon.get_parent().get_parent()
-	var slot2_panel := slot2_icon.get_parent().get_parent()
-	
-	slot1_panel.gui_input.connect(_on_slot_gui_input.bind(0))
-	slot2_panel.gui_input.connect(_on_slot_gui_input.bind(1))
-	
-	slot1_panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	slot2_panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	# Zainicjalizuj istniejące sloty (jeśli są w scenie)
+	for child in slots_container.get_children():
+		if child is Panel:
+			weapon_slots_ui.append(child)
+			_setup_slot_signals(child, weapon_slots_ui.size() - 1)
 
-func _configure_icon(icon: TextureRect) -> void:
-	# Wymusza poprawne ustawienia skalowania ikony, nawet jesli ktos
-	# przypadkowo zmienil je w edytorze
-	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL  # = 3
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED   # = 5
-	icon.custom_minimum_size = Vector2(80, 80)
-	icon.clip_contents = true
+func _setup_slot_signals(slot_panel: Panel, index: int) -> void:
+	if not slot_panel.gui_input.is_connected(_on_slot_gui_input):
+		slot_panel.gui_input.connect(_on_slot_gui_input.bind(index))
+	slot_panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 func _find_weapon_manager() -> void:
 	var players := get_tree().get_nodes_in_group("Player")
@@ -57,6 +32,7 @@ func _find_weapon_manager() -> void:
 		var wm := p.get_node_or_null("WeaponManager")
 		if wm:
 			weapon_manager = wm
+			panel_container.visible = true
 			break
 
 func _process(_delta: float) -> void:
@@ -69,47 +45,78 @@ func _process(_delta: float) -> void:
 	var instances: Array = weapon_manager.weapon_instances
 	var active_idx: int = weapon_manager.get("active_weapon_index") if weapon_manager.get("active_weapon_index") != null else 0
 	
-	# Slot 1
-	if weapons.size() >= 1:
-		_update_slot(slot1_icon, slot1_name, slot1_cooldown, weapons[0], instances[0] if instances.size() > 0 else null)
-		_set_slot_active(slot1_icon.get_parent().get_parent(), active_idx == 0)
-	else:
-		slot1_icon.visible = false
-		slot1_cooldown.visible = false
-		slot1_name.text = ""
+	# Dopasuj liczbę slotów UI do liczby broni (max 6)
+	while weapon_slots_ui.size() < weapons.size() and weapon_slots_ui.size() < 6:
+		_create_new_slot_ui()
 	
-	# Slot 2
-	if weapons.size() >= 2:
-		_update_slot(slot2_icon, slot2_name, slot2_cooldown, weapons[1], instances[1] if instances.size() > 1 else null)
-		_set_slot_active(slot2_icon.get_parent().get_parent(), active_idx == 1)
-	else:
-		slot2_icon.visible = false
-		slot2_cooldown.visible = false
-		slot2_name.text = ""
-
-func _update_slot(icon: TextureRect, name_label: Label, cooldown: ColorRect, weapon: WeaponBase, instance: Node) -> void:
-	icon.visible = true
-	name_label.text = weapon.get_display_name()
-	
-	if weapon.icon:
-		icon.texture = weapon.icon
-	
-	# Cooldown overlay – odczytaj z instancji broni
-	if instance and instance.has_method("is_ready") and instance.get("can_attack") != null:
-		if instance.can_attack:
-			cooldown.visible = false
+	# Aktualizuj wszystkie sloty
+	for i in range(weapon_slots_ui.size()):
+		var slot_panel = weapon_slots_ui[i]
+		if i < weapons.size():
+			slot_panel.visible = true
+			_update_slot_ui(slot_panel, weapons[i], instances[i] if i < instances.size() else null, i == active_idx)
 		else:
-			cooldown.visible = true
-			var timer: float = instance.get("attack_timer") if instance.get("attack_timer") != null else 0.0
-			var total: float = weapon.attack_speed
-			var fraction := 1.0 - (timer / total) if total > 0 else 1.0
-			cooldown.anchor_top = fraction
-	else:
-		cooldown.visible = false
+			slot_panel.visible = false
 
-func _set_slot_active(panel: Control, active: bool) -> void:
-	if active:
-		panel.modulate = Color(1.2, 1.2, 1.2, 1.0)
+func _create_new_slot_ui() -> void:
+	# Klonujemy pierwszy dostępny slot lub tworzymy od zera
+	var new_slot: Panel
+	if weapon_slots_ui.size() > 0:
+		new_slot = weapon_slots_ui[0].duplicate()
+	else:
+		# Fallback jeśli nie ma żadnego slotu w scenie
+		new_slot = Panel.new()
+		new_slot.custom_minimum_size = Vector2(100, 80)
+		var vbox = VBoxContainer.new()
+		vbox.name = "VBoxContainer"
+		new_slot.add_child(vbox)
+		var icon = TextureRect.new()
+		icon.name = "WeaponIcon"
+		vbox.add_child(icon)
+		var cooldown = ColorRect.new()
+		cooldown.name = "CooldownOverlay"
+		vbox.add_child(cooldown)
+		var name_lbl = Label.new()
+		name_lbl.name = "WeaponName"
+		vbox.add_child(name_lbl)
+
+	slots_container.add_child(new_slot)
+	weapon_slots_ui.append(new_slot)
+	_setup_slot_signals(new_slot, weapon_slots_ui.size() - 1)
+
+func _update_slot_ui(slot_panel: Panel, weapon: WeaponBase, instance: Node, is_active: bool) -> void:
+	var icon: TextureRect = slot_panel.find_child("WeaponIcon*", true, false)
+	var name_label: Label = slot_panel.find_child("WeaponName*", true, false)
+	var cooldown: ColorRect = slot_panel.find_child("CooldownOverlay*", true, false)
+	
+	if icon:
+		icon.visible = true
+		icon.texture = weapon.icon
+		icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.custom_minimum_size = Vector2(60, 60)
+		
+	if name_label:
+		name_label.text = weapon.item_name
+		name_label.add_theme_font_size_override("font_size", 10)
+		
+	if cooldown:
+		if instance and instance.has_method("is_ready") and instance.get("can_attack") != null:
+			if instance.can_attack:
+				cooldown.visible = false
+			else:
+				cooldown.visible = true
+				var timer: float = instance.get("attack_timer") if instance.get("attack_timer") != null else 0.0
+				var total: float = weapon.attack_speed
+				var fraction := 1.0 - (timer / total) if total > 0 else 1.0
+				cooldown.anchor_top = fraction
+				cooldown.color = Color(0, 0, 0, 0.6)
+		else:
+			cooldown.visible = false
+
+	# Aktywny/nieaktywny wygląd
+	if is_active:
+		slot_panel.modulate = Color(1.2, 1.2, 1.2, 1.0)
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color(0.1, 0.2, 0.3, 0.6)
 		style.border_width_left = 2
@@ -117,10 +124,10 @@ func _set_slot_active(panel: Control, active: bool) -> void:
 		style.border_width_top = 2
 		style.border_width_bottom = 2
 		style.border_color = Color(0, 0.9, 1.0)
-		panel.add_theme_stylebox_override("panel", style)
+		slot_panel.add_theme_stylebox_override("panel", style)
 	else:
-		panel.modulate = Color(0.6, 0.6, 0.6, 0.7)
-		panel.add_theme_stylebox_override("panel", null)
+		slot_panel.modulate = Color(0.7, 0.7, 0.7, 0.8)
+		slot_panel.add_theme_stylebox_override("panel", null)
 
 func _on_slot_gui_input(event: InputEvent, index: int) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:

@@ -53,6 +53,10 @@ var _step_interval: float = 0.35 # Czas między krokami (sekundy)
 var _use_step1: bool = true
 
 func _ready() -> void:
+	# Standardize collision layers: Layer 3 = Player
+	collision_layer = 4 # Use bit 3 (value 4)
+	collision_mask = 1 | 2 # Walls | Enemies
+
 	# Znajdź węzły bezpiecznie
 	if has_node("AnimatedSprite2D"):
 		sprite = $AnimatedSprite2D
@@ -94,17 +98,7 @@ func _ready() -> void:
 	if slot1 or slot2:
 		weapon_manager.setup_slots(slot1, slot2)
 
-	_reticle = ColorRect.new()
-	_reticle.color = Color(1, 0.2, 0.2, 0.6)
-	_reticle.size = Vector2(8, 8)
-	_reticle.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_reticle.z_index = 100
-	add_child(_reticle)
-
 func _process(delta: float) -> void:
-	if _reticle:
-		_reticle.global_position = get_global_mouse_position() - _reticle.size / 2
-	
 	handle_cooldown(delta)
 	handle_invulnerability(delta)
 	update_interaction_prompt()
@@ -116,12 +110,13 @@ func _process(delta: float) -> void:
 		handle_input(delta)
 		if weapon_manager and weapon_manager.has_method("activate_all_weapons"):
 			var target_pos := get_global_mouse_position()
+			
+			# Brotato-style: Always try to activate weapons. 
+			# If attacking, use mouse. Otherwise use auto-targeting (Vector2.ZERO).
 			if Input.is_action_pressed("attack"):
 				weapon_manager.activate_all_weapons(target_pos)
 			else:
-				# Obracaj broń nawet jeśli nie strzelamy
-				if weapon_manager.has_method("rotate_weapon_slots"):
-					weapon_manager.rotate_weapon_slots(target_pos)
+				weapon_manager.activate_all_weapons(Vector2.ZERO)
 			
 			# Obracaj muzzle w stronę celu (zawsze, niezależnie od ataku)
 			if muzzle:
