@@ -6,7 +6,7 @@ extends CanvasLayer
 @onready var enemy_name: Label = %EnemyName
 @onready var lore_label: RichTextLabel = %LoreLabel
 @onready var definition_label: RichTextLabel = %DefinitionLabel
-@onready var scan_line: ColorRect = $Control/LaptopChassis/ScreenBezel/ScreenInner/ScanLine
+@onready var scan_line: ColorRect = $Control/LaptopImage/ScreenContent/ScanLine
 
 var enemies_data = [
 	{
@@ -101,4 +101,4 @@ func _start_scan_animation() -> void:
 	var tween := create_tween()
 	tween.set_loops()
 	tween.tween_property(scan_line, "position:y", 0.0, 0.0)
-	tween.tween_property(scan_line, "position:y", 560.0, 2.5)
+	tween.tween_property(scan_line, "position:y", 567.0, 2.5)
