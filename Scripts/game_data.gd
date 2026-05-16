@@ -33,6 +33,10 @@ var player_hp: int = 100
 var player_max_hp: int = 100
 var return_scene: String = ""
 
+# Zachowanie pozycji i stanu gracza między scenami
+var last_player_position: Vector2 = Vector2.ZERO
+var should_restore_position: bool = false
+
 func _ready() -> void:
 	var window := get_window()
 	if window:
@@ -91,11 +95,10 @@ func save_settings() -> void:
 func apply_video_settings() -> void:
 	var window := get_window()
 	if window:
-		window.size = resolution
 		if fullscreen:
 			window.mode = Window.MODE_FULLSCREEN
 		else:
-			window.mode = Window.MODE_WINDOWED
+			window.mode = Window.MODE_MAXIMIZED
 
 	if vsync:
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)

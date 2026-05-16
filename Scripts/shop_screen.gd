@@ -253,7 +253,11 @@ func _update_ui() -> void:
 func _on_close_pressed() -> void:
 	AudioManager.play_sfx("menu_click")
 	if get_parent() == get_tree().root:
-		get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
+		var gd = get_node_or_null("/root/GameData")
+		if gd and gd.return_scene != "" and gd.return_scene != "res://scenes/Shop.tscn":
+			get_tree().change_scene_to_file(gd.return_scene)
+		else:
+			get_tree().change_scene_to_file("res://scenes/GameStartScreen.tscn")
 	else:
 		visible = false
 		shop_closed.emit()

@@ -149,6 +149,11 @@ func start_game() -> void:
 		if player.has_method("heal"):
 			player.heal(player.max_health)
 
+		# Przywróć pozycję jeśli wracamy ze sklepu standalone
+		if gd and gd.should_restore_position:
+			player.global_position = gd.last_player_position
+			gd.should_restore_position = false
+
 		if gd and gd.player_max_hp > 0 and gd.player_hp > 0:
 			player.max_health = gd.player_max_hp
 			player.current_health = gd.player_hp
