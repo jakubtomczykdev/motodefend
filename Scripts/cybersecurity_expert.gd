@@ -26,13 +26,13 @@ func interact() -> void:
 
 func _show_intro_sequence() -> void:
 	var intro_lines: Array[String] = [
-		"Witaj w sercu SOC (Security Operations Center). Nazywam się Marek Nowak i dowodzę tym sektorem.",
-		"Sytuacja jest krytyczna. Nasza sieć została spenetrowana przez wielopoziomowe zagrożenia.",
-		"Jako Agent SOC musisz fizycznie zneutralizować te pakiety danych, zanim zainfekują główny węzeł.",
-		"Każda fala to 20 sekund walki o przetrwanie naszych baz danych. Wykorzystaj Unik (Spacja), by omijać detekcję!",
-		"Pamiętaj: po starciu odwiedź maszynę Motorola. Ich sprzęt to jedyna rzecz, która nadąża za tą skalą infekcji.",
-		"Zabezpiecz wejścia. Ja zajmę się analizą behawioralną w tle. Powodzenia!",
-		"Jeszcze jedno — widzisz tego laptopa na biurku? Znajdziesz w nim kompletny Bestiariusz Zagrożeń. Wiedza to twoja najlepsza broń. Wciśnij E przy laptopie, by otworzyć bazę danych."
+		"Piotr? . . . Słyszysz mnie? . . . Synchronizacja Twojej świadomości zakończona. . . Witaj w jadrze Motodefend.",
+		"Wiem, że to przejście było brutalne. . . Ale nie było czasu na procedury. . . Z sekundy na sekundę cały system Motoroli po prostu oszalał.",
+		"Nikt nie przewidział, że ten autonomiczny kod zawiedzie w ułamku sekundy. . . Musieliśmy Cię tam wgrać natychmiast, by ratować co się da.",
+		"To, co teraz widzisz. . . Te potwory. . . To zniekształcone błędy logiczne, które materializują się w Twoim umyśle.",
+		"Pamiętaj. . . Teraz Ty jesteś sercem systemu. . . Jeśli Twoja cyfrowa postać padnie, Twoja świadomość zgaśnie razem z nią. . . Nie mamy żadnej kopii zapasowej.",
+		"Używaj sprzętu Motoroli, który udało mi się przesłać do Twojego interfejsu. . . To Twoja jedyna szansa na przetrwanie fali infekcji.",
+		"Ruszaj przed siebie. . . Będę monitorował Twój stan z poziomu SOC. . . Nie pozwól im przejąć węzła, Piotr. . . Powodzenia."
 	]
 	intro_shown = true
 	_start_dialogue_ui(intro_lines)
