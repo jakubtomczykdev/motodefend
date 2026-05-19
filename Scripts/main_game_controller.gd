@@ -28,6 +28,7 @@ var stats_ui: Control
 
 var _shop_opened_mid_wave: bool = false
 var _pending_level_ups: int = 0
+var _previous_state: String = ""
 var game_state: String = "menu" # menu, playing, paused, shop, education, game_over, victory, transition, leveling
 var score: int = 0
 ## Cached GameData reference for the gold property getter/setter
@@ -63,15 +64,19 @@ func gain_xp(amount: int) -> void:
 		gd.experience_to_next_level = int(gd.experience_to_next_level * BalanceData.XP_GROWTH_FACTOR)
 		_pending_level_ups += 1
 	
-	# Przetwarzaj kolejkę tylko jeśli jesteśmy w stanie walki
-	if _pending_level_ups > 0 and game_state == "playing":
+	# Przetwarzaj kolejkę jeśli nie jesteśmy na ekranie końcowym lub w menu
+	# Jeśli jesteśmy już w 'leveling', kolejka zostanie przetworzona po wyborze ulepszenia
+	var forbidden_states = ["game_over", "victory", "menu", "leveling"]
+	if _pending_level_ups > 0 and not (game_state in forbidden_states):
 		_process_level_up_queue()
 
 func _process_level_up_queue() -> void:
 	if _pending_level_ups <= 0:
 		if game_state == "leveling":
-			game_state = "playing"
-			get_tree().paused = false
+			game_state = _previous_state if _previous_state != "" else "playing"
+			_previous_state = ""
+			if game_state == "playing":
+				get_tree().paused = false
 		return
 
 	var gd = get_node_or_null("/root/GameData")
@@ -95,6 +100,10 @@ func _process_level_up_queue() -> void:
 	if level_up_ui:
 		const UpgradeData = preload("res://Scripts/upgrade_data.gd")
 		var upgrades = UpgradeData.get_random_upgrades(3)
+		
+		if game_state != "leveling":
+			_previous_state = game_state
+		
 		game_state = "leveling"
 		level_up_ui.show_upgrades(upgrades)
 
@@ -115,8 +124,14 @@ func _on_upgrade_selected(upgrade) -> void:
 	if _pending_level_ups > 0:
 		_process_level_up_queue()
 	else:
-		game_state = "playing"
-		get_tree().paused = false
+		# Wracamy do poprzedniego stanu tylko jeśli nikt inny go nie zmienił w międzyczasie
+		if game_state == "leveling":
+			game_state = _previous_state if _previous_state != "" else "playing"
+			_previous_state = ""
+			
+			# Odpauzuj tylko jeśli wróciliśmy do normalnej rozgrywki
+			if game_state == "playing":
+				get_tree().paused = false
 
 func _spawn_level_up_effect() -> void:
 	if not player: return
@@ -473,7 +488,7 @@ func _on_wave_started(wave_number: int) -> void:
 	pass
 
 func _on_wave_ended(wave_number: int) -> void:
-	if game_state != "playing":
+	if game_state != "playing" and game_state != "leveling":
 		return
 
 	var gd := get_node_or_null("/root/GameData")
