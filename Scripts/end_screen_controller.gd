@@ -41,6 +41,66 @@ func _ready() -> void:
 		menu_button.pressed.connect(_on_menu_pressed)
 
 	visible = false
+	_setup_retro_style()
+
+func _setup_retro_style() -> void:
+	var retro_font = preload("res://retropix.ttf")
+	var theme = Theme.new()
+	theme.default_font = retro_font
+	theme.default_font_size = 24
+	
+	# Styl Panelu
+	var panel_style = StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.02, 0.02, 0.05, 0.95)
+	panel_style.border_width_left = 4
+	panel_style.border_width_top = 4
+	panel_style.border_width_right = 4
+	panel_style.border_width_bottom = 4
+	panel_style.border_color = Color(1.0, 0.2, 0.4) # Różowy/Neonowy dla porażki
+	panel_style.shadow_color = Color(0.5, 0, 0.2, 0.3)
+	panel_style.shadow_size = 10
+	panel_style.corner_radius_top_left = 4
+	panel_style.corner_radius_top_right = 4
+	panel_style.corner_radius_bottom_right = 4
+	panel_style.corner_radius_bottom_left = 4
+	
+	# Styl Przycisku - Normalny
+	var btn_normal = StyleBoxFlat.new()
+	btn_normal.bg_color = Color(0.1, 0.1, 0.2, 1.0)
+	btn_normal.border_width_left = 2
+	btn_normal.border_width_top = 2
+	btn_normal.border_width_right = 2
+	btn_normal.border_width_bottom = 2
+	btn_normal.border_color = Color(0.8, 0.2, 0.4)
+	btn_normal.content_margin_left = 20
+	btn_normal.content_margin_right = 20
+	
+	# Styl Przycisku - Hover
+	var btn_hover = btn_normal.duplicate()
+	btn_hover.bg_color = Color(0.2, 0.1, 0.3, 1.0)
+	btn_hover.border_color = Color(1.0, 0.4, 0.6)
+	
+	theme.set_stylebox("panel", "Panel", panel_style)
+	theme.set_stylebox("normal", "Button", btn_normal)
+	theme.set_stylebox("hover", "Button", btn_hover)
+	theme.set_stylebox("focus", "Button", btn_hover)
+	
+	self.theme = theme
+	
+	if title_label:
+		title_label.add_theme_font_size_override("font_size", 56)
+		title_label.add_theme_constant_override("outline_size", 12)
+	
+	# Apply matrix effect to background
+	var bg = get_node_or_null("ColorRect")
+	if bg:
+		var matrix_shader = preload("res://matrix.gdshader")
+		var shader_mat = ShaderMaterial.new()
+		shader_mat.shader = matrix_shader
+		shader_mat.set_shader_parameter("icon_tex", preload("res://icon_tex.png"))
+		shader_mat.set_shader_parameter("speed", 0.05)
+		shader_mat.set_shader_parameter("intensity", 0.4)
+		bg.material = shader_mat
 
 func show_game_over(score: int, waves: int, items: Array, playtime: float) -> void:
 	screen_type = "game_over"
@@ -102,6 +162,7 @@ func _display_items() -> void:
 		return
 
 	for item: ItemBase in items_collected:
+		if item == null: continue
 		var item_label: Label = Label.new()
 		item_label.text = "• %s (%s)" % [item.item_name, item.rarity.capitalize()]
 		item_label.modulate = item.get_rarity_color()

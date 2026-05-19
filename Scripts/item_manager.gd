@@ -13,6 +13,9 @@ func _ready() -> void:
 
 func _initialize_all_items() -> void:
 	all_items.clear()
+	
+	# Ikona domyślna dla przedmiotów bez grafiki
+	var fallback_icon = preload("res://icon.svg")
 
 	var candidate_items: Array[ItemBase] = [
 		MotorolaItems.CrossPatchItem.new(),
@@ -26,11 +29,18 @@ func _initialize_all_items() -> void:
 		MotorolaItems.PremierOneItem.new(),
 		MotorolaItems.VB400Item.new(),
 		MotorolaItems.FuntionItem.new(),
+		MotorolaItems.TacticalVestItem.new(),
 	]
+	
+	# Dodaj bronie do puli przedmiotów (jako możliwe zakupy)
+	var weapon_items = WeaponItems.get_all_weapons()
+	for w in weapon_items:
+		candidate_items.append(w)
 
 	for item in candidate_items:
-		if item.icon != null:
-			all_items.append(item)
+		if item.icon == null:
+			item.icon = fallback_icon
+		all_items.append(item)
 
 func get_random_item(min_rarity: String = "common") -> ItemBase:
 	var available_items: Array[ItemBase] = all_items.filter(func(item: ItemBase): return _is_rarity_at_least(item.rarity, min_rarity))

@@ -25,7 +25,7 @@ var build_system: Node
 var item_manager: Node
 
 @onready var gold_label: Label = $TopBar/GoldLabel
-@onready var items_container: HBoxContainer = $MainArea/ItemsContainer
+@onready var items_container: Control = $MainArea/ItemsContainer # Cast to Control to be safe with HFlow/HBox
 @onready var view_title: Label = $MainArea/ViewTitle
 @onready var preview_icon: TextureRect = $MainArea/PreviewPanel/PreviewVBox/PreviewIcon
 @onready var preview_name: Label = $MainArea/PreviewPanel/PreviewVBox/DetailsVBox/PreviewName
@@ -47,6 +47,7 @@ func _ready() -> void:
 	if inventory_button:
 		inventory_button.pressed.connect(_toggle_inventory)
 	_update_ui()
+	_setup_retro_style()
 	
 	# Auto-populate with default weapons when shop loaded standalone
 	await get_tree().process_frame
@@ -54,6 +55,66 @@ func _ready() -> void:
 		_refresh_shop_items()
 	else:
 		_populate_items()
+
+func _setup_retro_style() -> void:
+	var retro_font = preload("res://retropix.ttf")
+	var theme = Theme.new()
+	theme.default_font = retro_font
+	theme.default_font_size = 20
+	
+	# Styl Panelu (dla TopBar, BottomBar, PreviewPanel)
+	var panel_style = StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.05, 0.05, 0.1, 0.9)
+	panel_style.border_width_left = 3
+	panel_style.border_width_top = 3
+	panel_style.border_width_right = 3
+	panel_style.border_width_bottom = 3
+	panel_style.border_color = Color(0.0, 0.8, 1.0) # Cyan
+	panel_style.corner_radius_top_left = 2
+	panel_style.corner_radius_top_right = 2
+	panel_style.corner_radius_bottom_right = 2
+	panel_style.corner_radius_bottom_left = 2
+	
+	# Styl Przycisku
+	var btn_normal = StyleBoxFlat.new()
+	btn_normal.bg_color = Color(0.1, 0.1, 0.2, 1.0)
+	btn_normal.border_width_left = 2
+	btn_normal.border_width_top = 2
+	btn_normal.border_width_right = 2
+	btn_normal.border_width_bottom = 2
+	btn_normal.border_color = Color(0.0, 0.6, 0.8)
+	
+	var btn_hover = btn_normal.duplicate()
+	btn_hover.bg_color = Color(0.2, 0.2, 0.4, 1.0)
+	btn_hover.border_color = Color(0.0, 1.0, 1.0)
+	
+	theme.set_stylebox("panel", "Panel", panel_style)
+	theme.set_stylebox("normal", "Button", btn_normal)
+	theme.set_stylebox("hover", "Button", btn_hover)
+	theme.set_stylebox("focus", "Button", btn_hover)
+	
+	self.theme = theme
+	
+	# Etykiety
+	if view_title:
+		view_title.add_theme_font_size_override("font_size", 32)
+		view_title.add_theme_color_override("font_color", Color(0, 1, 1))
+		
+	# Tło Matrix
+	var bg = get_node_or_null("Background")
+	if bg:
+		var matrix_shader = preload("res://matrix.gdshader")
+		var shader_mat = ShaderMaterial.new()
+		shader_mat.shader = matrix_shader
+		shader_mat.set_shader_parameter("icon_tex", preload("res://icon_tex.png"))
+		shader_mat.set_shader_parameter("speed", 0.08)
+		shader_mat.set_shader_parameter("intensity", 0.3)
+		bg.material = shader_mat
+	
+	# Stylizacja Preview Panel
+	var preview_panel = get_node_or_null("MainArea/PreviewPanel")
+	if preview_panel:
+		preview_panel.add_theme_stylebox_override("panel", panel_style)
 
 func open_shop(available_items: Array[ItemBase], player_build: Node, manager: Node) -> void:
 	shop_items = available_items
@@ -145,6 +206,7 @@ func _toggle_inventory() -> void:
 	AudioManager.play_sfx("menu_click")
 
 func _update_preview(item: ItemBase) -> void:
+	if item == null: return
 	preview_name.text = item.item_name
 	preview_rarity.text = "Rzadkość: " + item.rarity.capitalize()
 	preview_description.text = item.description
@@ -189,7 +251,8 @@ func _on_item_clicked(item: ItemBase) -> void:
 				if item is WeaponBase:
 					var all_weps = WeaponItems.get_all_weapons()
 					for i in range(all_weps.size()):
-						if all_weps[i].item_name == item.item_name and all_weps[i].item_type == item.item_type:
+						var candidate = all_weps[i]
+						if candidate != null and candidate.item_name == item.item_name and candidate.item_type == item.item_type:
 							gd.pending_weapon_ids.append(i)
 							break
 		

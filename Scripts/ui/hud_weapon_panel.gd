@@ -85,6 +85,10 @@ func _create_new_slot_ui() -> void:
 	_setup_slot_signals(new_slot, weapon_slots_ui.size() - 1)
 
 func _update_slot_ui(slot_panel: Panel, weapon: WeaponBase, instance: Node, is_active: bool) -> void:
+	if weapon == null:
+		slot_panel.visible = false
+		return
+		
 	var icon: TextureRect = slot_panel.find_child("WeaponIcon*", true, false)
 	var name_label: Label = slot_panel.find_child("WeaponName*", true, false)
 	var cooldown: ColorRect = slot_panel.find_child("CooldownOverlay*", true, false)

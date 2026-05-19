@@ -54,6 +54,16 @@ func _open_shop() -> void:
 	shop.name = "ShopScreen"
 	shop_layer.add_child(shop)
 	
+	# Pobierz przedmioty dla sklepu (4 losowe dla huba)
+	var item_manager = get_node_or_null("/root/ItemManager")
+	var items: Array[ItemBase] = []
+	if item_manager:
+		items = item_manager.get_shop_items(4, 1)
+	
+	# Otwórz sklep - przekaż null dla build_system w hubie (shop_screen obsłuży to przez GameData)
+	if shop.has_method("open_shop"):
+		shop.open_shop(items, null, item_manager)
+	
 	shop.shop_closed.connect(_on_shop_closed)
 	get_tree().paused = true
 

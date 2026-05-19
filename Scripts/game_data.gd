@@ -24,6 +24,9 @@ var screen_shake: bool = true
 var custom_inputs: Dictionary = {}
 
 # Dane gry
+var current_level: int = 1
+var experience: int = 0
+var experience_to_next_level: int = 100
 var current_wave: int = 0
 var score: int = 0
 var gold: int = 300
@@ -45,7 +48,9 @@ func load_settings() -> void:
 	var config := ConfigFile.new()
 	var err := config.load(SETTINGS_PATH)
 	if err != OK:
-		return  # Pierwsze uruchomienie – użyj domyślnych
+		# Initial XP requirement from BalanceData if load fails
+		experience_to_next_level = BalanceData.STARTING_XP_REQUIREMENT
+		return
 
 	master_volume = config.get_value("audio", "master_volume", 1.0)
 	music_volume = config.get_value("audio", "music_volume", 0.8)
@@ -65,6 +70,9 @@ func load_settings() -> void:
 
 	player_hp = config.get_value("game", "player_hp", 100)
 	player_max_hp = config.get_value("game", "player_max_hp", 100)
+	current_level = config.get_value("game", "current_level", 1)
+	experience = config.get_value("game", "experience", 0)
+	experience_to_next_level = config.get_value("game", "experience_to_next_level", 100)
 
 func save_settings() -> void:
 	var config := ConfigFile.new()
@@ -85,6 +93,9 @@ func save_settings() -> void:
 
 	config.set_value("game", "player_hp", player_hp)
 	config.set_value("game", "player_max_hp", player_max_hp)
+	config.set_value("game", "current_level", current_level)
+	config.set_value("game", "experience", experience)
+	config.set_value("game", "experience_to_next_level", experience_to_next_level)
 
 	config.save(SETTINGS_PATH)
 

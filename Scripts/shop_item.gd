@@ -22,6 +22,9 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 
 func setup_item(item: ItemBase, current_gold: int) -> void:
+	if item == null:
+		push_warning("ShopItem: setup_item called with null item")
+		return
 	item_data = item
 	name_label.text = item.item_name.to_upper()
 	

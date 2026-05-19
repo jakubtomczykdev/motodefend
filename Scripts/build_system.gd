@@ -12,7 +12,9 @@ var player_stats: Dictionary = {
 	"attack_speed": 1.0,
 	"move_speed": 1.0,
 	"attack_range": 1.0,
-	"max_health": 1.0,
+	"max_health": 100.0,
+	"armor": 0.0,
+	"hp_regen": 0.0,
 	"crit_chance": 0.0,
 	"crit_damage": 1.5,
 	"pierce": 0,
@@ -27,7 +29,18 @@ var items: Array[ItemBase] = []
 var base_stats: Dictionary = player_stats.duplicate()
 
 func _ready() -> void:
-	base_stats = player_stats.duplicate()
+	_initialize_base_stats()
+
+func _initialize_base_stats() -> void:
+	base_stats["damage"] = BalanceData.BASE_PLAYER_DAMAGE
+	base_stats["attack_speed"] = BalanceData.BASE_PLAYER_ATTACK_SPEED
+	base_stats["move_speed"] = 1.0 # Multiplier
+	base_stats["attack_range"] = 1.0 # Multiplier
+	base_stats["max_health"] = float(BalanceData.BASE_PLAYER_HP)
+	base_stats["armor"] = float(BalanceData.BASE_PLAYER_ARMOR)
+	base_stats["hp_regen"] = BalanceData.BASE_PLAYER_REGEN
+	
+	player_stats = base_stats.duplicate()
 
 func add_item(item: ItemBase) -> bool:
 	if items.size() >= max_item_slots:
@@ -77,6 +90,15 @@ func recalculate_stats() -> void:
 	# Reset do bazowych wartości
 	player_stats = base_stats.duplicate()
 
+	# Zastosuj bonusy z poziomu
+	var gd = get_node_or_null("/root/GameData")
+	if gd:
+		var level_factor = gd.current_level - 1
+		player_stats["max_health"] += level_factor * BalanceData.LEVEL_HP_BONUS
+		player_stats["damage"] += level_factor * BalanceData.LEVEL_DAMAGE_BONUS
+		player_stats["move_speed"] += level_factor * BalanceData.LEVEL_SPEED_BONUS
+		player_stats["armor"] += level_factor * BalanceData.LEVEL_ARMOR_BONUS
+
 	# Zastosuj efekty wszystkich itemów
 	for item: ItemBase in items:
 		item.apply_effects(self)
@@ -89,6 +111,7 @@ func get_build_description() -> String:
 	var description: String = "Build:\n"
 
 	for item: ItemBase in items:
+		if item == null: continue
 		description += "- %s\n" % item.item_name
 
 	description += "\nStatystyki:\n"

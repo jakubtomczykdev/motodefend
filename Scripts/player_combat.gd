@@ -13,6 +13,10 @@ signal died
 @export var projectile_speed: float = 500.0
 @export var attack_range: float = 400.0
 
+@export var armor: int = 0
+@export var hp_regen: float = 0.0 # HP per second
+var _regen_accumulator: float = 0.0
+
 # Nowe zmienne dla mechaniki uniku i walki
 @export var dodge_speed: float = 800.0
 @export var dodge_duration: float = 0.2
@@ -102,6 +106,7 @@ func _process(delta: float) -> void:
 	handle_cooldown(delta)
 	handle_invulnerability(delta)
 	update_interaction_prompt()
+	_handle_regeneration(delta)
 	
 	if weapon_manager and weapon_manager.has_method("update_drones"):
 		weapon_manager.update_drones()
@@ -117,6 +122,14 @@ func _process(delta: float) -> void:
 			# Obracaj muzzle w stronę celu (zawsze, niezależnie od ataku)
 			if muzzle:
 				muzzle.look_at(target_pos)
+
+func _handle_regeneration(delta: float) -> void:
+	if hp_regen > 0 and current_health < max_health:
+		_regen_accumulator += hp_regen * delta
+		if _regen_accumulator >= 1.0:
+			var heal_amount = int(_regen_accumulator)
+			heal(heal_amount)
+			_regen_accumulator -= heal_amount
 
 func _physics_process(delta: float) -> void:
 	if is_rolling:
@@ -334,10 +347,18 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 			_spawn_dodge_label()
 			return
 
-	current_health -= amount
+	# Armor Reduction
+	var reduced_damage = float(amount)
+	if armor > 0:
+		reduced_damage = float(amount) * (100.0 / (100.0 + float(armor)))
+	
+	# Minimum 1 damage if original was > 0
+	var final_damage = max(1 if amount > 0 else 0, int(reduced_damage))
+
+	current_health -= final_damage
 	health_changed.emit(current_health, max_health)
 	
-	_spawn_damage_number(amount)
+	_spawn_damage_number(final_damage)
 	
 	if knockback != Vector2.ZERO:
 		knockback_velocity = knockback

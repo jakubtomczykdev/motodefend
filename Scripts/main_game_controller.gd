@@ -6,6 +6,7 @@ const WeaponItemsClass := preload("res://Scripts/items/weapon_items.gd")
 signal game_started
 signal game_over
 signal victory
+signal leveled_up(new_level: int)
 
 var player: CharacterBody2D
 var wave_manager: Node
@@ -20,8 +21,14 @@ var health_bar: ProgressBar
 var hp_label: Label
 var gold_label: Label
 var enemies_label: Label
+var level_label: Label
+var xp_bar: ProgressBar
+var level_up_ui: Control
+var stats_ui: Control
 
-var game_state: String = "menu" # menu, playing, paused, shop, education, game_over, victory, transition
+var _shop_opened_mid_wave: bool = false
+var _pending_level_ups: int = 0
+var game_state: String = "menu" # menu, playing, paused, shop, education, game_over, victory, transition, leveling
 var score: int = 0
 ## Cached GameData reference for the gold property getter/setter
 var _game_data_ref = null
@@ -43,6 +50,89 @@ var game_start_time: float = 0.0
 
 var items_collected: Array[ItemBase] = []
 
+func gain_xp(amount: int) -> void:
+	var gd = get_node_or_null("/root/GameData")
+	if not gd: return
+	
+	gd.experience += amount
+	print("[MainGame] Gained %d XP. Total: %d/%d" % [amount, gd.experience, gd.experience_to_next_level])
+	
+	while gd.experience >= gd.experience_to_next_level:
+		gd.experience -= gd.experience_to_next_level
+		gd.current_level += 1
+		gd.experience_to_next_level = int(gd.experience_to_next_level * BalanceData.XP_GROWTH_FACTOR)
+		_pending_level_ups += 1
+	
+	# Przetwarzaj kolejkę tylko jeśli jesteśmy w stanie walki
+	if _pending_level_ups > 0 and game_state == "playing":
+		_process_level_up_queue()
+
+func _process_level_up_queue() -> void:
+	if _pending_level_ups <= 0:
+		if game_state == "leveling":
+			game_state = "playing"
+			get_tree().paused = false
+		return
+
+	var gd = get_node_or_null("/root/GameData")
+	if not gd: return
+
+	_pending_level_ups -= 1
+	
+	# Update player stats for the new level
+	if build_system:
+		build_system.recalculate_stats()
+	_update_player_stats()
+	
+	# Heal player slightly on level up (20% max health)
+	if player and player.has_method("heal"):
+		player.heal(int(player.max_health * 0.2))
+	
+	leveled_up.emit(gd.current_level)
+	_spawn_level_up_effect()
+	
+	# Pokaż wybór ulepszeń
+	if level_up_ui:
+		const UpgradeData = preload("res://Scripts/upgrade_data.gd")
+		var upgrades = UpgradeData.get_random_upgrades(3)
+		game_state = "leveling"
+		level_up_ui.show_upgrades(upgrades)
+
+func _on_upgrade_selected(upgrade) -> void:
+	if build_system:
+		# Jeśli wartość < 1.0, traktuj jako mnożnik (np. 0.15 = +15%)
+		# Jeśli >= 1.0, traktuj jako wartość płaską (np. 20.0 = +20 HP)
+		if upgrade.value < 1.0:
+			build_system.modify_stat(upgrade.stat_name, 1.0 + upgrade.value)
+		else:
+			build_system.add_stat(upgrade.stat_name, upgrade.value)
+		
+		build_system.recalculate_stats()
+	
+	_update_player_stats()
+	
+	# Po wyborze ulepszenia sprawdź czy są kolejne levele w kolejce
+	if _pending_level_ups > 0:
+		_process_level_up_queue()
+	else:
+		game_state = "playing"
+		get_tree().paused = false
+
+func _spawn_level_up_effect() -> void:
+	if not player: return
+	
+	var label := Label.new()
+	label.text = "LEVEL UP!"
+	label.add_theme_font_size_override("font_size", 48)
+	label.add_theme_color_override("font_color", Color(0, 1, 1)) # Cyan
+	label.global_position = player.global_position + Vector2(-100, -100)
+	add_child(label)
+	
+	var tween = create_tween()
+	tween.tween_property(label, "global_position:y", label.global_position.y - 100, 1.0)
+	tween.parallel().tween_property(label, "modulate:a", 0.0, 1.0)
+	tween.tween_callback(label.queue_free)
+
 func _ready() -> void:
 	# Znajdź węzły bezpiecznie
 	player = get_node_or_null("Player")
@@ -58,19 +148,154 @@ func _ready() -> void:
 	hp_label = get_node_or_null("HUD/HPLabel")
 	gold_label = get_node_or_null("HUD/GoldLabel")
 	enemies_label = get_node_or_null("HUD/EnemiesRemainingLabel")
+	level_label = get_node_or_null("HUD/LevelLabel")
+	xp_bar = get_node_or_null("HUD/XPBar")
+	level_up_ui = get_node_or_null("LevelUpLayer/LevelUpUI")
+	stats_ui = get_node_or_null("StatsLayer/StatsUI")
 
 	_connect_signals()
 
 	if educational_system: educational_system.visible = false
 	if transition_screen: transition_screen.visible = false
 
+	_setup_retro_hud()
+
 	# Rozpocznij grę automatycznie po załadowaniu sceny
 	start_game()
 
+func _setup_retro_hud() -> void:
+	var hud = get_node_or_null("HUD")
+	if not hud: return
+	
+	var retro_font = preload("res://retropix.ttf")
+	var theme = Theme.new()
+	theme.default_font = retro_font
+	theme.default_font_size = 24
+	
+	var panel_style = StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.05, 0.05, 0.08, 0.85)
+	panel_style.border_width_left = 3
+	panel_style.border_width_top = 3
+	panel_style.border_width_right = 3
+	panel_style.border_width_bottom = 3
+	panel_style.border_color = Color(0.2, 0.8, 1.0, 0.8) # Cyberpunk cyan
+	panel_style.corner_radius_top_left = 2
+	panel_style.corner_radius_top_right = 2
+	panel_style.corner_radius_bottom_right = 2
+	panel_style.corner_radius_bottom_left = 2
+	panel_style.content_margin_left = 15
+	panel_style.content_margin_right = 15
+	panel_style.content_margin_top = 10
+	panel_style.content_margin_bottom = 10
+	
+	theme.set_stylebox("panel", "PanelContainer", panel_style)
+	
+	# Usuń stare kontenery (różne warianty nazw)
+	for old_name in ["RetroHUDContainer", "LeftHUD", "RightHUD"]:
+		var old_node = hud.get_node_or_null(old_name)
+		if old_node: old_node.queue_free()
+	
+	# --- LEWY KONTENER (Statystyki) ---
+	var left_margin = MarginContainer.new()
+	left_margin.name = "LeftHUD"
+	left_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(left_margin)
+	left_margin.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT, Control.PRESET_MODE_MINSIZE, 20)
+	left_margin.grow_horizontal = Control.GROW_DIRECTION_END
+	
+	var left_panel = PanelContainer.new()
+	left_panel.theme = theme
+	left_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	left_margin.add_child(left_panel)
+	
+	var left_vbox = VBoxContainer.new()
+	left_vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	left_panel.add_child(left_vbox)
+	
+	# --- PRAWY KONTENER (Fala/Wrogowie) ---
+	var right_margin = MarginContainer.new()
+	right_margin.name = "RightHUD"
+	right_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(right_margin)
+	right_margin.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 20)
+	right_margin.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	
+	var right_panel = PanelContainer.new()
+	right_panel.theme = theme
+	right_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	right_margin.add_child(right_panel)
+	
+	var right_vbox = VBoxContainer.new()
+	right_vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	right_panel.add_child(right_vbox)
+	
+	# --- PRZYPISANIE ELEMENTÓW ---
+	if hp_label and health_bar:
+		if hp_label.get_parent(): hp_label.get_parent().remove_child(hp_label)
+		if health_bar.get_parent(): health_bar.get_parent().remove_child(health_bar)
+		var hp_box = HBoxContainer.new()
+		hp_label.add_theme_font_override("font", retro_font)
+		hp_label.add_theme_font_size_override("font_size", 20)
+		hp_label.add_theme_color_override("font_color", Color(1, 0.4, 0.4))
+		health_bar.custom_minimum_size = Vector2(200, 20)
+		health_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		var style_bg = StyleBoxFlat.new()
+		style_bg.bg_color = Color(0.2, 0.1, 0.1)
+		var style_fill = StyleBoxFlat.new()
+		style_fill.bg_color = Color(0.8, 0.2, 0.2)
+		health_bar.add_theme_stylebox_override("background", style_bg)
+		health_bar.add_theme_stylebox_override("fill", style_fill)
+		hp_box.add_child(hp_label)
+		hp_box.add_child(health_bar)
+		left_vbox.add_child(hp_box)
+		
+	if level_label and xp_bar:
+		if level_label.get_parent(): level_label.get_parent().remove_child(level_label)
+		if xp_bar.get_parent(): xp_bar.get_parent().remove_child(xp_bar)
+		var xp_box = HBoxContainer.new()
+		level_label.add_theme_font_override("font", retro_font)
+		level_label.add_theme_font_size_override("font_size", 20)
+		level_label.add_theme_color_override("font_color", Color(0.4, 0.8, 1.0))
+		xp_bar.custom_minimum_size = Vector2(200, 15)
+		xp_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		xp_box.add_child(level_label)
+		xp_box.add_child(xp_bar)
+		left_vbox.add_child(xp_box)
+		
+	if gold_label:
+		if gold_label.get_parent(): gold_label.get_parent().remove_child(gold_label)
+		gold_label.add_theme_font_override("font", retro_font)
+		gold_label.add_theme_font_size_override("font_size", 24)
+		gold_label.add_theme_color_override("font_color", Color(1.0, 0.84, 0.0))
+		gold_label.add_theme_color_override("font_shadow_color", Color(0.3, 0.2, 0))
+		gold_label.add_theme_constant_override("shadow_offset_x", 2)
+		gold_label.add_theme_constant_override("shadow_offset_y", 2)
+		left_vbox.add_child(gold_label)
+		
+	if playtime_label:
+		if playtime_label.get_parent(): playtime_label.get_parent().remove_child(playtime_label)
+		playtime_label.add_theme_font_override("font", retro_font)
+		playtime_label.add_theme_font_size_override("font_size", 28)
+		playtime_label.add_theme_color_override("font_color", Color(0.8, 1.0, 0.8))
+		playtime_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		right_vbox.add_child(playtime_label)
+		
+	if enemies_label:
+		if enemies_label.get_parent(): enemies_label.get_parent().remove_child(enemies_label)
+		enemies_label.add_theme_font_override("font", retro_font)
+		enemies_label.add_theme_font_size_override("font_size", 22)
+		enemies_label.add_theme_color_override("font_color", Color(0.9, 0.5, 0.5))
+		enemies_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		right_vbox.add_child(enemies_label)
+
 func _process(delta: float) -> void:
+	var hud = get_node_or_null("HUD")
+	if hud:
+		hud.visible = (game_state == "playing")
+
 	if game_state == "playing":
 		if playtime_label and wave_manager:
-			playtime_label.text = "FALA: %d" % wave_manager.current_wave
+			playtime_label.text = "FALA: %d - %02d:%02d" % [wave_manager.current_wave, int(wave_manager.wave_elapsed) / 60, int(wave_manager.wave_elapsed) % 60]
 		
 		# Wywołaj efekty aktywne przedmiotów
 		if player:
@@ -93,6 +318,15 @@ func _process(delta: float) -> void:
 		health_bar.value = player.current_health
 		if hp_label:
 			hp_label.text = "HP: %d/%d" % [player.current_health, player.max_health]
+	
+	# Aktualizuj Level i XP
+	var gd = get_node_or_null("/root/GameData")
+	if gd:
+		if level_label:
+			level_label.text = "POZIOM: %d" % gd.current_level
+		if xp_bar:
+			xp_bar.max_value = gd.experience_to_next_level
+			xp_bar.value = gd.experience
 
 func _connect_signals() -> void:
 	if wave_manager:
@@ -130,8 +364,14 @@ func _connect_signals() -> void:
 	if transition_screen:
 		if not transition_screen.next_wave_requested.is_connected(_on_next_wave_requested):
 			transition_screen.next_wave_requested.connect(_on_next_wave_requested)
+		if transition_screen.has_signal("shop_requested") and not transition_screen.shop_requested.is_connected(_on_shop_requested):
+			transition_screen.shop_requested.connect(_on_shop_requested)
 		if not transition_screen.lobby_requested.is_connected(_on_lobby_requested):
 			transition_screen.lobby_requested.connect(_on_lobby_requested)
+	
+	if level_up_ui:
+		if not level_up_ui.upgrade_selected.is_connected(_on_upgrade_selected):
+			level_up_ui.upgrade_selected.connect(_on_upgrade_selected)
 
 func start_game() -> void:
 	var gd := get_node_or_null("/root/GameData")
@@ -166,6 +406,15 @@ func start_game() -> void:
 	print("[MainGame] starting wave manager...")
 	game_state = "playing"
 	AudioManager.play_music(AudioManager.MUSIC_BATTLE)
+	
+	# Jeśli to nowa gra (fala 0/1), zresetuj poziom i XP
+	if gd and (gd.current_wave == 0 or wave_manager and wave_manager.current_wave == 0):
+		gd.current_level = 1
+		gd.experience = 0
+		gd.experience_to_next_level = BalanceData.STARTING_XP_REQUIREMENT
+		if build_system:
+			build_system.recalculate_stats()
+
 	if wave_manager:
 		wave_manager.start_game()
 		print("[MainGame] wave_manager.start_game() OK")
@@ -269,6 +518,11 @@ func _on_next_wave_requested() -> void:
 		if wave_manager:
 			wave_manager.start_next_wave()
 
+func _on_shop_requested() -> void:
+	if transition_screen:
+		transition_screen.hide_transition()
+	_open_shop(false)
+
 func _on_lobby_requested() -> void:
 	get_tree().paused = false
 	call_deferred("_transition_to_hub")
@@ -311,17 +565,24 @@ func _save_weapons_to_gamedata(gd) -> void:
 		return
 	
 	const WIC := preload("res://Scripts/items/weapon_items.gd")
-	var all_weapons: Array = WIC.get_all_weapons()
+	var all_weapons: Array[WeaponBase] = WIC.get_all_weapons()
 	gd.pending_weapon_ids.clear()
+	
 	for weapon in current_weapons:
+		if weapon == null: continue
 		for i in range(all_weapons.size()):
-			if all_weapons[i].item_name == weapon.item_name and all_weapons[i].item_type == weapon.item_type:
+			var candidate = all_weapons[i]
+			if candidate == null: continue
+			if candidate.item_name == weapon.item_name and candidate.item_type == weapon.item_type:
 				gd.pending_weapon_ids.append(i)
 				break
 
-func _open_shop() -> void:
+func _open_shop(is_mid_wave: bool = false) -> void:
 	if game_state == "shop": return
+	
+	_shop_opened_mid_wave = is_mid_wave
 	game_state = "shop"
+	
 	var shop_items: Array[ItemBase] = []
 	if item_manager and wave_manager:
 		# Pobierz 4 przedmioty dla nowego układu HFlow
@@ -335,12 +596,16 @@ func _open_shop() -> void:
 			shop_system.visible = true
 
 func _on_shop_closed() -> void:
-	game_state = "playing"
-	get_tree().paused = false
-	# Small delay to ensure physics and other systems catch up
+	# Małe opóźnienie dla synchronizacji systemów
 	await get_tree().process_frame
-	if wave_manager:
-		wave_manager.start_next_wave()
+	
+	if _shop_opened_mid_wave:
+		game_state = "playing"
+		get_tree().paused = false
+		_shop_opened_mid_wave = false
+	else:
+		# Zamiast odpalać od razu falę, przechodzimy przez standardowy przepływ z edukacją i rozpoczęciem kolejnej fali
+		_on_next_wave_requested()
 
 func _on_item_purchased(item: ItemBase) -> void:
 	if not items_collected.has(item):
@@ -359,7 +624,7 @@ func _update_player_stats() -> void:
 		player.attack_speed = 1.0 * build_system.get_stat("attack_speed")
 		player.move_speed = 300.0 * build_system.get_stat("move_speed")
 		player.attack_range = 400.0 * build_system.get_stat("attack_range")
-		player.max_health = int(100 * build_system.get_stat("max_health"))
+		player.max_health = int(build_system.get_stat("max_health")) # Use flat value now
 		
 		# Dodatkowe statystyki z przedmiotów
 		if "projectile_speed" in player:
@@ -424,6 +689,16 @@ func _restart_from_wave_one() -> void:
 	get_tree().paused = false
 	game_state = "playing"
 	
+	# Reset poziomu i XP
+	var gd = get_node_or_null("/root/GameData")
+	if gd:
+		gd.current_level = 1
+		gd.experience = 0
+		gd.experience_to_next_level = BalanceData.STARTING_XP_REQUIREMENT
+		if build_system:
+			build_system.recalculate_stats()
+		_update_player_stats()
+
 	# Rozpocznij falę 1
 	if wave_manager:
 		wave_manager.start_next_wave()

@@ -52,5 +52,22 @@ const STARTING_GOLD: int = 100
 const REROLL_COST: int = 25
 const WAVE_GOLD_REWARD: int = 10
 const MAX_WEAPON_SLOTS: int = 6
-const BASE_PLAYER_HP: int = 10
-const HP_PER_WAVE: int = 9
+
+# Base Player Stats
+const BASE_PLAYER_HP: int = 100
+const BASE_PLAYER_SPEED: float = 300.0
+const BASE_PLAYER_ARMOR: int = 0
+const BASE_PLAYER_REGEN: float = 0.0 # HP per second
+const BASE_PLAYER_DAMAGE: float = 1.0 # Multiplier
+const BASE_PLAYER_ATTACK_SPEED: float = 1.0 # Multiplier
+
+# Leveling System
+const BASE_XP_REWARD: int = 10
+const XP_GROWTH_FACTOR: float = 1.2 # How much XP requirement increases per level
+const STARTING_XP_REQUIREMENT: int = 100
+
+# Stat Increases per Level (Example simple model)
+const LEVEL_HP_BONUS: int = 20
+const LEVEL_DAMAGE_BONUS: float = 0.05
+const LEVEL_SPEED_BONUS: float = 0.02
+const LEVEL_ARMOR_BONUS: int = 1
