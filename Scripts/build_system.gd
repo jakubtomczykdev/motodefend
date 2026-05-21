@@ -107,20 +107,6 @@ func recalculate_stats() -> void:
 	for stat_name: String in player_stats:
 		stat_changed.emit(stat_name, player_stats[stat_name])
 
-func get_build_description() -> String:
-	var description: String = "Build:\n"
-
-	for item: ItemBase in items:
-		if item == null: continue
-		description += "- %s\n" % item.item_name
-
-	description += "\nStatystyki:\n"
-	for stat_name: String in player_stats:
-		if player_stats[stat_name] != 1.0 and player_stats[stat_name] != 0.0:
-			description += "%s: %.2f\n" % [stat_name, player_stats[stat_name]]
-
-	return description
-
 func clear_build() -> void:
 	for item: ItemBase in items.duplicate():
 		remove_item(item)

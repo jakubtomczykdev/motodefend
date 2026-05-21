@@ -733,14 +733,6 @@ func show_game_over() -> void:
 		end_screen.show_game_over(score, wave_manager.current_wave, items_collected, playtime)
 		get_tree().paused = true
 
-func _create_weapon_from_id(weapon_id: String) -> WeaponBase:
-	const WIC := preload("res://Scripts/items/weapon_items.gd")
-	var all_weapons: Array = WIC.get_all_weapons()
-	for w in all_weapons:
-		if w.item_name == weapon_id:
-			return w
-	return null
-
 func show_victory() -> void:
 	if end_screen and wave_manager:
 		var playtime := Time.get_unix_time_from_system() - game_start_time
