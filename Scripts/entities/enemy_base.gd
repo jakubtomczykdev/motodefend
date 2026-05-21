@@ -14,6 +14,7 @@ signal damaged(amount: int)
 @export var xp_value: int = 10
 @export var is_wandering: bool = true
 @export var is_boss: bool = false
+@export var detection_range: float = 300.0
 
 var current_health: int
 var can_attack: bool = true
