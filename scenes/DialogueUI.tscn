@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://6vecm71djcil"]
 
 [ext_resource type="Script" path="res://Scripts/ui/dialogue_ui.gd" id="1_script"]
-[ext_resource type="FontFile" path="res://retropix.ttf" id="2_font"]
+[ext_resource type="FontFile" path="res://Assets/fonts/retropix.ttf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://fhcfm638dndj" path="res://Assets/Characters/cybersecuritySpecialist.png" id="3_rmr67"]
 
 [sub_resource type="StyleBoxFlat" id="style_dialogbox"]

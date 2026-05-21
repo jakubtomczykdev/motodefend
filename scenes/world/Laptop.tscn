@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://bag1npbdd1mlm"]
 
-[ext_resource type="Texture2D" uid="uid://dugf4lpudh0pw" path="res://Assets/enemyLaptop.png" id="1_laptop"]
-[ext_resource type="Script" uid="uid://crdgufponvoig" path="res://Scripts/entities/laptop_object.gd" id="2_script"]
-[ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://Assets/fonts/retropix.ttf" id="3_font"]
+[ext_resource type="Texture2D" path="res://Assets/enemyLaptop.png" id="1_laptop"]
+[ext_resource type="Script" path="res://Scripts/entities/laptop_object.gd" id="2_script"]
+[ext_resource type="FontFile" path="res://Assets/fonts/retropix.ttf" id="3_font"]
 
 [sub_resource type="RectangleShape2D" id="rect_shape"]
 size = Vector2(121, 117)

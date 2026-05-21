@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cp8fqaxe0ybdp"]
 
 [ext_resource type="Script" uid="uid://c46pw2uh8qmyw" path="res://Scripts/ui/laptop_bestiary_ui.gd" id="1_script"]
-[ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://Assets/fonts/retropix.ttf" id="2_font"]
+[ext_resource type="FontFile" path="res://Assets/fonts/retropix.ttf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://bnelfappvg6h0" path="res://Assets/laptopCloseView.png" id="3_laptop"]
 
 [sub_resource type="StyleBoxFlat" id="style_screen"]

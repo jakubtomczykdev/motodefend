@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://shop_item"]
 
 [ext_resource type="Script" path="res://Scripts/entities/shop_item.gd" id="1"]
-[ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://Assets/fonts/retropix.ttf" id="2"]
+[ext_resource type="FontFile" path="res://Assets/fonts/retropix.ttf" id="2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_item"]
 bg_color = Color(0.1333, 0.1647, 0.2392, 0.9) # surface-container (#171f33)

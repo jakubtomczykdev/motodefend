@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://motodefendsettings"]
 
-[ext_resource type="Script" uid="uid://cnsiy4sox6arr" path="res://Scripts/ui/settings_menu.gd" id="1_settings"]
-[ext_resource type="Shader" uid="uid://dfrrjtrlc4mmk" path="res://Assets/shaders/matrix.gdshader" id="2"]
-[ext_resource type="Texture2D" uid="uid://u7e10csgef6y" path="res://Assets/sprites/icon_tex.png" id="3"]
-[ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://Assets/fonts/retropix.ttf" id="4"]
+[ext_resource type="Script" path="res://Scripts/ui/settings_menu.gd" id="1_settings"]
+[ext_resource type="Shader" path="res://Assets/shaders/matrix.gdshader" id="2"]
+[ext_resource type="Texture2D" path="res://Assets/sprites/icon_tex.png" id="3"]
+[ext_resource type="FontFile" path="res://Assets/fonts/retropix.ttf" id="4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_01"]
 shader = ExtResource("2")

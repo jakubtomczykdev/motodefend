@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://bestiary_ui"]
 
 [ext_resource type="Script" path="res://Scripts/ui/bestiary_ui_logic.gd" id="1_script"]
-[ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://Assets/fonts/retropix.ttf" id="2_font"]
+[ext_resource type="FontFile" path="res://Assets/fonts/retropix.ttf" id="2_font"]
 
 [sub_resource type="StyleBoxFlat" id="panel_bg"]
 bg_color = Color(0.055, 0.075, 0.18, 0.96)

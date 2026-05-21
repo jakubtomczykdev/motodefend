@@ -184,9 +184,9 @@ func _setup_retro_hud() -> void:
 	if not hud: return
 	
 	var retro_font = preload("res://Assets/fonts/retropix.ttf")
-	var theme = Theme.new()
-	theme.default_font = retro_font
-	theme.default_font_size = 24
+	var custom_theme = Theme.new()
+	custom_theme.default_font = retro_font
+	custom_theme.default_font_size = 24
 	
 	var panel_style = StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.05, 0.05, 0.08, 0.85)
@@ -204,7 +204,7 @@ func _setup_retro_hud() -> void:
 	panel_style.content_margin_top = 10
 	panel_style.content_margin_bottom = 10
 	
-	theme.set_stylebox("panel", "PanelContainer", panel_style)
+	custom_theme.set_stylebox("panel", "PanelContainer", panel_style)
 	
 	# Usuń stare kontenery (różne warianty nazw)
 	for old_name in ["RetroHUDContainer", "LeftHUD", "RightHUD"]:
@@ -220,7 +220,7 @@ func _setup_retro_hud() -> void:
 	left_margin.grow_horizontal = Control.GROW_DIRECTION_END
 	
 	var left_panel = PanelContainer.new()
-	left_panel.theme = theme
+	left_panel.theme = custom_theme
 	left_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	left_margin.add_child(left_panel)
 	
@@ -237,7 +237,7 @@ func _setup_retro_hud() -> void:
 	right_margin.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	
 	var right_panel = PanelContainer.new()
-	right_panel.theme = theme
+	right_panel.theme = custom_theme
 	right_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	right_margin.add_child(right_panel)
 	
@@ -484,7 +484,7 @@ func _on_education_completed() -> void:
 		game_state = "playing"
 		get_tree().paused = false
 
-func _on_wave_started(wave_number: int) -> void:
+func _on_wave_started(_wave_number: int) -> void:
 	# Nie pauzujemy gry – timer fali leci niezależnie
 	pass
 

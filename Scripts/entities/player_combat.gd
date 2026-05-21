@@ -49,7 +49,6 @@ var muzzle: Marker2D # punkt wylotu pocisku
 var projectile_scene: PackedScene = preload("res://scenes/game/Projectile.tscn")
 var weapon_manager: Node
 
-var _reticle: ColorRect
 
 # Zmienne dla systemu kroków
 var _step_timer: float = 0.0

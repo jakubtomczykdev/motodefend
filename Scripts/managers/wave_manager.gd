@@ -68,7 +68,7 @@ func _process(delta: float) -> void:
 			spawn_timer -= delta
 			if spawn_timer <= 0:
 				# Oblicz ile wrogów zespawnować naraz (zwiększa się co 3 fale)
-				var burst_size = 1 + int(current_wave / 4)
+				var burst_size = 1 + current_wave / 4
 				for i in range(burst_size):
 					if not spawn_queue.is_empty():
 						var enemy_type = spawn_queue.pop_front()

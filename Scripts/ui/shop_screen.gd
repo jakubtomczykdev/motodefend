@@ -58,9 +58,9 @@ func _ready() -> void:
 
 func _setup_retro_style() -> void:
 	var retro_font = preload("res://Assets/fonts/retropix.ttf")
-	var theme = Theme.new()
-	theme.default_font = retro_font
-	theme.default_font_size = 20
+	var custom_theme = Theme.new()
+	custom_theme.default_font = retro_font
+	custom_theme.default_font_size = 20
 	
 	# Styl Panelu (dla TopBar, BottomBar, PreviewPanel)
 	var panel_style = StyleBoxFlat.new()
@@ -88,12 +88,12 @@ func _setup_retro_style() -> void:
 	btn_hover.bg_color = Color(0.2, 0.2, 0.4, 1.0)
 	btn_hover.border_color = Color(0.0, 1.0, 1.0)
 	
-	theme.set_stylebox("panel", "Panel", panel_style)
-	theme.set_stylebox("normal", "Button", btn_normal)
-	theme.set_stylebox("hover", "Button", btn_hover)
-	theme.set_stylebox("focus", "Button", btn_hover)
+	custom_theme.set_stylebox("panel", "Panel", panel_style)
+	custom_theme.set_stylebox("normal", "Button", btn_normal)
+	custom_theme.set_stylebox("hover", "Button", btn_hover)
+	custom_theme.set_stylebox("focus", "Button", btn_hover)
 	
-	self.theme = theme
+	self.theme = custom_theme
 	
 	# Etykiety
 	if view_title:

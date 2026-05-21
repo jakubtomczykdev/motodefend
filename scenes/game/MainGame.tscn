@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bd0gsthj68j6d"]
 
-[ext_resource type="Script" uid="uid://swyij716uls4" path="res://Scripts/managers/main_game_controller.gd" id="1_main"]
+[ext_resource type="Script" path="res://Scripts/managers/main_game_controller.gd" id="1_main"]
 [ext_resource type="PackedScene" uid="uid://dxqcwr5onpo55" path="res://scenes/world/playerScene.tscn" id="2_player"]
 [ext_resource type="Script" uid="uid://crywefm1t8alb" path="res://Scripts/managers/wave_manager.gd" id="3_wave"]
 [ext_resource type="Script" uid="uid://0df6kxv6usef" path="res://Scripts/managers/build_system.gd" id="4_build"]

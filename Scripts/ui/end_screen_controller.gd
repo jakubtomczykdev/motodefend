@@ -45,9 +45,9 @@ func _ready() -> void:
 
 func _setup_retro_style() -> void:
 	var retro_font = preload("res://Assets/fonts/retropix.ttf")
-	var theme = Theme.new()
-	theme.default_font = retro_font
-	theme.default_font_size = 24
+	var custom_theme = Theme.new()
+	custom_theme.default_font = retro_font
+	custom_theme.default_font_size = 24
 	
 	# Styl Panelu
 	var panel_style = StyleBoxFlat.new()
@@ -80,12 +80,12 @@ func _setup_retro_style() -> void:
 	btn_hover.bg_color = Color(0.2, 0.1, 0.3, 1.0)
 	btn_hover.border_color = Color(1.0, 0.4, 0.6)
 	
-	theme.set_stylebox("panel", "Panel", panel_style)
-	theme.set_stylebox("normal", "Button", btn_normal)
-	theme.set_stylebox("hover", "Button", btn_hover)
-	theme.set_stylebox("focus", "Button", btn_hover)
+	custom_theme.set_stylebox("panel", "Panel", panel_style)
+	custom_theme.set_stylebox("normal", "Button", btn_normal)
+	custom_theme.set_stylebox("hover", "Button", btn_hover)
+	custom_theme.set_stylebox("focus", "Button", btn_hover)
 	
-	self.theme = theme
+	self.theme = custom_theme
 	
 	if title_label:
 		title_label.add_theme_font_size_override("font_size", 56)
