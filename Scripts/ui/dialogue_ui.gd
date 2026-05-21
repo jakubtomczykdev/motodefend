@@ -1,7 +1,8 @@
 extends CanvasLayer
 ## DialogueUI – Cyberpunk dialogue system with typewriter effect.
 ## Displays speaker name, character-by-character text reveal, and portrait.
-## Connected signals: none in .tscn (input-driven via _unhandled_input).
+## Input-driven via _input (fires before Controls consume events).
+## Emits dialogue_finished on completion, then queue_free() self.
 
 signal dialogue_finished
 
@@ -29,8 +30,10 @@ var _speaker_name: String = ""
 func _ready() -> void:
 	# Initially hidden
 	hide_all()
-	# Ensure we process unhandled input for click/key advancement
+	# Ensure we process input for click/key advancement (ALWAYS mode so pause doesn't block)
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# _input fires before Controls consume events — critical so clicks/keypresses always work
+	set_process_input(true)
 
 
 func _process(delta: float) -> void:
@@ -57,11 +60,18 @@ func _process(delta: float) -> void:
 			_next_indicator.modulate.a = 1.0 if _blink_visible else 0.2
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if not visible:
 		return
 
-	if event.is_action_pressed("ui_accept") or (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
+	# Escape always force-closes the dialogue
+	if event.is_action_pressed("ui_cancel"):
+		get_viewport().set_input_as_handled()
+		_on_dialogue_complete()
+		return
+
+	# Advance on: Enter/Space (ui_accept), E key (interact), or left click
+	if event.is_action_pressed("ui_accept") or event.is_action_pressed("interact") or (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
 		get_viewport().set_input_as_handled()
 		_advance_dialogue()
 
@@ -149,3 +159,5 @@ func _advance_dialogue() -> void:
 func _on_dialogue_complete() -> void:
 	hide_all()
 	dialogue_finished.emit()
+	# Remove from tree to prevent stacking of hidden instances
+	queue_free()

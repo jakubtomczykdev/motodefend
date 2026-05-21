@@ -175,4 +175,7 @@ func _get_all_tips() -> Array[String]:
 func _start_dialogue_ui(lines: Array[String]) -> void:
 	var ui = dialogue_ui_scene.instantiate()
 	get_tree().root.add_child(ui)
+	# Defensive cleanup: if _on_dialogue_complete's queue_free fires first,
+	# this becomes a no-op (CONNECT_ONE_SHOT). If not, it cleans up the orphan.
+	ui.dialogue_finished.connect(func(): ui.queue_free(), CONNECT_ONE_SHOT)
 	ui.start_dialogue(npc_name, expert_portrait, lines)
