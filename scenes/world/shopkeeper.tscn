@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://116jl6uig251"]
+
+[ext_resource type="Script" uid="uid://cg1y2d2yir0eq" path="res://Scripts/entities/npc_shopkeeper.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://42xphxvw647v" path="res://Assets/sklep.png" id="2_y54bd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cqxkv"]
+size = Vector2(284, 209)
+
+[node name="SellingMashine" type="CharacterBody2D" unique_id=889363064]
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1013052398]
+position = Vector2(33, -40)
+shape = SubResource("RectangleShape2D_cqxkv")
+
+[node name="InteractArea" type="Area2D" parent="." unique_id=819408569]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" unique_id=1973976519]
+position = Vector2(38, -52)
+shape = SubResource("RectangleShape2D_cqxkv")
+metadata/logic_bricks_graph = {
+"connections": [],
+"next_id": 0,
+"nodes": []
+}
+metadata/logic_bricks_frames = []
+
+[node name="Sklep" type="Sprite2D" parent="." unique_id=1672121466]
+position = Vector2(-2.9999962, 18)
+scale = Vector2(0.27444792, 0.27444792)
+texture = ExtResource("2_y54bd")

@@ -13,13 +13,13 @@ config_version=5
 config/name="Motodefend Main(2)"
 run/main_scene="uid://crut3els17oyu"
 config/features=PackedStringArray("4.6", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://Assets/sprites/icon.svg"
 
 [autoload]
 
-GameData="*res://Scripts/game_data.gd"
-AudioManager="*res://Scripts/audio_manager.gd"
-BalanceData="*res://Scripts/balance_data.gd"
+GameData="*res://Scripts/managers/game_data.gd"
+AudioManager="*res://Scripts/managers/audio_manager.gd"
+BalanceData="*res://Scripts/managers/balance_data.gd"
 
 [display]
 

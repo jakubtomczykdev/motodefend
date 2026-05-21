@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://tjeubeg1cp6j"]
+[gd_scene format=3 uid="uid://m7bep5uk26bf"]
 
-[ext_resource type="Texture2D" uid="uid://mcyshkgbp8kb" path="res://Assets/Characters/cybersecuritySpecialist.png" id="1_rbol0"]
+[ext_resource type="Texture2D" uid="uid://fhcfm638dndj" path="res://Assets/Characters/cybersecuritySpecialist.png" id="1_rbol0"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_16jly"]
 atlas = ExtResource("1_rbol0")

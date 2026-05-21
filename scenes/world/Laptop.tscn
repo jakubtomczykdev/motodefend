@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://bag1npbdd1mlm"]
+
+[ext_resource type="Texture2D" uid="uid://dugf4lpudh0pw" path="res://Assets/enemyLaptop.png" id="1_laptop"]
+[ext_resource type="Script" uid="uid://crdgufponvoig" path="res://Scripts/entities/laptop_object.gd" id="2_script"]
+[ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://Assets/fonts/retropix.ttf" id="3_font"]
+
+[sub_resource type="RectangleShape2D" id="rect_shape"]
+size = Vector2(121, 117)
+
+[node name="Laptop" type="Node2D" unique_id=398700053]
+y_sort_enabled = true
+script = ExtResource("2_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1879004745]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_laptop")
+
+[node name="BestiaryLabel" type="Label" parent="." unique_id=995754371]
+offset_left = -75.0
+offset_top = -90.0
+offset_right = 75.0
+offset_bottom = -70.0
+theme_override_colors/font_color = Color(0.482353, 0.721569, 0.878431, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 14
+text = "BESTIARIUSZ"
+horizontal_alignment = 1
+
+[node name="InteractArea" type="Area2D" parent="." unique_id=121630]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" unique_id=144357017]
+position = Vector2(-0.5, 5.5)
+shape = SubResource("rect_shape")
