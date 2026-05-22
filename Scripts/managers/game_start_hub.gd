@@ -57,12 +57,16 @@ func _open_shop() -> void:
 	# Pobierz przedmioty dla sklepu (4 losowe dla huba)
 	var item_manager = get_node_or_null("/root/ItemManager")
 	var items: Array[ItemBase] = []
+	var gd := get_node_or_null("/root/GameData")
+	var shop_wave := 1
+	if gd:
+		shop_wave = max(gd.current_wave + 1, 1)
 	if item_manager:
-		items = item_manager.get_shop_items(4, 1)
+		items = item_manager.get_shop_items(4, shop_wave)
 	
 	# Otwórz sklep - przekaż null dla build_system w hubie (shop_screen obsłuży to przez GameData)
 	if shop.has_method("open_shop"):
-		shop.open_shop(items, null, item_manager)
+		shop.open_shop(items, null, item_manager, shop_wave)
 	
 	shop.shop_closed.connect(_on_shop_closed)
 	get_tree().paused = true

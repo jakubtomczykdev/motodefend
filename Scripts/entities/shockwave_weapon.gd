@@ -144,8 +144,8 @@ func _on_wave_body_entered(target: Node2D, weapon_data: WeaponBase, _wave: Area2
 
 	_apply_screen_shake(4.0)
 
-	# UNIQUE LOGIC: New Motorola Radio slows down enemies
-	if "Motorola" in weapon_data.item_name and enemy.has_method("apply_slowdown"):
+	# Level III radio gains crowd-control utility.
+	if weapon_data.weapon_level >= 3 and enemy.has_method("apply_slowdown"):
 		enemy.apply_slowdown(0.4, 2.0) # 60% slow for 2 seconds
 
 	# Iskry przy trafieniu falą

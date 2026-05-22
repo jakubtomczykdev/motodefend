@@ -35,6 +35,8 @@ var pending_weapon_ids: Array = []
 var player_hp: int = 100
 var player_max_hp: int = 100
 var return_scene: String = ""
+var level_upgrade_flat_bonuses: Dictionary = {}
+var level_upgrade_multiplier_bonuses: Dictionary = {}
 
 func _ready() -> void:
 	var window := get_window()
@@ -73,6 +75,8 @@ func load_settings() -> void:
 	current_level = config.get_value("game", "current_level", 1)
 	experience = config.get_value("game", "experience", 0)
 	experience_to_next_level = config.get_value("game", "experience_to_next_level", 100)
+	level_upgrade_flat_bonuses = config.get_value("game", "level_upgrade_flat_bonuses", {})
+	level_upgrade_multiplier_bonuses = config.get_value("game", "level_upgrade_multiplier_bonuses", {})
 
 func save_settings() -> void:
 	var config := ConfigFile.new()
@@ -96,6 +100,8 @@ func save_settings() -> void:
 	config.set_value("game", "current_level", current_level)
 	config.set_value("game", "experience", experience)
 	config.set_value("game", "experience_to_next_level", experience_to_next_level)
+	config.set_value("game", "level_upgrade_flat_bonuses", level_upgrade_flat_bonuses)
+	config.set_value("game", "level_upgrade_multiplier_bonuses", level_upgrade_multiplier_bonuses)
 
 	config.save(SETTINGS_PATH)
 
@@ -132,9 +138,22 @@ func reset_to_defaults() -> void:
 	particles_enabled = true
 	shadows_enabled = true
 	screen_shake = true
+	clear_level_upgrades()
 
 	save_settings()
 	apply_video_settings()
 
 func add_inventory_item(item) -> void:
 	inventory.append(item)
+
+func add_level_upgrade(stat_name: String, value: float) -> void:
+	if value < 1.0:
+		var current_multiplier := float(level_upgrade_multiplier_bonuses.get(stat_name, 1.0))
+		level_upgrade_multiplier_bonuses[stat_name] = current_multiplier * (1.0 + value)
+	else:
+		var current_flat := float(level_upgrade_flat_bonuses.get(stat_name, 0.0))
+		level_upgrade_flat_bonuses[stat_name] = current_flat + value
+
+func clear_level_upgrades() -> void:
+	level_upgrade_flat_bonuses.clear()
+	level_upgrade_multiplier_bonuses.clear()

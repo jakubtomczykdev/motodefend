@@ -112,12 +112,10 @@ func _on_upgrade_selected(upgrade) -> void:
 	if build_system:
 		# Jeśli wartość < 1.0, traktuj jako mnożnik (np. 0.15 = +15%)
 		# Jeśli >= 1.0, traktuj jako wartość płaską (np. 20.0 = +20 HP)
-		if upgrade.value < 1.0:
-			build_system.modify_stat(upgrade.stat_name, 1.0 + upgrade.value)
+		if build_system.has_method("apply_level_upgrade"):
+			build_system.apply_level_upgrade(upgrade.stat_name, upgrade.value)
 		else:
-			build_system.add_stat(upgrade.stat_name, upgrade.value)
-		
-		build_system.recalculate_stats()
+			build_system.recalculate_stats()
 	
 	_update_player_stats()
 	
@@ -428,6 +426,8 @@ func start_game() -> void:
 		gd.current_level = 1
 		gd.experience = 0
 		gd.experience_to_next_level = BalanceData.STARTING_XP_REQUIREMENT
+		if gd.has_method("clear_level_upgrades"):
+			gd.clear_level_upgrades()
 		if build_system:
 			build_system.recalculate_stats()
 
@@ -450,7 +450,7 @@ func start_game() -> void:
 		
 		# Jeśli gracz nie ma broni, daj losową domyślną
 		if player.get_weapon_count() == 0:
-			var all_weps = WeaponItemsClass.get_all_weapons()
+			var all_weps = WeaponItemsClass.get_weapons_for_shop_tier(1)
 			if all_weps.size() > 0:
 				var rng = RandomNumberGenerator.new()
 				rng.randomize()
@@ -607,7 +607,8 @@ func _open_shop(is_mid_wave: bool = false) -> void:
 	if shop_system:
 		get_tree().paused = true
 		if shop_system.has_method("open_shop"):
-			shop_system.open_shop(shop_items, build_system, item_manager)
+			var shop_wave: int = wave_manager.current_wave if wave_manager else 1
+			shop_system.open_shop(shop_items, build_system, item_manager, shop_wave)
 		else:
 			shop_system.visible = true
 
@@ -711,6 +712,8 @@ func _restart_from_wave_one() -> void:
 		gd.current_level = 1
 		gd.experience = 0
 		gd.experience_to_next_level = BalanceData.STARTING_XP_REQUIREMENT
+		if gd.has_method("clear_level_upgrades"):
+			gd.clear_level_upgrades()
 		if build_system:
 			build_system.recalculate_stats()
 		_update_player_stats()
