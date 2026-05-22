@@ -6,6 +6,7 @@ extends Node2D
 @onready var gold_label: Label = $CanvasLayer/GoldLabel if has_node("CanvasLayer") and $CanvasLayer.has_node("GoldLabel") else null
 
 func _ready() -> void:
+	get_tree().paused = false
 	_update_wave_display()
 	_update_gold_display()
 	AudioManager.play_music(AudioManager.MUSIC_LOBBY)
@@ -31,6 +32,7 @@ func _update_gold_display() -> void:
 		gold_label.text = "ZLOTO: %d" % gold
 
 func _on_start_game_button_pressed() -> void:
+	get_tree().paused = false
 	AudioManager.play_sfx("menu_click")
 	get_tree().change_scene_to_file("res://scenes/game/MainGame.tscn")
 

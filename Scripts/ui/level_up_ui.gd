@@ -9,14 +9,14 @@ signal upgrade_selected(upgrade)
 @onready var layout_box: VBoxContainer = $VBox
 @onready var title_label: Label = $VBox/Title
 
-var _retro_font: Font
+var _ui_font: Font
 var _card_normal: StyleBoxFlat
 var _card_hover: StyleBoxFlat
 var _card_pressed: StyleBoxFlat
 var _card_focus: StyleBoxFlat
 
 func _ready() -> void:
-	_retro_font = preload("res://Assets/fonts/retropix.ttf")
+	_ui_font = preload("res://Assets/fonts/VT323-Regular.ttf")
 	_setup_static_layout()
 	visible = false
 
@@ -53,8 +53,8 @@ func _setup_static_layout() -> void:
 		layout_box.offset_bottom = 330.0
 		layout_box.add_theme_constant_override("separation", 28)
 	if title_label:
-		title_label.add_theme_font_override("font", _retro_font)
-		title_label.add_theme_font_size_override("font_size", 34)
+		title_label.add_theme_font_override("font", _ui_font)
+		title_label.add_theme_font_size_override("font_size", 41)
 		title_label.add_theme_color_override("font_color", Color(0.38, 0.95, 1.0))
 		title_label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.8))
 		title_label.add_theme_constant_override("shadow_offset_x", 3)
@@ -106,8 +106,8 @@ func _create_upgrade_card(upgrade, index: int) -> Button:
 	slot.custom_minimum_size = Vector2(54, 42)
 	slot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	slot.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	slot.add_theme_font_override("font", _retro_font)
-	slot.add_theme_font_size_override("font_size", 22)
+	slot.add_theme_font_override("font", _ui_font)
+	slot.add_theme_font_size_override("font_size", 26)
 	slot.add_theme_color_override("font_color", Color(0.03, 0.08, 0.12))
 	slot.add_theme_stylebox_override("normal", _make_label_box(Color(0.35, 0.94, 1.0), Color.TRANSPARENT, 0))
 	header.add_child(slot)
@@ -116,8 +116,8 @@ func _create_upgrade_card(upgrade, index: int) -> Button:
 	type_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	type_label.text = _get_stat_display_name(upgrade.stat_name).to_upper()
 	type_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	type_label.add_theme_font_override("font", _retro_font)
-	type_label.add_theme_font_size_override("font_size", 18)
+	type_label.add_theme_font_override("font", _ui_font)
+	type_label.add_theme_font_size_override("font_size", 22)
 	type_label.add_theme_color_override("font_color", Color(0.65, 0.9, 1.0))
 	type_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(type_label)
@@ -126,8 +126,8 @@ func _create_upgrade_card(upgrade, index: int) -> Button:
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	name_label.text = upgrade.name
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	name_label.add_theme_font_override("font", _retro_font)
-	name_label.add_theme_font_size_override("font_size", 28)
+	name_label.add_theme_font_override("font", _ui_font)
+	name_label.add_theme_font_size_override("font_size", 34)
 	name_label.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0))
 	box.add_child(name_label)
 
@@ -142,7 +142,7 @@ func _create_upgrade_card(upgrade, index: int) -> Button:
 	desc.text = upgrade.description
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	desc.add_theme_font_size_override("font_size", 20)
+	desc.add_theme_font_size_override("font_size", 24)
 	desc.add_theme_color_override("font_color", Color(0.78, 0.86, 0.92))
 	box.add_child(desc)
 
@@ -152,8 +152,8 @@ func _create_upgrade_card(upgrade, index: int) -> Button:
 	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	effect.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	effect.custom_minimum_size = Vector2(0, 54)
-	effect.add_theme_font_override("font", _retro_font)
-	effect.add_theme_font_size_override("font_size", 24)
+	effect.add_theme_font_override("font", _ui_font)
+	effect.add_theme_font_size_override("font_size", 29)
 	effect.add_theme_color_override("font_color", Color(0.02, 0.08, 0.1))
 	effect.add_theme_stylebox_override("normal", _make_label_box(Color(0.35, 0.94, 1.0), Color(0.35, 0.94, 1.0), 1))
 	box.add_child(effect)

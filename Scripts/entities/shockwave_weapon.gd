@@ -48,6 +48,8 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 	if player_ref and "damage" in player_ref and "attack_speed" in player_ref:
 		dmg_mult = player_ref.damage / 10.0
 		cooldown_mult = 1.0 / max(player_ref.attack_speed, 0.1)
+	var range_mult: float = player_ref.attack_range / 400.0 if player_ref and "attack_range" in player_ref else 1.0
+	var effective_range: float = weapon_data.weapon_range * range_mult
 
 	# Wizualna fala - ColorRect rozszerzająca się
 	var wave_visual := ColorRect.new()
@@ -63,7 +65,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 	get_tree().current_scene.add_child(wave_visual)
 
 	var wave_tween := create_tween()
-	wave_tween.tween_property(wave_visual, "size", Vector2(weapon_data.weapon_range, 60), 0.3)
+	wave_tween.tween_property(wave_visual, "size", Vector2(effective_range, 60), 0.3)
 	wave_tween.parallel().tween_property(wave_visual, "modulate:a", 0.0, 0.35)
 	wave_tween.tween_callback(wave_visual.queue_free)
 
@@ -76,7 +78,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 	get_tree().current_scene.add_child(wave_ring)
 
 	var ring_tween := create_tween()
-	ring_tween.tween_property(wave_ring, "size", Vector2(weapon_data.weapon_range * 0.8, 80), 0.25).set_delay(0.1)
+	ring_tween.tween_property(wave_ring, "size", Vector2(effective_range * 0.8, 80), 0.25).set_delay(0.1)
 	ring_tween.parallel().tween_property(wave_ring, "modulate:a", 0.0, 0.3).set_delay(0.1)
 	ring_tween.tween_callback(wave_ring.queue_free).set_delay(0.35)
 
@@ -87,7 +89,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	var collision_shape := CollisionShape2D.new()
 	var circle_shape := CircleShape2D.new()
-	var wave_radius: float = min(weapon_data.weapon_range, 250.0)
+	var wave_radius: float = min(effective_range, 420.0)
 	circle_shape.radius = wave_radius
 	collision_shape.shape = circle_shape
 	new_wave_area.add_child(collision_shape)
@@ -105,7 +107,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 			if body.is_in_group("Enemies") and not hit_enemies.has(body):
 				hit_enemies.append(body)
 				if body.has_method("take_damage"):
-					body.take_damage(int(weapon_data.damage * dmg_mult))
+					body.take_damage(_roll_damage(int(weapon_data.damage * dmg_mult)))
 				for i in range(2):
 					var spark := ColorRect.new()
 					spark.size = Vector2(5, 5)
@@ -118,7 +120,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	hit_enemies.clear()
 
-	var end_pos := player_pos + target_dir * weapon_data.weapon_range
+	var end_pos := player_pos + target_dir * effective_range
 	var t := create_tween()
 	t.tween_property(new_wave_area, "global_position", end_pos, 0.5)
 	t.tween_callback(new_wave_area.queue_free)
@@ -140,7 +142,7 @@ func _on_wave_body_entered(target: Node2D, weapon_data: WeaponBase, _wave: Area2
 	hit_enemies.append(enemy)
 
 	if enemy.has_method("take_damage"):
-		enemy.take_damage(int(weapon_data.damage * dmg_mult))
+		enemy.take_damage(_roll_damage(int(weapon_data.damage * dmg_mult)))
 
 	_apply_screen_shake(4.0)
 
@@ -158,3 +160,9 @@ func _on_wave_body_entered(target: Node2D, weapon_data: WeaponBase, _wave: Area2
 		var spark_tween := create_tween()
 		spark_tween.tween_property(spark, "modulate:a", 0.0, 0.2)
 		spark_tween.tween_callback(spark.queue_free)
+
+func _roll_damage(base_damage: int) -> int:
+	if player_ref and "crit_chance" in player_ref and randf() < player_ref.crit_chance:
+		var crit_mult: float = player_ref.crit_damage if "crit_damage" in player_ref else 1.5
+		return int(base_damage * crit_mult)
+	return base_damage

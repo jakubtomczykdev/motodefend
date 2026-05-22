@@ -3,6 +3,7 @@ extends Control
 ## MainMenu – Obsługuje główne menu gry.
 
 func _ready() -> void:
+	get_tree().paused = false
 	# Zapewnij widoczność kursora
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	
@@ -11,6 +12,7 @@ func _ready() -> void:
 		AudioManager.play_music(AudioManager.MUSIC_LOBBY)
 
 func _on_start_button_pressed() -> void:
+	get_tree().paused = false
 	if AudioManager.has_method("play_sfx"):
 		AudioManager.play_sfx("menu_click")
 	

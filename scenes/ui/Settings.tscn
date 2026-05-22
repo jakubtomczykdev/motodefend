@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/ui/settings_menu.gd" id="1_settings"]
 [ext_resource type="Shader" path="res://Assets/shaders/matrix.gdshader" id="2"]
 [ext_resource type="Texture2D" path="res://Assets/sprites/icon_tex.png" id="3"]
-[ext_resource type="FontFile" path="res://Assets/fonts/retropix.ttf" id="4"]
+[ext_resource type="FontFile" path="res://Assets/fonts/VT323-Regular.ttf" id="4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_01"]
 shader = ExtResource("2")
@@ -49,7 +49,7 @@ theme_override_constants/separation = 20
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 100
+theme_override_font_sizes/font_size = 118
 text = "USTAWIENIA"
 horizontal_alignment = 1
 
@@ -60,7 +60,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.278, 0.549, 0.749, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 59
 text = "DZWIEK"
 horizontal_alignment = 1
 
@@ -73,7 +73,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 text = "Glowna"
 custom_minimum_size = Vector2(200, 0)
 
@@ -92,7 +92,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 text = "100%"
 custom_minimum_size = Vector2(80, 0)
 
@@ -105,7 +105,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 text = "Muzyka"
 custom_minimum_size = Vector2(200, 0)
 
@@ -124,7 +124,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 text = "80%"
 custom_minimum_size = Vector2(80, 0)
 
@@ -137,7 +137,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 text = "Efekty (SFX)"
 custom_minimum_size = Vector2(200, 0)
 
@@ -156,7 +156,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 text = "100%"
 custom_minimum_size = Vector2(80, 0)
 
@@ -169,7 +169,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 text = "Interfejs (UI)"
 custom_minimum_size = Vector2(200, 0)
 
@@ -188,7 +188,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 text = "100%"
 custom_minimum_size = Vector2(80, 0)
 
@@ -199,7 +199,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.278, 0.549, 0.749, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 59
 text = "WIDEO"
 horizontal_alignment = 1
 
@@ -212,7 +212,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 text = "Rozdzielczosc"
 custom_minimum_size = Vector2(200, 0)
 
@@ -222,7 +222,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 custom_minimum_size = Vector2(400, 0)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 36
 
 [node name="FullscreenRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441128]
 layout_mode = 2
@@ -233,7 +233,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 text = "Pelny ekran"
 custom_minimum_size = Vector2(200, 0)
 
@@ -242,7 +242,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 
 [node name="VsyncRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441131]
 layout_mode = 2
@@ -253,7 +253,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 text = "V-Sync"
 custom_minimum_size = Vector2(200, 0)
 
@@ -262,7 +262,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 42
 
 [node name="HSeparator3" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=441134]
 layout_mode = 2
@@ -289,7 +289,7 @@ text = "DODAJ ZŁOTO"
 [node name="CurrentGoldLabel" type="Label" parent="CenterContainer/VBoxContainer/GoldSection"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.84, 0, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 29
 text = "ZLOTO: 0"
 
 [node name="ButtonsRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441135]
@@ -302,7 +302,7 @@ unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(250, 70)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 48
 text = "Zastosuj"
 
 [node name="ResetButton" type="Button" parent="CenterContainer/VBoxContainer/ButtonsRow" unique_id=441137]
@@ -310,7 +310,7 @@ unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(300, 70)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 48
 text = "Domyslne"
 
 [node name="BackButton" type="Button" parent="CenterContainer/VBoxContainer/ButtonsRow" unique_id=441138]
@@ -318,5 +318,5 @@ unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(250, 70)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 48
 text = "Powrot"

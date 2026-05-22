@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://bestiary_ui"]
 
 [ext_resource type="Script" path="res://Scripts/ui/bestiary_ui_logic.gd" id="1_script"]
-[ext_resource type="FontFile" path="res://Assets/fonts/retropix.ttf" id="2_font"]
+[ext_resource type="FontFile" path="res://Assets/fonts/VT323-Regular.ttf" id="2_font"]
 
 [sub_resource type="StyleBoxFlat" id="panel_bg"]
 bg_color = Color(0.055, 0.075, 0.18, 0.96)
@@ -154,7 +154,7 @@ theme_override_constants/separation = 0
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.941, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 42
+theme_override_font_sizes/font_size = 50
 text = "BESTIARIUSZ WIRUSÓW"
 horizontal_alignment = 1
 
@@ -162,7 +162,7 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.941, 1, 0.4)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "CYBER-ZAGROŻENIA: KOMPENDIUM WIEDZY"
 horizontal_alignment = 1
 
@@ -180,7 +180,7 @@ theme_override_colors/font_color = Color(1, 0.176, 0.584, 0.7)
 theme_override_colors/font_hover_color = Color(1, 0.176, 0.584, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.4, 0.7, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 34
 theme_override_styles/normal = SubResource("tab_normal")
 theme_override_styles/hover = SubResource("tab_active")
 theme_override_styles/pressed = SubResource("tab_active")
@@ -207,7 +207,7 @@ theme_override_colors/font_color = Color(0, 1, 0.533, 0.9)
 theme_override_colors/font_hover_color = Color(0, 1, 0.533, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 theme_override_styles/normal = SubResource("tab_normal")
 theme_override_styles/hover = SubResource("tab_active")
 theme_override_styles/pressed = SubResource("tab_active")
@@ -220,7 +220,7 @@ theme_override_colors/font_color = Color(0.498, 0.549, 0.553, 1)
 theme_override_colors/font_hover_color = Color(0, 0.941, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 theme_override_styles/normal = SubResource("tab_normal")
 theme_override_styles/hover = SubResource("tab_active")
 theme_override_styles/pressed = SubResource("tab_active")
@@ -233,7 +233,7 @@ theme_override_colors/font_color = Color(0.498, 0.549, 0.553, 1)
 theme_override_colors/font_hover_color = Color(0, 0.941, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 theme_override_styles/normal = SubResource("tab_normal")
 theme_override_styles/hover = SubResource("tab_active")
 theme_override_styles/pressed = SubResource("tab_active")
@@ -246,7 +246,7 @@ theme_override_colors/font_color = Color(0.498, 0.549, 0.553, 1)
 theme_override_colors/font_hover_color = Color(0, 0.941, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 theme_override_styles/normal = SubResource("tab_normal")
 theme_override_styles/hover = SubResource("tab_active")
 theme_override_styles/pressed = SubResource("tab_active")
@@ -259,7 +259,7 @@ theme_override_colors/font_color = Color(0.498, 0.549, 0.553, 1)
 theme_override_colors/font_hover_color = Color(1, 0.843, 0, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 theme_override_styles/normal = SubResource("tab_normal")
 theme_override_styles/hover = SubResource("tab_active")
 theme_override_styles/pressed = SubResource("tab_active")
@@ -292,7 +292,7 @@ theme_override_constants/separation = 4
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 1, 0.533, 0.8)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 22
 text = "> REJESTR ZAGROŻEN_"
 horizontal_alignment = 0
 
@@ -305,7 +305,7 @@ theme_override_colors/font_selected_color = Color(0.02, 0.031, 0.078, 1)
 theme_override_colors/font_hovered_color = Color(0, 1, 0.533, 1)
 theme_override_colors/guide_color = Color(0, 0.941, 1, 0.2)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 24
 allow_reselect = true
 auto_height = false
 
@@ -342,7 +342,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.843, 0, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 34
 text = "Nazwa Wirusa"
 
 [node name="LoreLabel" type="RichTextLabel" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn"]
@@ -351,7 +351,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/default_color = Color(0.816, 1, 1, 0.85)
 theme_override_fonts/normal_font = ExtResource("2_font")
-theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/normal_font_size = 19
 bbcode_enabled = true
 scroll_active = false
 fit_content = true
@@ -367,7 +367,7 @@ theme_override_constants/v_separation = 4
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.941, 1, 0.7)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "HP:"
 horizontal_alignment = 2
 
@@ -375,14 +375,14 @@ horizontal_alignment = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "---"
 
 [node name="StatLabelSpeed" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.941, 1, 0.7)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "PREDKOSC:"
 horizontal_alignment = 2
 
@@ -390,14 +390,14 @@ horizontal_alignment = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "---"
 
 [node name="StatLabelAttack" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.941, 1, 0.7)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "ATAK:"
 horizontal_alignment = 2
 
@@ -405,14 +405,14 @@ horizontal_alignment = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "---"
 
 [node name="StatLabelWave" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.941, 1, 0.7)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "FALA:"
 horizontal_alignment = 2
 
@@ -420,14 +420,14 @@ horizontal_alignment = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "---"
 
 [node name="StatLabelType" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.941, 1, 0.7)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "TYP:"
 horizontal_alignment = 2
 
@@ -435,7 +435,7 @@ horizontal_alignment = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.843, 0, 0.9)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "---"
 
 [node name="DetailsSeparator" type="ColorRect" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer"]
@@ -448,7 +448,7 @@ mouse_filter = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.176, 0.584, 0.9)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 text = "[ DEFINICJA REALNA ]"
 
 [node name="DefinitionLabel" type="RichTextLabel" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer"]
@@ -458,7 +458,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/default_color = Color(0.816, 1, 1, 0.85)
 theme_override_fonts/normal_font = ExtResource("2_font")
-theme_override_font_sizes/normal_font_size = 18
+theme_override_font_sizes/normal_font_size = 22
 bbcode_enabled = true
 scroll_active = false
 fit_content = true
@@ -483,7 +483,7 @@ mouse_filter = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.941, 1, 0.35)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 15
 text = "MOTODEFEND CYBER-BESTIARIUSZ v3.0  //  KLASYFIKACJA: SCISLE TAJNE"
 horizontal_alignment = 1
 

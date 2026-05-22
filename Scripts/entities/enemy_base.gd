@@ -368,11 +368,11 @@ func _spawn_damage_number(amount: int) -> void:
 	var label := Label.new()
 	label.text = str(amount)
 	label.z_index = 5
-	label.add_theme_font_size_override("font_size", 16 + int(amount / 10.0))
+	label.add_theme_font_size_override("font_size", 23 + int(amount / 10.0))
 	label.add_theme_color_override("font_color", Color(1, 1, 1, 1))
 	var shadow := Label.new()
 	shadow.text = str(amount)
-	shadow.add_theme_font_size_override("font_size", 16 + int(amount / 10.0))
+	shadow.add_theme_font_size_override("font_size", 23 + int(amount / 10.0))
 	shadow.add_theme_color_override("font_color", Color(0, 0, 0, 0.7))
 	shadow.position = Vector2(1, 1)
 	label.add_child(shadow)
@@ -390,11 +390,11 @@ func _spawn_gold_number(amount: int) -> void:
 	var label := Label.new()
 	label.text = "+" + str(amount) + "g"
 	label.z_index = 4
-	label.add_theme_font_size_override("font_size", 20)
+	label.add_theme_font_size_override("font_size", 24)
 	label.add_theme_color_override("font_color", Color(1, 0.84, 0, 1))
 	var shadow := Label.new()
 	shadow.text = "+" + str(amount) + "g"
-	shadow.add_theme_font_size_override("font_size", 20)
+	shadow.add_theme_font_size_override("font_size", 24)
 	shadow.add_theme_color_override("font_color", Color(0, 0, 0, 0.7))
 	shadow.position = Vector2(1, 1)
 	label.add_child(shadow)

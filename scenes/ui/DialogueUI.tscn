@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cm266s3yivuqy"]
 
 [ext_resource type="Script" uid="uid://ga0r7hq58b3l" path="res://Scripts/ui/dialogue_ui.gd" id="1_script"]
-[ext_resource type="FontFile" uid="uid://d20n5xx7idixl" path="res://Assets/fonts/retropix.ttf" id="2_font"]
+[ext_resource type="FontFile" path="res://Assets/fonts/VT323-Regular.ttf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://mcyshkgbp8kb" path="res://Assets/Characters/cybersecuritySpecialist.png" id="3_rmr67"]
 
 [sub_resource type="StyleBoxFlat" id="style_dialogbox"]
@@ -65,7 +65,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 24
 text = "Marek Nowak"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -92,7 +92,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/default_color = Color(0.91, 0.91, 0.94, 1)
 theme_override_fonts/normal_font = ExtResource("2_font")
-theme_override_font_sizes/normal_font_size = 22
+theme_override_font_sizes/normal_font_size = 26
 bbcode_enabled = true
 fit_content = true
 scroll_active = false
@@ -110,7 +110,7 @@ offset_right = 1512.0
 offset_bottom = 200.0
 theme_override_colors/font_color = Color(0.306, 0.804, 0.769, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 29
 text = "▼"
 horizontal_alignment = 1
 

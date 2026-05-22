@@ -137,7 +137,7 @@ func _spawn_level_up_effect() -> void:
 	
 	var label := Label.new()
 	label.text = "LEVEL UP!"
-	label.add_theme_font_size_override("font_size", 48)
+	label.add_theme_font_size_override("font_size", 57)
 	label.add_theme_color_override("font_color", Color(0, 1, 1)) # Cyan
 	label.global_position = player.global_position + Vector2(-100, -100)
 	add_child(label)
@@ -181,10 +181,10 @@ func _setup_retro_hud() -> void:
 	var hud = get_node_or_null("HUD")
 	if not hud: return
 	
-	var retro_font = preload("res://Assets/fonts/retropix.ttf")
+	var ui_font = preload("res://Assets/fonts/VT323-Regular.ttf")
 	var custom_theme = Theme.new()
-	custom_theme.default_font = retro_font
-	custom_theme.default_font_size = 24
+	custom_theme.default_font = ui_font
+	custom_theme.default_font_size = 29
 	
 	var panel_style = StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.05, 0.05, 0.08, 0.85)
@@ -248,8 +248,8 @@ func _setup_retro_hud() -> void:
 		if hp_label.get_parent(): hp_label.get_parent().remove_child(hp_label)
 		if health_bar.get_parent(): health_bar.get_parent().remove_child(health_bar)
 		var hp_box = HBoxContainer.new()
-		hp_label.add_theme_font_override("font", retro_font)
-		hp_label.add_theme_font_size_override("font_size", 20)
+		hp_label.add_theme_font_override("font", ui_font)
+		hp_label.add_theme_font_size_override("font_size", 24)
 		hp_label.add_theme_color_override("font_color", Color(1, 0.4, 0.4))
 		health_bar.custom_minimum_size = Vector2(200, 20)
 		health_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -267,8 +267,8 @@ func _setup_retro_hud() -> void:
 		if level_label.get_parent(): level_label.get_parent().remove_child(level_label)
 		if xp_bar.get_parent(): xp_bar.get_parent().remove_child(xp_bar)
 		var xp_box = HBoxContainer.new()
-		level_label.add_theme_font_override("font", retro_font)
-		level_label.add_theme_font_size_override("font_size", 20)
+		level_label.add_theme_font_override("font", ui_font)
+		level_label.add_theme_font_size_override("font_size", 24)
 		level_label.add_theme_color_override("font_color", Color(0.4, 0.8, 1.0))
 		xp_bar.custom_minimum_size = Vector2(200, 15)
 		xp_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -278,8 +278,8 @@ func _setup_retro_hud() -> void:
 		
 	if gold_label:
 		if gold_label.get_parent(): gold_label.get_parent().remove_child(gold_label)
-		gold_label.add_theme_font_override("font", retro_font)
-		gold_label.add_theme_font_size_override("font_size", 24)
+		gold_label.add_theme_font_override("font", ui_font)
+		gold_label.add_theme_font_size_override("font_size", 29)
 		gold_label.add_theme_color_override("font_color", Color(1.0, 0.84, 0.0))
 		gold_label.add_theme_color_override("font_shadow_color", Color(0.3, 0.2, 0))
 		gold_label.add_theme_constant_override("shadow_offset_x", 2)
@@ -288,16 +288,16 @@ func _setup_retro_hud() -> void:
 		
 	if playtime_label:
 		if playtime_label.get_parent(): playtime_label.get_parent().remove_child(playtime_label)
-		playtime_label.add_theme_font_override("font", retro_font)
-		playtime_label.add_theme_font_size_override("font_size", 28)
+		playtime_label.add_theme_font_override("font", ui_font)
+		playtime_label.add_theme_font_size_override("font_size", 34)
 		playtime_label.add_theme_color_override("font_color", Color(0.8, 1.0, 0.8))
 		playtime_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		right_vbox.add_child(playtime_label)
 		
 	if enemies_label:
 		if enemies_label.get_parent(): enemies_label.get_parent().remove_child(enemies_label)
-		enemies_label.add_theme_font_override("font", retro_font)
-		enemies_label.add_theme_font_size_override("font_size", 22)
+		enemies_label.add_theme_font_override("font", ui_font)
+		enemies_label.add_theme_font_size_override("font_size", 26)
 		enemies_label.add_theme_color_override("font_color", Color(0.9, 0.5, 0.5))
 		enemies_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		right_vbox.add_child(enemies_label)
@@ -422,7 +422,8 @@ func start_game() -> void:
 	AudioManager.play_music(AudioManager.MUSIC_BATTLE)
 	
 	# Jeśli to nowa gra (fala 0/1), zresetuj poziom i XP
-	if gd and (gd.current_wave == 0 or wave_manager and wave_manager.current_wave == 0):
+	if gd and not gd.run_started:
+		gd.run_started = true
 		gd.current_level = 1
 		gd.experience = 0
 		gd.experience_to_next_level = BalanceData.STARTING_XP_REQUIREMENT
@@ -448,13 +449,14 @@ func start_game() -> void:
 			# Wyczyść zapisane bronie aby nie duplikować przy kolejnej fali
 			gd.pending_weapon_ids.clear()
 		
-		# Jeśli gracz nie ma broni, daj losową domyślną
+		# Jeśli gracz nie ma broni, daj podstawowy miecz.
 		if player.get_weapon_count() == 0:
-			var all_weps = WeaponItemsClass.get_weapons_for_shop_tier(1)
-			if all_weps.size() > 0:
-				var rng = RandomNumberGenerator.new()
-				rng.randomize()
-				var default_weapon: WeaponBase = all_weps[rng.randi_range(0, all_weps.size() - 1)]
+			var default_weapon: WeaponBase = null
+			for weapon: WeaponBase in WeaponItemsClass.get_all_weapons():
+				if weapon.base_weapon_id == "sword" and weapon.weapon_level == 1:
+					default_weapon = weapon
+					break
+			if default_weapon:
 				player.add_weapon(default_weapon)
 		
 		# Restore Items (Passives)
@@ -499,6 +501,7 @@ func _on_wave_ended(wave_number: int) -> void:
 
 	# Zapisz progresję w GameData
 	if gd:
+		gd.run_started = true
 		gd.current_wave = wave_number
 		gd.score = score
 	
@@ -569,6 +572,10 @@ func _transition_to_hub() -> void:
 	# Final safety check
 	if not is_inside_tree():
 		return
+	var gd := get_node_or_null("/root/GameData")
+	if gd:
+		gd.run_started = true
+		_save_weapons_to_gamedata(gd)
 	get_tree().change_scene_to_file("res://scenes/world/GameStartScreen.tscn")
 
 func _save_weapons_to_gamedata(gd) -> void:
@@ -642,10 +649,14 @@ func _update_player_stats() -> void:
 		player.move_speed = 300.0 * build_system.get_stat("move_speed")
 		player.attack_range = 400.0 * build_system.get_stat("attack_range")
 		player.max_health = int(build_system.get_stat("max_health")) # Use flat value now
+		player.armor = int(build_system.get_stat("armor"))
+		player.hp_regen = build_system.get_stat("hp_regen")
 		
 		# Dodatkowe statystyki z przedmiotów
 		if "projectile_speed" in player:
 			player.projectile_speed = 500.0 * build_system.get_stat("projectile_speed")
+		if "projectile_count" in player:
+			player.projectile_count = maxi(1, int(build_system.get_stat("projectile_count")))
 		if "crit_chance" in player:
 			player.crit_chance = build_system.get_stat("crit_chance")
 		if "crit_damage" in player:
@@ -677,6 +688,13 @@ func _on_player_health_changed(_current: int, _max: int) -> void:
 		gd.player_max_hp = _max
 
 func _restart_from_wave_one() -> void:
+	var gd = get_node_or_null("/root/GameData")
+	if gd and gd.has_method("reset_run_progress"):
+		gd.reset_run_progress()
+	
+	if build_system:
+		build_system.clear_build()
+	
 	# Wyczyść wrogów
 	var enemies := get_tree().get_nodes_in_group("Enemies")
 	for enemy in enemies:
@@ -707,13 +725,7 @@ func _restart_from_wave_one() -> void:
 	game_state = "playing"
 	
 	# Reset poziomu i XP
-	var gd = get_node_or_null("/root/GameData")
 	if gd:
-		gd.current_level = 1
-		gd.experience = 0
-		gd.experience_to_next_level = BalanceData.STARTING_XP_REQUIREMENT
-		if gd.has_method("clear_level_upgrades"):
-			gd.clear_level_upgrades()
 		if build_system:
 			build_system.recalculate_stats()
 		_update_player_stats()
@@ -726,9 +738,17 @@ func _restart_from_wave_one() -> void:
 	game_start_time = Time.get_unix_time_from_system()
 
 func _on_restart_requested() -> void:
-	_restart_from_wave_one()
+	get_tree().paused = false
+	var gd = get_node_or_null("/root/GameData")
+	if gd and gd.has_method("reset_run_progress"):
+		gd.reset_run_progress()
+	get_tree().change_scene_to_file("res://scenes/game/MainGame.tscn")
 
 func _on_menu_requested() -> void:
+	get_tree().paused = false
+	var gd = get_node_or_null("/root/GameData")
+	if gd and gd.has_method("reset_run_progress"):
+		gd.reset_run_progress()
 	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
 
 func show_game_over() -> void:

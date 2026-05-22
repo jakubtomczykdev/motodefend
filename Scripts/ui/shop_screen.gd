@@ -66,16 +66,21 @@ func open_shop(available_items: Array[ItemBase], player_build: Node, manager: No
 	current_wave_number = max(wave_number, 1)
 	current_shop_tier = _get_shop_tier(current_wave_number)
 	showing_inventory = false
+	if shop_items.is_empty():
+		_refresh_shop_items()
+		_update_ui()
+		visible = true
+		return
 
 	_refresh_view()
 	_update_ui()
 	visible = true
 
 func _setup_retro_style() -> void:
-	var retro_font = preload("res://Assets/fonts/retropix.ttf")
+	var ui_font = preload("res://Assets/fonts/VT323-Regular.ttf")
 	var custom_theme = Theme.new()
-	custom_theme.default_font = retro_font
-	custom_theme.default_font_size = 20
+	custom_theme.default_font = ui_font
+	custom_theme.default_font_size = 24
 
 	var panel_style = StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.05, 0.05, 0.1, 0.9)
@@ -108,7 +113,7 @@ func _setup_retro_style() -> void:
 	self.theme = custom_theme
 
 	if view_title:
-		view_title.add_theme_font_size_override("font_size", 28)
+		view_title.add_theme_font_size_override("font_size", 34)
 		view_title.add_theme_color_override("font_color", Color(0, 1, 1))
 
 	var bg = get_node_or_null("Background")

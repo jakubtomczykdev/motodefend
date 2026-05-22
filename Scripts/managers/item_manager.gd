@@ -58,6 +58,8 @@ func get_random_items(count: int, min_rarity: String = "common") -> Array[ItemBa
 	return items
 
 func get_shop_items(count: int = 3, wave_number: int = 1) -> Array[ItemBase]:
+	if all_items.is_empty():
+		_initialize_all_items()
 	shop_items.clear()
 	var shop_tier := get_shop_tier(wave_number)
 

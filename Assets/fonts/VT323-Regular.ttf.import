@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://b68kqgfipw7k2"
-path="res://.godot/imported/retropix.ttf-80acea4c74995bf36667ef3e96d59224.fontdata"
+uid="uid://b0ly1mclhn6oy"
+path="res://.godot/imported/VT323-Regular.ttf-c51c103e897ba5c73bfebee958e66b51.fontdata"
 
 [deps]
 
-source_file="res://Assets/fonts/retropix.ttf"
-dest_files=["res://.godot/imported/retropix.ttf-80acea4c74995bf36667ef3e96d59224.fontdata"]
+source_file="res://Assets/fonts/VT323-Regular.ttf"
+dest_files=["res://.godot/imported/VT323-Regular.ttf-c51c103e897ba5c73bfebee958e66b51.fontdata"]
 
 [params]
 

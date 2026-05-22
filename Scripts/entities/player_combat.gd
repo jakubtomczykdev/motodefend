@@ -12,6 +12,7 @@ signal died
 @export var damage: int = 10
 @export var projectile_speed: float = 500.0
 @export var attack_range: float = 400.0
+@export var projectile_count: int = 1
 
 @export var armor: int = 0
 @export var hp_regen: float = 0.0 # HP per second
@@ -307,7 +308,7 @@ func _spawn_crit_effect(pos: Vector2) -> void:
 	var label := Label.new()
 	label.text = "KRYTYK!"
 	label.modulate = Color(1.0, 0.55, 0.0, 1.0) # Orange
-	label.add_theme_font_size_override("font_size", 20)
+	label.add_theme_font_size_override("font_size", 24)
 	label.global_position = pos + Vector2(-30, -40)
 	get_tree().current_scene.add_child(label)
 	
@@ -381,13 +382,13 @@ func _spawn_damage_number(amount: int) -> void:
 		return
 	var label := Label.new()
 	label.text = str(amount)
-	label.add_theme_font_size_override("font_size", 24)
+	label.add_theme_font_size_override("font_size", 29)
 	label.add_theme_color_override("font_color", Color(0.9, 0.1, 0.1, 1.0)) # Red for player damage
 	
 	# Shadow/Outline
 	var shadow := Label.new()
 	shadow.text = str(amount)
-	shadow.add_theme_font_size_override("font_size", 24)
+	shadow.add_theme_font_size_override("font_size", 29)
 	shadow.add_theme_color_override("font_color", Color(0, 0, 0, 0.7))
 	shadow.position = Vector2(1, 1)
 	label.add_child(shadow)

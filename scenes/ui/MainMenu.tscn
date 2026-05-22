@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://crut3els17oyu"]
 
-[ext_resource type="Script" path="res://Scripts/ui/menu_script.gd" id="1_eiy7p"]
-[ext_resource type="FontFile" path="res://Assets/fonts/retropix.ttf" id="2_h7a2f"]
-[ext_resource type="Shader" path="res://Assets/shaders/matrix.gdshader" id="2_qoqlk"]
-[ext_resource type="Texture2D" path="res://Assets/sprites/icon_tex.png" id="3_iwfq2"]
+[ext_resource type="Script" uid="uid://cr4wplobbs1wv" path="res://Scripts/ui/menu_script.gd" id="1_eiy7p"]
+[ext_resource type="FontFile" uid="uid://b0ly1mclhn6oy" path="res://Assets/fonts/VT323-Regular.ttf" id="2_h7a2f"]
+[ext_resource type="Shader" uid="uid://bpfodkq5onynm" path="res://Assets/shaders/matrix.gdshader" id="2_qoqlk"]
+[ext_resource type="Texture2D" uid="uid://cfn3b12w7r8ww" path="res://Assets/sprites/icon_tex.png" id="3_iwfq2"]
 
 [sub_resource type="Environment" id="Environment_qoqlk"]
 
@@ -31,7 +31,7 @@ environment = SubResource("Environment_qoqlk")
 position = Vector2(74, 132)
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=1670726075]
-anchors_preset = 15
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -70,7 +70,7 @@ size_flags_stretch_ratio = 3.11
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("2_h7a2f")
-theme_override_font_sizes/font_size = 180
+theme_override_font_sizes/font_size = 213
 text = "MOTODEFEND"
 horizontal_alignment = 1
 
@@ -96,7 +96,7 @@ custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/line_spacing = 0
-theme_override_font_sizes/font_size = 60
+theme_override_font_sizes/font_size = 71
 text = "Start"
 metadata/logic_bricks_graph = {
 "connections": [],
@@ -108,7 +108,7 @@ metadata/logic_bricks_frames = []
 [node name="settingsBtn" type="Button" parent="ButtonsContainer" unique_id=1792085087]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 60
+theme_override_font_sizes/font_size = 71
 text = "Ustawienia"
 metadata/logic_bricks_graph = {
 "connections": [],
@@ -120,9 +120,8 @@ metadata/logic_bricks_frames = []
 [node name="Button2" type="Button" parent="ButtonsContainer" unique_id=435584949]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 60
+theme_override_font_sizes/font_size = 71
 text = "Wyjście"
-
 
 [connection signal="pressed" from="ButtonsContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="ButtonsContainer/settingsBtn" to="." method="_on_settings_btn_pressed"]

@@ -6,6 +6,7 @@ func get_interaction_text() -> String:
 	return "START GRY (E)"
 
 func interact() -> void:
+	get_tree().paused = false
 	if AudioManager.has_method("play_sfx"):
 		AudioManager.play_sfx("menu_click")
 	

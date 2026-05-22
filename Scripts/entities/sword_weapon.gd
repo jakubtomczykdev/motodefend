@@ -39,6 +39,8 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 		dmg_mult = player_ref.damage / 10.0
 		cooldown_mult = 1.0 / max(player_ref.attack_speed, 0.1)
 	_swing_dmg_mult = dmg_mult
+	var range_mult: float = player_ref.attack_range / 400.0 if player_ref and "attack_range" in player_ref else 1.0
+	var effective_range: float = weapon_data.weapon_range * range_mult
 
 	var swing_origin := player_body.global_position + direction * 20
 	var start_angle := direction.angle() - 1.2
@@ -57,9 +59,9 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 
 	var collision_shape: CollisionShape2D = CollisionShape2D.new()
 	var rect_shape: RectangleShape2D = RectangleShape2D.new()
-	rect_shape.size = Vector2(weapon_data.weapon_range, 80) # Szybsze wyłapywanie
+	rect_shape.size = Vector2(effective_range, 80) # Szybsze wyłapywanie
 	collision_shape.shape = rect_shape
-	collision_shape.position = Vector2(weapon_data.weapon_range / 2, 0)
+	collision_shape.position = Vector2(effective_range / 2, 0)
 	swing_area.add_child(collision_shape)
 	hit_enemies.clear()
 
@@ -133,7 +135,7 @@ func _on_swing_body_entered(target: Node2D, weapon_data: WeaponBase) -> void:
 	hit_enemies.append(enemy)
 
 	if enemy.has_method("take_damage"):
-		enemy.take_damage(int(weapon_data.damage * _swing_dmg_mult))
+		enemy.take_damage(_roll_damage(int(weapon_data.damage * _swing_dmg_mult)))
 	
 	_apply_screen_shake(8.0)
 	_spawn_impact(enemy)
@@ -161,3 +163,9 @@ func _process(delta: float) -> void:
 
 func is_ready() -> bool:
 	return can_attack
+
+func _roll_damage(base_damage: int) -> int:
+	if player_ref and "crit_chance" in player_ref and randf() < player_ref.crit_chance:
+		var crit_mult: float = player_ref.crit_damage if "crit_damage" in player_ref else 1.5
+		return int(base_damage * crit_mult)
+	return base_damage

@@ -6,12 +6,12 @@ extends Control
 @onready var panel: PanelContainer = $Panel
 @onready var title_label: Label = $Panel/VBox/Title
 
-var _retro_font: Font
+var _ui_font: Font
 var _refresh_timer: float = 0.0
 var _dim_bg: ColorRect
 
 func _ready() -> void:
-	_retro_font = preload("res://Assets/fonts/retropix.ttf")
+	_ui_font = preload("res://Assets/fonts/VT323-Regular.ttf")
 	_setup_visuals()
 	visible = false
 
@@ -54,11 +54,18 @@ func _update_stats() -> void:
 	_add_stat_row("Szybkosc ataku", build_system.get_stat("attack_speed"), "x%.2f", Color(0.65, 0.95, 1.0))
 	_add_stat_row("Zasieg", build_system.get_stat("attack_range"), "x%.2f", Color(0.6, 0.8, 1.0))
 	_add_stat_row("Krytyk", build_system.get_stat("crit_chance") * 100.0, "%.1f%%", Color(1.0, 0.9, 0.45))
+	_add_stat_row("Sila krytyka", build_system.get_stat("crit_damage"), "x%.2f", Color(1.0, 0.78, 0.3))
+	_add_stat_row("Przebicie", build_system.get_stat("pierce"), "%.0f", Color(0.95, 0.75, 1.0))
+	_add_stat_row("Liczba pociskow", build_system.get_stat("projectile_count"), "%.0f", Color(0.62, 0.95, 1.0))
+	_add_stat_row("Predkosc pociskow", build_system.get_stat("projectile_speed"), "x%.2f", Color(0.45, 0.78, 1.0))
+	_add_stat_row("Obrazenia bossow", build_system.get_stat("boss_damage_bonus") * 100.0, "+%.0f%%", Color(1.0, 0.55, 0.55))
 
 	_add_section_title("OBRONA I RUCH")
 	_add_stat_row("Maksymalne HP", build_system.get_stat("max_health"), "%.0f", Color(1.0, 0.42, 0.42))
 	_add_stat_row("Pancerz", build_system.get_stat("armor"), "%.0f", Color(0.7, 0.82, 0.92))
 	_add_stat_row("Regeneracja", build_system.get_stat("hp_regen"), "%.1f/s", Color(0.42, 1.0, 0.62))
+	_add_stat_row("Unik", build_system.get_stat("dodge_chance") * 100.0, "%.1f%%", Color(0.5, 1.0, 0.95))
+	_add_stat_row("Redukcja cooldownu", build_system.get_stat("cooldown_reduction") * 100.0, "%.0f%%", Color(0.72, 0.86, 1.0))
 	_add_stat_row("Predkosc ruchu", build_system.get_stat("move_speed"), "x%.2f", Color(0.55, 1.0, 0.9))
 
 func _setup_visuals() -> void:
@@ -73,56 +80,56 @@ func _setup_visuals() -> void:
 	move_child(_dim_bg, 0)
 
 	if panel:
-		panel.custom_minimum_size = Vector2(560, 680)
+		panel.custom_minimum_size = Vector2(620, 900)
 		panel.add_theme_stylebox_override("panel", _make_panel_style())
 	if title_label:
 		title_label.text = "STATYSTYKI"
-		title_label.add_theme_font_override("font", _retro_font)
-		title_label.add_theme_font_size_override("font_size", 34)
+		title_label.add_theme_font_override("font", _ui_font)
+		title_label.add_theme_font_size_override("font_size", 41)
 		title_label.add_theme_color_override("font_color", Color(0.35, 0.94, 1.0))
 		title_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
 		title_label.add_theme_constant_override("shadow_offset_x", 2)
 		title_label.add_theme_constant_override("shadow_offset_y", 2)
 	if stats_container:
-		stats_container.add_theme_constant_override("separation", 10)
+		stats_container.add_theme_constant_override("separation", 6)
 
 func _add_section_title(text: String) -> void:
 	var label := Label.new()
 	label.text = text
-	label.add_theme_font_override("font", _retro_font)
-	label.add_theme_font_size_override("font_size", 18)
+	label.add_theme_font_override("font", _ui_font)
+	label.add_theme_font_size_override("font_size", 22)
 	label.add_theme_color_override("font_color", Color(0.35, 0.94, 1.0))
-	label.custom_minimum_size = Vector2(0, 34)
+	label.custom_minimum_size = Vector2(0, 28)
 	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	stats_container.add_child(label)
 
 func _add_summary_row(label_text: String, value_text: String, accent: Color) -> void:
 	var row := _add_row_shell(Color(0.04, 0.07, 0.1, 0.92), accent)
-	var label := _make_cell_label(label_text, Color(0.72, 0.84, 0.92), 20, HORIZONTAL_ALIGNMENT_LEFT)
-	var value := _make_cell_label(value_text, accent, 22, HORIZONTAL_ALIGNMENT_RIGHT)
-	value.add_theme_font_override("font", _retro_font)
+	var label := _make_cell_label(label_text, Color(0.72, 0.84, 0.92), 24, HORIZONTAL_ALIGNMENT_LEFT)
+	var value := _make_cell_label(value_text, accent, 26, HORIZONTAL_ALIGNMENT_RIGHT)
+	value.add_theme_font_override("font", _ui_font)
 	row.add_child(label)
 	row.add_child(value)
 
 func _add_stat_row(label_text: String, value: float, format_string: String, accent: Color) -> void:
 	var row := _add_row_shell(Color(0.025, 0.04, 0.06, 0.88), accent)
-	var label := _make_cell_label(label_text, Color(0.78, 0.86, 0.92), 18, HORIZONTAL_ALIGNMENT_LEFT)
-	var value_label := _make_cell_label(format_string % value, accent, 19, HORIZONTAL_ALIGNMENT_RIGHT)
-	value_label.add_theme_font_override("font", _retro_font)
+	var label := _make_cell_label(label_text, Color(0.78, 0.86, 0.92), 22, HORIZONTAL_ALIGNMENT_LEFT)
+	var value_label := _make_cell_label(format_string % value, accent, 23, HORIZONTAL_ALIGNMENT_RIGHT)
+	value_label.add_theme_font_override("font", _ui_font)
 	row.add_child(label)
 	row.add_child(value_label)
 
 func _add_row_shell(bg: Color, border: Color) -> HBoxContainer:
 	var panel_row := PanelContainer.new()
-	panel_row.custom_minimum_size = Vector2(0, 46)
+	panel_row.custom_minimum_size = Vector2(0, 36)
 	panel_row.add_theme_stylebox_override("panel", _make_row_style(bg, border))
 	stats_container.add_child(panel_row)
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 14)
 	margin.add_theme_constant_override("margin_right", 14)
-	margin.add_theme_constant_override("margin_top", 6)
-	margin.add_theme_constant_override("margin_bottom", 6)
+	margin.add_theme_constant_override("margin_top", 4)
+	margin.add_theme_constant_override("margin_bottom", 4)
 	panel_row.add_child(margin)
 
 	var row := HBoxContainer.new()

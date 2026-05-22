@@ -101,11 +101,12 @@ func _check_transitions() -> void:
 	if is_instance_valid(current_target) and not current_target.get("is_dead"):
 		var enemy_pos = current_target.global_position
 		var dist_to_target := global_position.distance_to(enemy_pos)
+		var effective_shoot_range := _get_effective_shoot_range()
 		
-		if dist_to_target <= shoot_range and attack_timer <= 0:
+		if dist_to_target <= effective_shoot_range and attack_timer <= 0:
 			state = DroneState.SHOOTING
 			target_pos = enemy_pos
-		elif dist_to_target < detection_range:
+		elif dist_to_target < _get_effective_detection_range():
 			state = DroneState.CHASING
 			target_pos = enemy_pos
 		else:
@@ -118,7 +119,8 @@ func _check_transitions() -> void:
 func _find_nearest_target() -> void:
 	var enemies = get_tree().get_nodes_in_group("Enemies")
 	var closest_enemy = null
-	var min_dist = detection_range
+	var effective_detection := _get_effective_detection_range()
+	var min_dist = effective_detection
 	
 	for enemy in enemies:
 		if is_instance_valid(enemy) and not enemy.get("is_dead"):
@@ -163,7 +165,7 @@ func _process_chase(_delta: float) -> void:
 		else:
 			_drone_sprite.scale.x = -abs(_drone_sprite.scale.x)
 	
-	if global_position.distance_to(target_pos) > shoot_range:
+	if global_position.distance_to(target_pos) > _get_effective_shoot_range():
 		velocity *= 1.3
 
 func _process_shoot(delta: float) -> void:
@@ -171,7 +173,7 @@ func _process_shoot(delta: float) -> void:
 	_fire_projectile(dir)
 
 	var dist_to_target := global_position.distance_to(target_pos)
-	if dist_to_target > shoot_range * 1.3:
+	if dist_to_target > _get_effective_shoot_range() * 1.3:
 		state = DroneState.CHASING
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, move_speed * delta * 0.5)
@@ -188,21 +190,30 @@ func _fire_projectile(direction: Vector2) -> void:
 	if attack_timer > 0:
 		return
 
-	var proj: Area2D = projectile_scene.instantiate()
-	proj.speed = 400
-	
-	# Mnożnik obrażeń z build systemu gracza
 	var dmg_mult: float = 1.0
 	if player_ref and "damage" in player_ref:
 		dmg_mult = player_ref.damage / 10.0
-	proj.damage = int(current_weapon.damage * dmg_mult)
+	var projectile_total := 1
+	if player_ref and "projectile_count" in player_ref:
+		projectile_total = maxi(1, int(player_ref.projectile_count))
 	
-	proj.direction = direction
-	proj.global_position = global_position
-	proj.owner_node = self
-	get_tree().current_scene.add_child(proj)
+	for shot_index in range(projectile_total):
+		var shot_dir := direction.rotated(_get_spread_angle(shot_index, projectile_total))
+		var proj: Area2D = projectile_scene.instantiate()
+		proj.speed = player_ref.projectile_speed if player_ref and "projectile_speed" in player_ref else 400
+		proj.damage = _roll_damage(int(current_weapon.damage * dmg_mult))
+		if player_ref and "pierce" in player_ref and player_ref.pierce > 0:
+			proj.can_pierce = true
+			proj.max_pierce_count = int(player_ref.pierce)
+		proj.direction = shot_dir
+		proj.global_position = global_position
+		proj.owner_node = self
+		get_tree().current_scene.add_child(proj)
 
-	attack_timer = current_weapon.attack_speed
+	var cooldown_mult: float = 1.0
+	if player_ref and "attack_speed" in player_ref:
+		cooldown_mult = 1.0 / max(player_ref.attack_speed, 0.1)
+	attack_timer = current_weapon.attack_speed * cooldown_mult
 	AudioManager.play_sfx("drone_shoot")
 
 	# Muzzle flash
@@ -214,7 +225,6 @@ func _fire_projectile(direction: Vector2) -> void:
 	var ft := create_tween()
 	ft.tween_property(flash, "modulate:a", 0.0, 0.08)
 	ft.tween_callback(flash.queue_free)
-
 func _process_return(delta: float) -> void:
 	if not player_ref or not is_instance_valid(player_ref):
 		queue_free()
@@ -230,9 +240,30 @@ func _process_return(delta: float) -> void:
 	var dir := (player_ref.global_position - global_position).normalized()
 	velocity = dir * move_speed * 1.3
 	move_and_slide()
-
 	if _drone_sprite:
 		_drone_sprite.modulate = Color(1, 1, 1, 0.5)
 
+func _get_effective_detection_range() -> float:
+	if player_ref and "attack_range" in player_ref:
+		return detection_range * (player_ref.attack_range / 400.0)
+	return detection_range
+
+func _get_effective_shoot_range() -> float:
+	if player_ref and "attack_range" in player_ref:
+		return shoot_range * (player_ref.attack_range / 400.0)
+	return shoot_range
+
+func _roll_damage(base_damage: int) -> int:
+	if player_ref and "crit_chance" in player_ref and randf() < player_ref.crit_chance:
+		var crit_mult: float = player_ref.crit_damage if "crit_damage" in player_ref else 1.5
+		return int(base_damage * crit_mult)
+	return base_damage
+
 func is_ready() -> bool:
 	return attack_timer <= 0
+
+func _get_spread_angle(index: int, total: int) -> float:
+	if total <= 1:
+		return 0.0
+	var spread: float = minf(0.3, 0.07 * float(total - 1))
+	return lerpf(-spread, spread, float(index) / float(total - 1))

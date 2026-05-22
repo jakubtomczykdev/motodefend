@@ -44,10 +44,10 @@ func _ready() -> void:
 	_setup_retro_style()
 
 func _setup_retro_style() -> void:
-	var retro_font = preload("res://Assets/fonts/retropix.ttf")
+	var ui_font = preload("res://Assets/fonts/VT323-Regular.ttf")
 	var custom_theme = Theme.new()
-	custom_theme.default_font = retro_font
-	custom_theme.default_font_size = 24
+	custom_theme.default_font = ui_font
+	custom_theme.default_font_size = 29
 	
 	# Styl Panelu
 	var panel_style = StyleBoxFlat.new()
@@ -88,7 +88,7 @@ func _setup_retro_style() -> void:
 	self.theme = custom_theme
 	
 	if title_label:
-		title_label.add_theme_font_size_override("font_size", 56)
+		title_label.add_theme_font_size_override("font_size", 67)
 		title_label.add_theme_constant_override("outline_size", 12)
 	
 	# Apply matrix effect to background

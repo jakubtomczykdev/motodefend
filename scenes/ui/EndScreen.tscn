@@ -47,7 +47,7 @@ offset_bottom = -20.0
 
 [node name="TitleLabel" type="Label" parent="Panel/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 57
 text = "GAME OVER"
 horizontal_alignment = 1
 
@@ -60,22 +60,22 @@ theme_override_constants/separation = 10
 
 [node name="ScoreLabel" type="Label" parent="Panel/VBoxContainer/StatsContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 29
 text = "WYNIK: 0"
 
 [node name="WavesLabel" type="Label" parent="Panel/VBoxContainer/StatsContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 29
 text = "FALE: 0/20"
 
 [node name="TimeLabel" type="Label" parent="Panel/VBoxContainer/StatsContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 29
 text = "CZAS: 0:00"
 
 [node name="ItemsLabel" type="Label" parent="Panel/VBoxContainer/StatsContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 29
 text = "ITEMY: 0/6"
 
 [node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
@@ -83,7 +83,7 @@ layout_mode = 2
 
 [node name="ItemsLabel2" type="Label" parent="Panel/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 24
 text = "ZEBRANE ITEMY:"
 horizontal_alignment = 1
 

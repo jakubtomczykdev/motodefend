@@ -16,10 +16,10 @@ signal lobby_requested
 @onready var shop_button: Button = $Panel/VBoxContainer/HBoxContainer/ShopButton
 @onready var lobby_button: Button = $Panel/VBoxContainer/HBoxContainer/LobbyButton
 
-var _retro_font: Font
+var _ui_font: Font
 
 func _ready() -> void:
-	_retro_font = preload("res://Assets/fonts/retropix.ttf")
+	_ui_font = preload("res://Assets/fonts/VT323-Regular.ttf")
 	_setup_pixel_style()
 	visible = false
 	next_button.pressed.connect(_on_next_pressed)
@@ -75,8 +75,8 @@ func _setup_pixel_style() -> void:
 		vbox.offset_bottom = -28.0
 
 	if title_label:
-		title_label.add_theme_font_override("font", _retro_font)
-		title_label.add_theme_font_size_override("font_size", 36)
+		title_label.add_theme_font_override("font", _ui_font)
+		title_label.add_theme_font_size_override("font_size", 43)
 		title_label.add_theme_color_override("font_color", Color(0.36, 0.95, 1.0))
 		title_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
 		title_label.add_theme_constant_override("shadow_offset_x", 3)
@@ -87,8 +87,8 @@ func _setup_pixel_style() -> void:
 		stats_label.custom_minimum_size = Vector2(0, 108)
 		stats_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		stats_label.add_theme_font_override("font", _retro_font)
-		stats_label.add_theme_font_size_override("font_size", 28)
+		stats_label.add_theme_font_override("font", _ui_font)
+		stats_label.add_theme_font_size_override("font_size", 34)
 		stats_label.add_theme_color_override("font_color", Color(0.86, 0.94, 1.0))
 		stats_label.add_theme_stylebox_override("normal", _make_stats_box_style())
 
@@ -108,8 +108,8 @@ func _style_action_button(button: Button, text_value: String, accent: Color) -> 
 	button.custom_minimum_size = Vector2(205, 78)
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.add_theme_font_override("font", _retro_font)
-	button.add_theme_font_size_override("font_size", 21)
+	button.add_theme_font_override("font", _ui_font)
+	button.add_theme_font_size_override("font_size", 25)
 	button.add_theme_color_override("font_color", Color(0.9, 0.97, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0))
 	button.add_theme_color_override("font_pressed_color", Color(0.08, 0.12, 0.16))

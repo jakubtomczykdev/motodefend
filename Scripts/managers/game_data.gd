@@ -34,6 +34,7 @@ var inventory: Array = []
 var pending_weapon_ids: Array = []
 var player_hp: int = 100
 var player_max_hp: int = 100
+var run_started: bool = false
 var return_scene: String = ""
 var level_upgrade_flat_bonuses: Dictionary = {}
 var level_upgrade_multiplier_bonuses: Dictionary = {}
@@ -157,3 +158,17 @@ func add_level_upgrade(stat_name: String, value: float) -> void:
 func clear_level_upgrades() -> void:
 	level_upgrade_flat_bonuses.clear()
 	level_upgrade_multiplier_bonuses.clear()
+
+func reset_run_progress() -> void:
+	run_started = false
+	current_level = 1
+	experience = 0
+	experience_to_next_level = BalanceData.STARTING_XP_REQUIREMENT
+	current_wave = 0
+	score = 0
+	gold = 300
+	inventory.clear()
+	pending_weapon_ids.clear()
+	player_max_hp = BalanceData.BASE_PLAYER_HP
+	player_hp = player_max_hp
+	clear_level_upgrades()

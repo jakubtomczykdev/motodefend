@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" path="res://Assets/enemyLaptop.png" id="1_laptop"]
 [ext_resource type="Script" path="res://Scripts/entities/laptop_object.gd" id="2_script"]
-[ext_resource type="FontFile" path="res://Assets/fonts/retropix.ttf" id="3_font"]
+[ext_resource type="FontFile" path="res://Assets/fonts/VT323-Regular.ttf" id="3_font"]
 
 [sub_resource type="RectangleShape2D" id="rect_shape"]
 size = Vector2(121, 117)
@@ -22,7 +22,7 @@ offset_right = 75.0
 offset_bottom = -70.0
 theme_override_colors/font_color = Color(0.482353, 0.721569, 0.878431, 1)
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "BESTIARIUSZ"
 horizontal_alignment = 1
 
