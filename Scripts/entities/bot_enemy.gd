@@ -63,7 +63,7 @@ func _ai_gathering() -> void:
 			nearest_bot = enemy
 
 	if nearest_bot:
-		var direction := (nearest_bot.global_position - global_position).normalized()
+		var direction = (nearest_bot.global_position - global_position).normalized()
 		velocity = direction * move_speed
 		if sprite and "scale" in sprite:
 			if direction.x > 0:
@@ -73,7 +73,7 @@ func _ai_gathering() -> void:
 	else:
 		# No other bots — slow drift toward player
 		if player and is_instance_valid(player):
-			var direction := (player.global_position - global_position).normalized()
+			var direction = (player.global_position - global_position).normalized()
 			velocity = direction * (move_speed * 0.6)
 			if sprite and "scale" in sprite:
 				if direction.x > 0:
@@ -85,7 +85,7 @@ func _ai_gathering() -> void:
 func _ai_attacking() -> void:
 	if not player or not is_instance_valid(player):
 		return
-	var direction := (player.global_position - global_position).normalized()
+	var direction = (player.global_position - global_position).normalized()
 	velocity = direction * move_speed
 	if sprite and "scale" in sprite:
 		if direction.x > 0:
@@ -121,11 +121,11 @@ func _play_attack_feedback() -> void:
 	if not is_inside_tree():
 		return
 
-	var original_modulate := modulate
+	var original_modulate = modulate
 	modulate = Color.RED
 
 	if sprite and "scale" in sprite:
-		var original_scale := sprite.scale
+		var original_scale = sprite.scale
 		var tween := create_tween()
 		tween.set_parallel(true)
 		tween.tween_property(self, "modulate", original_modulate, 0.1)
