@@ -35,6 +35,7 @@ var pending_weapon_ids: Array = []
 var player_hp: int = 100
 var player_max_hp: int = 100
 var run_started: bool = false
+var play_menu_spawn_intro: bool = false
 var return_scene: String = ""
 var level_upgrade_flat_bonuses: Dictionary = {}
 var level_upgrade_multiplier_bonuses: Dictionary = {}

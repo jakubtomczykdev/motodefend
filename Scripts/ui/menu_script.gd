@@ -17,6 +17,9 @@ func _on_start_button_pressed() -> void:
 		AudioManager.play_sfx("menu_click")
 	
 	# Przejdź do huba startowego
+	var gd = get_node_or_null("/root/GameData")
+	if gd:
+		gd.play_menu_spawn_intro = true
 	get_tree().change_scene_to_file("res://scenes/world/GameStartScreen.tscn")
 
 func _on_settings_btn_pressed() -> void:
