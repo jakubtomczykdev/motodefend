@@ -148,12 +148,18 @@ func add_inventory_item(item) -> void:
 	inventory.append(item)
 
 func add_level_upgrade(stat_name: String, value: float) -> void:
-	if value < 1.0:
+	if _is_flat_level_upgrade(stat_name):
+		var current_flat := float(level_upgrade_flat_bonuses.get(stat_name, 0.0))
+		level_upgrade_flat_bonuses[stat_name] = current_flat + value
+	elif value < 1.0:
 		var current_multiplier := float(level_upgrade_multiplier_bonuses.get(stat_name, 1.0))
 		level_upgrade_multiplier_bonuses[stat_name] = current_multiplier * (1.0 + value)
 	else:
 		var current_flat := float(level_upgrade_flat_bonuses.get(stat_name, 0.0))
 		level_upgrade_flat_bonuses[stat_name] = current_flat + value
+
+func _is_flat_level_upgrade(stat_name: String) -> bool:
+	return stat_name in ["hp_regen", "crit_chance", "dodge_chance", "cooldown_reduction", "armor", "max_health", "pierce", "projectile_count"]
 
 func clear_level_upgrades() -> void:
 	level_upgrade_flat_bonuses.clear()

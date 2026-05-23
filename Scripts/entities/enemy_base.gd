@@ -14,17 +14,14 @@ signal damaged(amount: int)
 @export var xp_value: int = 10
 @export var is_wandering: bool = true
 @export var is_boss: bool = false
-@export var detection_range: float = 300.0
 
 var current_health: int
 var can_attack: bool = true
 var attack_timer: float = 0.0
 var player: Node2D
-var player_in_detection_range: bool = false
 
 var sprite: Node
 var collision: CollisionShape2D
-var detection_area: Area2D
 var attack_area: Area2D
 
 var wander_target: Vector2
@@ -48,12 +45,17 @@ var _health_bar_scale: float = 1.0
 var is_dead: bool = false
 
 func scale_stats(wave_number: int) -> void:
-	var health_multiplier := 1.0 + (wave_number - 1) * 0.25
-	var damage_multiplier := 1.0 + (wave_number - 1) * 0.15
+	var checkpoint_bonus := float(int((wave_number - 1) / 5))
+	var health_multiplier := 1.0 + (wave_number - 1) * 0.18 + checkpoint_bonus * 0.18
+	var damage_multiplier := 1.0 + (wave_number - 1) * 0.10 + checkpoint_bonus * 0.12
+	var speed_multiplier := minf(1.0 + (wave_number - 1) * 0.012, 1.28)
 	
 	max_health = int(max_health * health_multiplier)
 	current_health = max_health
 	damage = int(damage * damage_multiplier)
+	move_speed *= speed_multiplier
+	original_move_speed = move_speed
+	attack_cooldown = maxf(0.45, attack_cooldown * (1.0 - minf(0.35, (wave_number - 1) * 0.015)))
 	xp_value = int(xp_value * (1.0 + (wave_number - 1) * 0.1))
 	
 	if _health_bar:
@@ -96,10 +98,6 @@ func _ready() -> void:
 		
 	if has_node("CollisionShape2D"):
 		collision = $CollisionShape2D
-	if has_node("DetectionArea"):
-		detection_area = $DetectionArea
-		if detection_area:
-			detection_area.collision_mask = 4
 	if has_node("AttackArea"):
 		attack_area = $AttackArea
 		if attack_area:
@@ -112,8 +110,6 @@ func _ready() -> void:
 	_pick_new_wander_target()
 
 	damaged.connect(_on_damaged)
-	if detection_area:
-		detection_area.body_entered.connect(_on_detection_area_body_entered)
 	if attack_area:
 		attack_area.body_entered.connect(_on_attack_area_body_entered)
 		attack_area.body_exited.connect(_on_attack_area_body_exited)
@@ -202,23 +198,57 @@ func _special_attack_projectile_ring() -> void:
 		get_tree().current_scene.add_child(p)
 
 func _special_attack_aoe_blast() -> void:
-	var warning = ColorRect.new()
-	warning.color = Color(1, 0, 0, 0.3)
-	warning.size = Vector2(400, 400)
-	warning.pivot_offset = warning.size / 2
-	warning.global_position = global_position - warning.pivot_offset
-	get_tree().current_scene.add_child(warning)
+	var warning = _spawn_area_warning(global_position, 200.0, 1.0, Color(1, 0, 0, 0.3))
 	var tween = create_tween()
 	tween.tween_property(warning, "scale", Vector2(0.1, 0.1), 0.0)
 	tween.tween_property(warning, "scale", Vector2(1.0, 1.0), 1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_callback(func():
-		if player and is_instance_valid(player):
-			var dist = global_position.distance_to(player.global_position)
-			if dist < 200.0:
-				var kb = (player.global_position - global_position).normalized() * 500.0
-				player.take_damage(int(damage * 1.5), kb)
-		warning.queue_free()
+		_damage_player_in_radius(global_position, 200.0, int(damage * 1.5), 500.0)
+		if is_instance_valid(warning):
+			warning.queue_free()
 	).set_delay(1.0)
+
+func _spawn_area_warning(center: Vector2, radius: float, duration: float = 0.7, color: Color = Color(1, 0.1, 0.1, 0.28)) -> ColorRect:
+	var warning := ColorRect.new()
+	warning.color = color
+	warning.size = Vector2(radius * 2.0, radius * 2.0)
+	warning.pivot_offset = warning.size / 2.0
+	warning.global_position = center - warning.pivot_offset
+	warning.z_index = 2
+	get_tree().current_scene.add_child(warning)
+	var tween := get_tree().create_tween()
+	tween.bind_node(warning)
+	tween.tween_property(warning, "modulate:a", 0.55, duration * 0.5)
+	tween.tween_property(warning, "modulate:a", 0.18, duration * 0.5)
+	return warning
+
+func _spawn_line_warning(start: Vector2, direction: Vector2, length: float, width: float, duration: float = 0.55, color: Color = Color(1, 0.15, 0.05, 0.35)) -> ColorRect:
+	var warning := ColorRect.new()
+	warning.color = color
+	warning.size = Vector2(length, width)
+	warning.pivot_offset = Vector2(0.0, width * 0.5)
+	warning.global_position = start
+	warning.rotation = direction.normalized().angle()
+	warning.z_index = 2
+	get_tree().current_scene.add_child(warning)
+	var tween := get_tree().create_tween()
+	tween.bind_node(warning)
+	tween.tween_property(warning, "modulate:a", 0.65, duration * 0.5)
+	tween.tween_property(warning, "modulate:a", 0.12, duration * 0.5)
+	tween.tween_callback(warning.queue_free)
+	return warning
+
+func _damage_player_in_radius(center: Vector2, radius: float, hit_damage: int, knockback_force: float = 260.0) -> bool:
+	if not player or not is_instance_valid(player) or not player.has_method("take_damage"):
+		return false
+	var distance := center.distance_to(player.global_position)
+	if distance > radius:
+		return false
+	var direction := (player.global_position - center).normalized()
+	if direction == Vector2.ZERO:
+		direction = Vector2.RIGHT
+	player.take_damage(hit_damage, direction * knockback_force)
+	return true
 
 func _update_health_bar_position() -> void:
 	if _health_bar and is_instance_valid(_health_bar):
@@ -266,17 +296,11 @@ func handle_ai(delta: float) -> void:
 	if not player:
 		_handle_wander(delta)
 		return
-	var distance := global_position.distance_to(player.global_position)
-	if distance < detection_range:
-		var direction := (player.global_position - global_position).normalized()
-		velocity = direction * move_speed
-		if sprite and "scale" in sprite:
-			if direction.x > 0: sprite.scale.x = abs(sprite.scale.x)
-			elif direction.x < 0: sprite.scale.x = -abs(sprite.scale.x)
-	elif is_wandering:
-		_handle_wander(delta)
-	else:
-		velocity = velocity.move_toward(Vector2.ZERO, move_speed * delta)
+	var direction := (player.global_position - global_position).normalized()
+	velocity = direction * move_speed
+	if sprite and "scale" in sprite:
+		if direction.x > 0: sprite.scale.x = abs(sprite.scale.x)
+		elif direction.x < 0: sprite.scale.x = -abs(sprite.scale.x)
 
 func _handle_wander(delta: float) -> void:
 	wander_timer -= delta
@@ -340,15 +364,6 @@ func die() -> void:
 		_health_bar.queue_free()
 	died.emit()
 	queue_free()
-
-func _on_detection_area_body_entered(body: Node2D) -> void:
-	if body.is_in_group("Player"): 
-		player = body
-		player_in_detection_range = true
-
-func _on_detection_area_body_exited(body: Node2D) -> void:
-	if body.is_in_group("Player"):
-		player_in_detection_range = false
 
 func _on_attack_area_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Player"):

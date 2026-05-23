@@ -161,6 +161,10 @@ func _create_upgrade_card(upgrade, index: int) -> Button:
 	return card
 
 func _format_upgrade_value(upgrade) -> String:
+	if upgrade.stat_name == "hp_regen":
+		return "+%.1f/s %s" % [upgrade.value, _get_stat_display_name(upgrade.stat_name)]
+	if upgrade.stat_name in ["crit_chance", "dodge_chance", "cooldown_reduction"]:
+		return "+%d%% %s" % [roundi(upgrade.value * 100.0), _get_stat_display_name(upgrade.stat_name)]
 	if upgrade.value < 1.0:
 		return "+%d%% %s" % [roundi(upgrade.value * 100.0), _get_stat_display_name(upgrade.stat_name)]
 	return "+%s %s" % [_format_number(upgrade.value), _get_stat_display_name(upgrade.stat_name)]

@@ -124,12 +124,15 @@ func _process(delta: float) -> void:
 				muzzle.look_at(target_pos)
 
 func _handle_regeneration(delta: float) -> void:
-	if hp_regen > 0 and current_health < max_health:
-		_regen_accumulator += hp_regen * delta
-		if _regen_accumulator >= 1.0:
-			var heal_amount = int(_regen_accumulator)
-			heal(heal_amount)
-			_regen_accumulator -= heal_amount
+	if hp_regen <= 0.0 or current_health >= max_health:
+		_regen_accumulator = 0.0
+		return
+
+	_regen_accumulator += hp_regen * delta
+	if _regen_accumulator >= 1.0:
+		var heal_amount := int(_regen_accumulator)
+		heal(heal_amount)
+		_regen_accumulator -= heal_amount
 
 func _physics_process(delta: float) -> void:
 	if is_rolling:

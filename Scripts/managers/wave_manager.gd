@@ -1,4 +1,6 @@
 extends Node
+
+const BossRewardChestScript := preload("res://Scripts/entities/boss_reward_chest.gd")
 ## Zarządza falami wrogów - spawnowanie, progresja, pauzy
 
 signal wave_started(wave_number: int)
@@ -7,14 +9,15 @@ signal all_waves_completed
 signal game_over
 
 @export var wave_duration: float = 30.0
-@export var base_enemy_count: int = 10
-@export var enemy_count_multiplier: float = 1.25
+@export var base_enemy_count: int = 8
+@export var max_enemy_count: int = 50
 
 var current_wave: int = 0
 var enemies_in_wave: int = 0
 var enemies_remaining: int = 0
 var is_wave_active: bool = false
 var wave_elapsed: float = 0.0
+var reward_chests_pending: int = 0
 
 # System rozłożonego spawnowania
 var spawn_queue: Array[String] = []
@@ -68,7 +71,7 @@ func _process(delta: float) -> void:
 			spawn_timer -= delta
 			if spawn_timer <= 0:
 				# Oblicz ile wrogów zespawnować naraz (zwiększa się co 3 fale)
-				var burst_size = 1 + current_wave / 4
+				var burst_size = _get_spawn_burst_size(current_wave)
 				for i in range(burst_size):
 					if not spawn_queue.is_empty():
 						var enemy_type = spawn_queue.pop_front()
@@ -124,14 +127,15 @@ func start_next_wave() -> void:
 	is_wave_active = true
 	wave_elapsed = 0.0
 	spawn_timer = 0.0
+	reward_chests_pending = 0
 	spawn_queue.clear()
 
 	var wave_config := _get_wave_config(current_wave)
-	enemies_in_wave = wave_config.enemy_count
+	enemies_in_wave = wave_config.enemy_count + (1 if wave_config.has_boss else 0)
 	enemies_remaining = enemies_in_wave
 	
 	# Oblicz interwał spawnu - przyspiesza z każdą falą
-	spawn_interval = max(0.2, 1.5 - (current_wave * 0.05))
+	spawn_interval = _get_spawn_interval(current_wave)
 
 	_spawn_wave(wave_config)
 	wave_started.emit(current_wave)
@@ -139,33 +143,10 @@ func start_next_wave() -> void:
 
 func _get_wave_config(wave: int) -> Dictionary:
 	var config := {}
+	config.enemy_count = _get_enemy_count_for_wave(wave)
+	config.enemy_weights = _get_enemy_weights_for_wave(wave)
 
-	# Oblicz liczbę wrogów
-	config.enemy_count = int(base_enemy_count * pow(enemy_count_multiplier, wave - 1))
-
-	# Typy wrogów zgodne z falami
-	if wave <= 2:
-		config.enemy_types = ["worm"]
-	elif wave <= 4:
-		config.enemy_types = ["trojan"]
-	elif wave == 5:
-		config.enemy_types = ["worm"]
-	elif wave <= 7:
-		config.enemy_types = ["ransomware"]
-	elif wave <= 9:
-		config.enemy_types = ["spyware"]
-	elif wave == 10:
-		config.enemy_types = ["trojan"]
-	elif wave <= 12:
-		config.enemy_types = ["phishing"]
-	elif wave <= 14:
-		config.enemy_types = ["sql"]
-	elif wave == 15:
-		config.enemy_types = ["ransomware"]
-	else:
-		config.enemy_types = ["worm", "trojan", "ransomware", "spyware", "phishing", "sql"]
-
-	# Co 5 fal: Boss
+	# Co 5 fal: boss-checkpoint.
 	if wave % 5 == 0:
 		config.has_boss = true
 		if wave == 5:
@@ -189,8 +170,9 @@ func _get_wave_config(wave: int) -> Dictionary:
 
 func _spawn_wave(config: Dictionary) -> void:
 	# Kolejkuj normalnych wrogów zamiast spawnować ich natychmiast
+	var enemy_weights: Dictionary = config.get("enemy_weights", {"worm": 1.0})
 	for i in range(config.enemy_count):
-		var enemy_type: String = config.enemy_types.pick_random()
+		var enemy_type: String = _pick_weighted_enemy(enemy_weights)
 		spawn_queue.append(enemy_type)
 
 	# Dodaj bossa do kolejki jeśli wymagane
@@ -219,12 +201,9 @@ func _spawn_enemy(enemy_type: String) -> void:
 		return
 
 	var enemy: Node2D = scene.instantiate()
-	
-	if enemy.has_method("scale_stats"):
-		enemy.scale_stats(current_wave)
-		
-	if is_giant_boss and enemy.has_method("make_giant_boss"):
-		enemy.make_giant_boss()
+	var drops_boss_reward := is_giant_boss or actual_enemy_type == "apt_boss"
+	if drops_boss_reward:
+		enemy.set_meta("drops_boss_reward_chest", true)
 
 	var spawn_point: Node2D = spawn_points.pick_random()
 
@@ -234,7 +213,7 @@ func _spawn_enemy(enemy_type: String) -> void:
 		enemy.global_position = Vector2.ZERO
 
 	if enemy.has_signal("died"):
-		enemy.connect("died", _on_enemy_died)
+		enemy.connect("died", _on_enemy_died.bind(enemy))
 	
 	# Dodaj do sceny - preferujemy nadrzędny węzeł MainGame
 	var target_parent = get_parent()
@@ -242,14 +221,98 @@ func _spawn_enemy(enemy_type: String) -> void:
 		target_parent = get_tree().current_scene
 	if target_parent:
 		target_parent.add_child(enemy)
+		if enemy.has_method("scale_stats"):
+			enemy.scale_stats(current_wave)
+		if is_giant_boss and enemy.has_method("make_giant_boss"):
+			enemy.make_giant_boss()
 	else:
 		push_warning("Cannot add enemy - no valid parent found")
 
-func _on_enemy_died() -> void:
+func _get_enemy_count_for_wave(wave: int) -> int:
+	var count := base_enemy_count + int(wave * 2.4) + int(wave / 5) * 3
+	if wave % 5 == 0:
+		count -= 3
+	return clampi(count, 8, max_enemy_count)
+
+func _get_spawn_interval(wave: int) -> float:
+	return maxf(0.45, 1.12 - float(wave - 1) * 0.03)
+
+func _get_spawn_burst_size(wave: int) -> int:
+	return clampi(1 + int(wave / 7), 1, 4)
+
+func _get_enemy_weights_for_wave(wave: int) -> Dictionary:
+	if wave <= 1:
+		return {"worm": 1.0}
+	if wave == 2:
+		return {"worm": 0.75, "trojan": 0.25}
+	if wave == 3:
+		return {"worm": 0.55, "trojan": 0.35, "ransomware": 0.10}
+	if wave == 4:
+		return {"worm": 0.35, "trojan": 0.40, "ransomware": 0.25}
+	if wave == 5:
+		return {"worm": 0.45, "trojan": 0.35, "ransomware": 0.20}
+	if wave <= 7:
+		return {"worm": 0.28, "trojan": 0.30, "ransomware": 0.25, "spyware": 0.17}
+	if wave <= 9:
+		return {"worm": 0.18, "trojan": 0.24, "ransomware": 0.24, "spyware": 0.22, "phishing": 0.12}
+	if wave == 10:
+		return {"trojan": 0.28, "ransomware": 0.24, "spyware": 0.22, "phishing": 0.16, "worm": 0.10}
+	if wave <= 12:
+		return {"trojan": 0.20, "ransomware": 0.22, "spyware": 0.24, "phishing": 0.22, "sql": 0.12}
+	if wave <= 14:
+		return {"trojan": 0.16, "ransomware": 0.20, "spyware": 0.22, "phishing": 0.22, "sql": 0.20}
+	if wave <= 19:
+		return {"worm": 0.10, "trojan": 0.16, "ransomware": 0.20, "spyware": 0.20, "phishing": 0.18, "sql": 0.16}
+	if wave <= 24:
+		return {"worm": 0.08, "trojan": 0.14, "ransomware": 0.18, "spyware": 0.20, "phishing": 0.18, "sql": 0.22}
+	return {"worm": 0.08, "trojan": 0.14, "ransomware": 0.18, "spyware": 0.18, "phishing": 0.20, "sql": 0.22}
+
+func _pick_weighted_enemy(weights: Dictionary) -> String:
+	var total := 0.0
+	for enemy_type in weights:
+		total += float(weights[enemy_type])
+
+	if total <= 0.0:
+		return "worm"
+
+	var roll := randf() * total
+	var cursor := 0.0
+	for enemy_type in weights:
+		cursor += float(weights[enemy_type])
+		if roll <= cursor:
+			return str(enemy_type)
+	return str(weights.keys()[0])
+
+func _on_enemy_died(enemy: Node2D = null) -> void:
+	if enemy and enemy.get_meta("drops_boss_reward_chest", false):
+		_spawn_boss_reward_chest(enemy.global_position)
+
 	enemies_remaining = max(0, enemies_remaining - 1)
 	update_ui()
 
-	if spawn_queue.is_empty() and enemies_remaining <= 0:
+	if spawn_queue.is_empty() and enemies_remaining <= 0 and reward_chests_pending <= 0:
+		end_wave()
+
+func _spawn_boss_reward_chest(spawn_position: Vector2) -> void:
+	var chest := Node2D.new()
+	chest.name = "BossRewardChest"
+	chest.set_script(BossRewardChestScript)
+	chest.global_position = spawn_position
+	if chest.has_method("setup"):
+		chest.setup(current_wave)
+
+	var target_parent = get_parent()
+	if not (target_parent is Node2D):
+		target_parent = get_tree().current_scene
+	if target_parent:
+		target_parent.call_deferred("add_child", chest)
+		reward_chests_pending += 1
+		if chest.has_signal("opened"):
+			chest.opened.connect(_on_boss_reward_chest_opened)
+
+func _on_boss_reward_chest_opened() -> void:
+	reward_chests_pending = max(0, reward_chests_pending - 1)
+	if is_wave_active and spawn_queue.is_empty() and enemies_remaining <= 0:
 		end_wave()
 
 func end_wave() -> void:
@@ -266,7 +329,7 @@ func check_wave_completion() -> void:
 		return
 	
 	# Fala kończy się gdy kolejka jest pusta I wszyscy wrogowie nie żyją
-	if spawn_queue.is_empty():
+	if spawn_queue.is_empty() and reward_chests_pending <= 0:
 		# Fail-safe: Sprawdź rzeczywistą liczbę wrogów w grupie
 		var actual_enemies = get_tree().get_nodes_in_group("Enemies")
 		if actual_enemies.is_empty():

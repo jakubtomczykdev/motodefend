@@ -438,7 +438,7 @@ func start_game() -> void:
 
 	# Equip permanent weapons and items from GameData
 	if gd and player:
-		# Restore Weapons
+		# Restore Weaponswa
 		if player.has_method("add_weapon"):
 			await get_tree().process_frame
 			var all_weapons: Array = WeaponItemsClass.get_all_weapons()
