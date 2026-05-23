@@ -49,15 +49,15 @@ const SWORD_COST: int = 100
 # ============ GAME BALANCE ============
 
 # Ekonomia ma jedno źródło prawdy w runtime.
-const STARTING_GOLD: int = 120
+const STARTING_GOLD: int = 150
 const BASE_REROLL_COST: int = 25
 const REROLL_COST_PER_TIER: int = 5
 const REROLL_COST_PER_VISIT: int = 10
-const EARLY_WAVE_GOLD_REWARD: int = 5
+const EARLY_WAVE_GOLD_REWARD: int = 15
 const MID_WAVE_GOLD_REWARD: int = 8
 const LATE_WAVE_GOLD_REWARD: int = 10
 const BOSS_FALLBACK_GOLD_REWARD: int = 75
-const ENEMY_GOLD_REWARD_FACTOR: float = 0.45
+const ENEMY_GOLD_REWARD_FACTOR: float = 0.25
 const ENEMY_GOLD_REWARD_WAVE_STEP: float = 0.04
 const ENEMY_GOLD_REWARD_WAVE_STEP_CAP: float = 0.32
 const GIANT_BOSS_GOLD_MULTIPLIER: float = 2.5
