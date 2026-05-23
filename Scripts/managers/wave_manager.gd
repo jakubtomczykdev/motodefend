@@ -39,6 +39,7 @@ var enemy_scenes: Dictionary = {
 	"trojan": "res://scenes/Enemies/Trojan.tscn",
 	"ransomware": "res://scenes/Enemies/Ransomware.tscn",
 	"spyware": "res://scenes/Enemies/Spyware.tscn",
+	"bot": "res://scenes/Enemies/Bot.tscn",
 	"apt_boss": "res://scenes/Enemies/APTBoss.tscn"
 }
 
@@ -252,20 +253,20 @@ func _get_enemy_weights_for_wave(wave: int) -> Dictionary:
 	if wave == 5:
 		return {"worm": 0.45, "trojan": 0.35, "ransomware": 0.20}
 	if wave <= 7:
-		return {"worm": 0.28, "trojan": 0.30, "ransomware": 0.25, "spyware": 0.17}
+		return {"worm": 0.23, "trojan": 0.27, "ransomware": 0.22, "spyware": 0.13, "bot": 0.15}
 	if wave <= 9:
-		return {"worm": 0.18, "trojan": 0.24, "ransomware": 0.24, "spyware": 0.22, "phishing": 0.12}
+		return {"worm": 0.12, "trojan": 0.20, "ransomware": 0.20, "spyware": 0.18, "phishing": 0.12, "bot": 0.18}
 	if wave == 10:
-		return {"trojan": 0.28, "ransomware": 0.24, "spyware": 0.22, "phishing": 0.16, "worm": 0.10}
+		return {"trojan": 0.24, "ransomware": 0.21, "spyware": 0.19, "phishing": 0.13, "worm": 0.08, "bot": 0.15}
 	if wave <= 12:
-		return {"trojan": 0.20, "ransomware": 0.22, "spyware": 0.24, "phishing": 0.22, "sql": 0.12}
+		return {"trojan": 0.16, "ransomware": 0.18, "spyware": 0.19, "phishing": 0.17, "sql": 0.10, "bot": 0.20}
 	if wave <= 14:
-		return {"trojan": 0.16, "ransomware": 0.20, "spyware": 0.22, "phishing": 0.22, "sql": 0.20}
+		return {"trojan": 0.12, "ransomware": 0.16, "spyware": 0.18, "phishing": 0.18, "sql": 0.18, "bot": 0.18}
 	if wave <= 19:
-		return {"worm": 0.10, "trojan": 0.16, "ransomware": 0.20, "spyware": 0.20, "phishing": 0.18, "sql": 0.16}
+		return {"worm": 0.08, "trojan": 0.13, "ransomware": 0.17, "spyware": 0.17, "phishing": 0.15, "sql": 0.14, "bot": 0.16}
 	if wave <= 24:
-		return {"worm": 0.08, "trojan": 0.14, "ransomware": 0.18, "spyware": 0.20, "phishing": 0.18, "sql": 0.22}
-	return {"worm": 0.08, "trojan": 0.14, "ransomware": 0.18, "spyware": 0.18, "phishing": 0.20, "sql": 0.22}
+		return {"worm": 0.07, "trojan": 0.12, "ransomware": 0.15, "spyware": 0.17, "phishing": 0.15, "sql": 0.20, "bot": 0.14}
+	return {"worm": 0.07, "trojan": 0.12, "ransomware": 0.15, "spyware": 0.16, "phishing": 0.18, "sql": 0.18, "bot": 0.14}
 
 func _pick_weighted_enemy(weights: Dictionary) -> String:
 	var total := 0.0

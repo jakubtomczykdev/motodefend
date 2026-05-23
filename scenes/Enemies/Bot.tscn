@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://NEWBOTUID"]
+
+[ext_resource type="Script" uid="uid://botscriptuid" path="res://Scripts/entities/bot_enemy.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://bottextureuid" path="res://Assets/Characters/bot_enemy.png" id="2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(24, 24)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2"]
+radius = 28.0
+
+[node name="Bot" type="CharacterBody2D" unique_id=691631025]
+script = ExtResource("1")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=684091506]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=392769336]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=196584215]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=989302380]
+shape = SubResource("CircleShape2D_2")
