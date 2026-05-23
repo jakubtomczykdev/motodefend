@@ -52,14 +52,10 @@ func _open_with_roll_animation() -> void:
 
 	await _play_loot_roll(candidates, reward)
 
-	if reward:
-		_apply_reward(reward)
+	if reward and _apply_reward(reward):
 		_show_reward_text("ZDOBYTO: " + reward.item_name)
 	else:
-		_show_reward_text("ZDOBYTO: +150 ZLOTA")
-		var gd := get_node_or_null("/root/GameData")
-		if gd:
-			gd.gold += 150
+		_grant_fallback_gold()
 
 	opened.emit()
 	_play_open_effect()
@@ -217,7 +213,7 @@ func _play_loot_roll(candidates: Array[ItemBase], reward: ItemBase) -> void:
 		flash.tween_property(_roll_panel, "scale", Vector2.ONE, 0.16)
 		await flash.finished
 	else:
-		_roll_name.text = "+150 ZLOTA"
+		_roll_name.text = "+%d ZLOTA" % BalanceData.BOSS_FALLBACK_GOLD_REWARD
 		_roll_rarity.text = "AWARYJNY DROP"
 		_roll_rarity.add_theme_color_override("font_color", Color(1.0, 0.86, 0.28))
 		await get_tree().create_timer(0.35).timeout
@@ -243,6 +239,13 @@ func _get_reward_candidates() -> Array[ItemBase]:
 	var min_rarity_index := _get_min_rarity_index_for_wave(wave_number)
 	var player = get_tree().get_first_node_in_group("Player")
 	var weapon_count: int = player.get_weapon_count() if player and player.has_method("get_weapon_count") else 0
+	var build_system = get_tree().current_scene.get_node_or_null("BuildSystem")
+	var gd = get_node_or_null("/root/GameData")
+	var build_count := _get_current_build_count(build_system, gd)
+	var max_build_slots := _get_max_build_slots(build_system)
+
+	if build_count >= max_build_slots:
+		return candidates
 
 	if item_manager and "all_items" in item_manager:
 		for item: ItemBase in item_manager.all_items:
@@ -280,28 +283,52 @@ func _is_good_reward(item: ItemBase, shop_tier: int, min_rarity_index: int, weap
 		return false
 	if item is WeaponBase:
 		var weapon := item as WeaponBase
-		if weapon_count >= 6:
+		if weapon_count >= BalanceData.MAX_WEAPON_SLOTS:
 			return false
 		return weapon.min_shop_tier <= min(shop_tier + 1, 5)
 	return true
 
-func _apply_reward(item: ItemBase) -> void:
+func _apply_reward(item: ItemBase) -> bool:
 	var main = get_tree().current_scene
 	var player = get_tree().get_first_node_in_group("Player")
 	var build_system = main.get_node_or_null("BuildSystem")
 	var gd = get_node_or_null("/root/GameData")
+	var added_to_build := false
 
-	if item is WeaponBase and player and player.has_method("add_weapon"):
-		if player.add_weapon(item as WeaponBase):
-			_save_weapon_to_gamedata(item as WeaponBase, gd)
-			_record_reward_item(item, main, gd)
+	if _get_current_build_count(build_system, gd) >= _get_max_build_slots(build_system):
+		return false
+
+	if build_system:
+		if not build_system.add_item(item):
+			return false
+		added_to_build = true
+
+	if item is WeaponBase:
+		if not player or not player.has_method("add_weapon"):
+			if added_to_build and build_system:
+				build_system.remove_item(item)
+			return false
+		if not player.add_weapon(item as WeaponBase):
+			if added_to_build and build_system:
+				build_system.remove_item(item)
+			return false
+		_save_weapon_to_gamedata(item as WeaponBase, gd)
+		_record_reward_item(item, main, gd)
 	else:
-		if build_system:
-			build_system.add_item(item)
 		_record_reward_item(item, main, gd)
 
 	if main and main.has_method("_update_player_stats"):
 		main._update_player_stats()
+	return true
+
+func _grant_fallback_gold() -> void:
+	var amount := BalanceData.BOSS_FALLBACK_GOLD_REWARD
+	_show_reward_text("ZDOBYTO: +%d ZLOTA" % amount)
+	var gd := get_node_or_null("/root/GameData")
+	if gd:
+		gd.gold += amount
+		if gd.has_method("record_gold_income"):
+			gd.record_gold_income("boss_fallback", amount, wave_number)
 
 func _save_weapon_to_gamedata(weapon: WeaponBase, gd) -> void:
 	if not gd:
@@ -319,6 +346,22 @@ func _record_reward_item(item: ItemBase, main: Node, gd) -> void:
 		main.items_collected.append(item)
 	if gd and not gd.inventory.has(item):
 		gd.add_inventory_item(item)
+
+func _get_current_build_count(build_system, gd) -> int:
+	if build_system:
+		var build_items = build_system.get("items")
+		if build_items is Array:
+			return build_items.size()
+	if gd:
+		return gd.inventory.size()
+	return 0
+
+func _get_max_build_slots(build_system) -> int:
+	if build_system:
+		var max_slots = build_system.get("max_item_slots")
+		if max_slots != null:
+			return int(max_slots)
+	return BalanceData.MAX_BUILD_SLOTS
 
 func _get_min_rarity_index_for_wave(wave: int) -> int:
 	if wave >= 20:

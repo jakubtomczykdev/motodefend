@@ -29,7 +29,7 @@ var experience: int = 0
 var experience_to_next_level: int = 100
 var current_wave: int = 0
 var score: int = 0
-var gold: int = 300
+var gold: int = BalanceData.STARTING_GOLD
 var inventory: Array = []
 var pending_weapon_ids: Array = []
 var player_hp: int = 100
@@ -39,12 +39,15 @@ var play_menu_spawn_intro: bool = false
 var return_scene: String = ""
 var level_upgrade_flat_bonuses: Dictionary = {}
 var level_upgrade_multiplier_bonuses: Dictionary = {}
+var economy_totals: Dictionary = {}
+var economy_by_wave: Dictionary = {}
 
 func _ready() -> void:
 	var window := get_window()
 	if window:
 		window.size = Vector2i(1920, 1080)
 		window.mode = Window.MODE_WINDOWED
+	reset_economy_tracking()
 	load_settings()
 	apply_video_settings()
 
@@ -166,6 +169,87 @@ func clear_level_upgrades() -> void:
 	level_upgrade_flat_bonuses.clear()
 	level_upgrade_multiplier_bonuses.clear()
 
+func reset_economy_tracking() -> void:
+	economy_totals = _make_empty_economy_snapshot()
+	economy_by_wave.clear()
+
+func record_gold_income(source: String, amount: int, wave_number: int = -1) -> void:
+	_record_economy_value(_get_economy_key(source), amount, wave_number)
+
+func record_gold_spent(source: String, amount: int, wave_number: int = -1) -> void:
+	_record_economy_value(_get_economy_key(source), amount, wave_number)
+
+func print_economy_report(wave_number: int = -1) -> void:
+	if economy_totals.is_empty():
+		return
+
+	if wave_number >= 0 and economy_by_wave.has(wave_number):
+		var wave_report: Dictionary = economy_by_wave[wave_number]
+		print("[Economy] Wave %d | kill=%d wave=%d boss=%d spent=%d reroll=%d refund=%d gold_now=%d" % [
+			wave_number,
+			int(wave_report.get("gold_from_kills", 0)),
+			int(wave_report.get("gold_from_wave_reward", 0)),
+			int(wave_report.get("gold_from_boss_fallback", 0)),
+			int(wave_report.get("gold_spent_shop", 0)),
+			int(wave_report.get("gold_spent_reroll", 0)),
+			int(wave_report.get("gold_refunded_sale", 0)),
+			gold
+		])
+		return
+
+	print("[Economy] Run totals | kill=%d wave=%d boss=%d spent=%d reroll=%d refund=%d gold_now=%d" % [
+		int(economy_totals.get("gold_from_kills", 0)),
+		int(economy_totals.get("gold_from_wave_reward", 0)),
+		int(economy_totals.get("gold_from_boss_fallback", 0)),
+		int(economy_totals.get("gold_spent_shop", 0)),
+		int(economy_totals.get("gold_spent_reroll", 0)),
+		int(economy_totals.get("gold_refunded_sale", 0)),
+		gold
+	])
+
+func _get_economy_key(source: String) -> String:
+	match source:
+		"enemy_kill":
+			return "gold_from_kills"
+		"wave_reward":
+			return "gold_from_wave_reward"
+		"boss_fallback":
+			return "gold_from_boss_fallback"
+		"shop_purchase":
+			return "gold_spent_shop"
+		"reroll":
+			return "gold_spent_reroll"
+		"sale_refund":
+			return "gold_refunded_sale"
+		_:
+			return source
+
+func _make_empty_economy_snapshot() -> Dictionary:
+	return {
+		"gold_from_kills": 0,
+		"gold_from_wave_reward": 0,
+		"gold_from_boss_fallback": 0,
+		"gold_spent_shop": 0,
+		"gold_spent_reroll": 0,
+		"gold_refunded_sale": 0
+	}
+
+func _record_economy_value(key: String, amount: int, wave_number: int = -1) -> void:
+	if amount == 0:
+		return
+	if economy_totals.is_empty():
+		reset_economy_tracking()
+
+	var resolved_wave := maxi(wave_number, current_wave)
+	if not economy_by_wave.has(resolved_wave):
+		economy_by_wave[resolved_wave] = _make_empty_economy_snapshot()
+
+	economy_totals[key] = int(economy_totals.get(key, 0)) + amount
+
+	var wave_report: Dictionary = economy_by_wave[resolved_wave]
+	wave_report[key] = int(wave_report.get(key, 0)) + amount
+	economy_by_wave[resolved_wave] = wave_report
+
 func reset_run_progress() -> void:
 	run_started = false
 	current_level = 1
@@ -173,9 +257,10 @@ func reset_run_progress() -> void:
 	experience_to_next_level = BalanceData.STARTING_XP_REQUIREMENT
 	current_wave = 0
 	score = 0
-	gold = 300
+	gold = BalanceData.STARTING_GOLD
 	inventory.clear()
 	pending_weapon_ids.clear()
 	player_max_hp = BalanceData.BASE_PLAYER_HP
 	player_hp = player_max_hp
 	clear_level_upgrades()
+	reset_economy_tracking()

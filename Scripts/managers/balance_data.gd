@@ -48,9 +48,20 @@ const SWORD_COST: int = 100
 
 # ============ GAME BALANCE ============
 
-const STARTING_GOLD: int = 100
-const REROLL_COST: int = 25
-const WAVE_GOLD_REWARD: int = 10
+# Ekonomia ma jedno źródło prawdy w runtime.
+const STARTING_GOLD: int = 120
+const BASE_REROLL_COST: int = 25
+const REROLL_COST_PER_TIER: int = 5
+const REROLL_COST_PER_VISIT: int = 10
+const EARLY_WAVE_GOLD_REWARD: int = 5
+const MID_WAVE_GOLD_REWARD: int = 8
+const LATE_WAVE_GOLD_REWARD: int = 10
+const BOSS_FALLBACK_GOLD_REWARD: int = 75
+const ENEMY_GOLD_REWARD_FACTOR: float = 0.45
+const ENEMY_GOLD_REWARD_WAVE_STEP: float = 0.04
+const ENEMY_GOLD_REWARD_WAVE_STEP_CAP: float = 0.32
+const GIANT_BOSS_GOLD_MULTIPLIER: float = 2.5
+const MAX_BUILD_SLOTS: int = 6
 const MAX_WEAPON_SLOTS: int = 6
 
 # Base Player Stats
@@ -71,3 +82,25 @@ const LEVEL_HP_BONUS: int = 20
 const LEVEL_DAMAGE_BONUS: float = 0.05
 const LEVEL_SPEED_BONUS: float = 0.02
 const LEVEL_ARMOR_BONUS: int = 1
+
+static func get_reroll_cost(wave_number: int, shop_tier: int, rerolls_this_visit: int = 0) -> int:
+	var tier_bonus := maxi(shop_tier - 1, 0) * REROLL_COST_PER_TIER
+	var visit_bonus := maxi(rerolls_this_visit, 0) * REROLL_COST_PER_VISIT
+	return BASE_REROLL_COST + tier_bonus + visit_bonus
+
+static func get_wave_gold_reward(wave_number: int) -> int:
+	if wave_number <= 3:
+		return EARLY_WAVE_GOLD_REWARD
+	if wave_number <= 9:
+		return MID_WAVE_GOLD_REWARD
+	return LATE_WAVE_GOLD_REWARD
+
+static func get_enemy_gold_reward(base_score_value: int, wave_number: int, is_giant_boss: bool = false) -> int:
+	var base_reward := max(1, int(round(float(base_score_value) * ENEMY_GOLD_REWARD_FACTOR)))
+	var wave_bonus := 1.0 + minf(float(maxi(wave_number - 1, 0)) * ENEMY_GOLD_REWARD_WAVE_STEP, ENEMY_GOLD_REWARD_WAVE_STEP_CAP)
+	var reward := max(1, int(round(float(base_reward) * wave_bonus)))
+
+	if is_giant_boss:
+		reward = max(reward + int(BOSS_FALLBACK_GOLD_REWARD / 2), int(round(float(reward) * GIANT_BOSS_GOLD_MULTIPLIER)))
+
+	return reward

@@ -5,7 +5,7 @@ signal stat_changed(stat_name: String, new_value: float)
 signal item_added(item: ItemBase)
 signal item_removed(item: ItemBase)
 
-@export var max_item_slots: int = 6
+@export var max_item_slots: int = BalanceData.MAX_BUILD_SLOTS
 
 var player_stats: Dictionary = {
 	"damage": 1.0,

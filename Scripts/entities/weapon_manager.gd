@@ -1,7 +1,7 @@
 extends Node2D
 ## Zarządza broniami gracza – sloty, instancje, aktywacja
 
-@export var max_weapons: int = 6
+@export var max_weapons: int = BalanceData.MAX_WEAPON_SLOTS
 @export var orbital_radius: float = 65.0
 @export var orbit_speed: float = 0.5
 @export var weapon_scale: float = 0.067

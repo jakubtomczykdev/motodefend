@@ -11,7 +11,7 @@ var gold: int:
 	get:
 		if _game_data_ref == null:
 			_game_data_ref = get_node_or_null("/root/GameData")
-		return _game_data_ref.gold if _game_data_ref else 100
+		return _game_data_ref.gold if _game_data_ref else BalanceData.STARTING_GOLD
 	set(value):
 		if _game_data_ref == null:
 			_game_data_ref = get_node_or_null("/root/GameData")
@@ -22,11 +22,14 @@ var shop_items: Array = []
 var build_system: Node
 var item_manager: Node
 var item_scene: PackedScene = preload("res://scenes/ui/ShopItem.tscn")
-var refresh_cost: int = 25
+var refresh_cost: int = BalanceData.BASE_REROLL_COST
 var showing_inventory: bool = false
 var current_wave_number: int = 1
 var current_shop_tier: int = 1
 var _opened_externally: bool = false
+var rerolls_this_visit: int = 0
+var _status_message: String = ""
+var _status_is_error: bool = false
 
 @onready var gold_label: Label = $TopBar/GoldLabel
 @onready var items_container: Control = $MainArea/ItemsContainer
@@ -65,6 +68,8 @@ func open_shop(available_items: Array[ItemBase], player_build: Node, manager: No
 	item_manager = manager
 	current_wave_number = max(wave_number, 1)
 	current_shop_tier = _get_shop_tier(current_wave_number)
+	rerolls_this_visit = 0
+	_set_status_message("")
 	showing_inventory = false
 	if shop_items.is_empty():
 		_refresh_shop_items()
@@ -139,7 +144,7 @@ func _refresh_view() -> void:
 	else:
 		view_title.text = "DOSTEPNA TECHNOLOGIA | SKLEP TIER %d | FALA %d" % [current_shop_tier, current_wave_number]
 		_populate_items()
-		inventory_button.text = "Moje EQ (%d/6)" % _get_current_weapon_count()
+		inventory_button.text = "Moje EQ (%d/%d)" % [_get_current_build_count(), _get_max_build_slots()]
 
 func _clear_items() -> void:
 	for child in items_container.get_children():
@@ -182,22 +187,42 @@ func _on_inventory_item_sold(item: ItemBase) -> void:
 
 	var refund = int(item.cost * 0.5)
 	var player = get_tree().get_first_node_in_group("Player")
+	var sold := false
 	if player and player.has_node("WeaponManager"):
 		var p_weapons = player.get_weapons()
 		for i in range(p_weapons.size()):
-			if p_weapons[i].item_name == item.item_name:
+			if _items_match(p_weapons[i], item):
 				player.get_node("WeaponManager").remove_weapon(i)
+				sold = true
 				break
+
+	if not sold:
+		_set_status_message("Nie mozna sprzedac tego przedmiotu.", true)
+		return
 
 	var all_weps = WeaponItems.get_all_weapons()
 	for i in range(gd.pending_weapon_ids.size()):
 		var wid = gd.pending_weapon_ids[i]
-		if all_weps[wid].item_name == item.item_name:
+		if _items_match(all_weps[wid], item):
 			gd.pending_weapon_ids.remove_at(i)
 			break
 
+	_remove_matching_item_from_array(gd.inventory, item)
+
+	if build_system:
+		var build_item := _find_matching_build_item(item)
+		if build_item != null:
+			build_system.remove_item(build_item)
+
+	var main = get_tree().current_scene
+	if main and "items_collected" in main:
+		_remove_matching_item_from_array(main.items_collected, item)
+
 	gold += refund
+	if gd.has_method("record_gold_income"):
+		gd.record_gold_income("sale_refund", refund, current_wave_number)
 	AudioManager.play_sfx("buy_item")
+	_set_status_message("Sprzedano: %s" % item.item_name)
 	_refresh_view()
 	_update_ui()
 
@@ -236,47 +261,67 @@ func _update_preview(item: ItemBase) -> void:
 	preview_rarity.modulate = color
 
 func _on_item_clicked(item: ItemBase) -> void:
-	if gold < item.cost:
+	if not _can_purchase_item(item):
 		return
 
-	if item is WeaponBase:
-		var weapon_count = _get_current_weapon_count()
-		if weapon_count >= 6:
+	var gd = get_node_or_null("/root/GameData")
+	var player = get_tree().get_first_node_in_group("Player")
+	var added_to_build := false
+
+	if build_system:
+		if not build_system.add_item(item):
 			AudioManager.play_sfx("menu_click")
+			_set_status_message("Build jest pelny. Sprzedaj cos przed zakupem.", true)
 			return
+		added_to_build = true
+
+	if item is WeaponBase:
+		if not player or not player.has_method("add_weapon"):
+			if added_to_build and build_system:
+				build_system.remove_item(item)
+			AudioManager.play_sfx("menu_click")
+			_set_status_message("Nie udalo sie dodac broni do ekwipunku.", true)
+			return
+		if not player.add_weapon(item):
+			if added_to_build and build_system:
+				build_system.remove_item(item)
+			AudioManager.play_sfx("menu_click")
+			_set_status_message("Brak wolnego slotu na bron.", true)
+			return
+	elif build_system == null and gd:
+		gd.add_inventory_item(item)
 
 	AudioManager.play_sfx("buy_item")
 	gold -= item.cost
+	if gd and gd.has_method("record_gold_spent"):
+		gd.record_gold_spent("shop_purchase", item.cost, current_wave_number)
+
+	if build_system == null and gd and item is WeaponBase:
+		_save_weapon_to_pending(item as WeaponBase, gd)
+
 	item_purchased.emit(item)
-
-	if build_system:
-		build_system.add_item(item)
-	else:
-		var gd = get_node_or_null("/root/GameData")
-		if gd:
-			gd.add_inventory_item(item)
-			if item is WeaponBase:
-				var all_weps = WeaponItems.get_all_weapons()
-				for i in range(all_weps.size()):
-					var candidate = all_weps[i]
-					if candidate != null and candidate.item_name == item.item_name and candidate.item_type == item.item_type:
-						gd.pending_weapon_ids.append(i)
-						break
-
-	var player = get_tree().get_first_node_in_group("Player")
-	if player and item is WeaponBase and player.has_method("add_weapon"):
-		player.add_weapon(item)
+	_set_status_message("Kupiono: %s" % item.item_name)
 
 	_update_ui()
 	_update_item_states()
 
 func _on_refresh_pressed() -> void:
-	if gold >= refresh_cost:
+	if gold < refresh_cost:
 		AudioManager.play_sfx("menu_click")
-		gold -= refresh_cost
-		_update_ui()
-		refresh_requested.emit()
-		_refresh_shop_items()
+		_set_status_message("Za malo zlota na reroll.", true)
+		return
+
+	var gd = get_node_or_null("/root/GameData")
+	var current_cost := refresh_cost
+	AudioManager.play_sfx("menu_click")
+	gold -= current_cost
+	if gd and gd.has_method("record_gold_spent"):
+		gd.record_gold_spent("reroll", current_cost, current_wave_number)
+	rerolls_this_visit += 1
+	_set_status_message("")
+	_update_ui()
+	refresh_requested.emit()
+	_refresh_shop_items()
 
 func _refresh_shop_items() -> void:
 	current_shop_tier = _get_shop_tier(current_wave_number)
@@ -293,6 +338,24 @@ func _refresh_shop_items() -> void:
 	showing_inventory = false
 	_refresh_view()
 
+func _get_current_build_count() -> int:
+	if build_system:
+		var build_items = build_system.get("items")
+		if build_items is Array:
+			return build_items.size()
+
+	var gd = get_node_or_null("/root/GameData")
+	if gd:
+		return gd.inventory.size()
+	return 0
+
+func _get_max_build_slots() -> int:
+	if build_system:
+		var max_slots = build_system.get("max_item_slots")
+		if max_slots != null:
+			return int(max_slots)
+	return BalanceData.MAX_BUILD_SLOTS
+
 func _get_current_weapon_count() -> int:
 	var player = get_tree().get_first_node_in_group("Player")
 	if player and player.has_method("get_weapon_count"):
@@ -303,6 +366,67 @@ func _get_current_weapon_count() -> int:
 		return gd.pending_weapon_ids.size()
 	return 0
 
+func _get_max_weapon_slots() -> int:
+	return BalanceData.MAX_WEAPON_SLOTS
+
+func _can_purchase_item(item: ItemBase) -> bool:
+	if gold < item.cost:
+		AudioManager.play_sfx("menu_click")
+		_set_status_message("Za malo zlota na ten zakup.", true)
+		return false
+
+	if _get_current_build_count() >= _get_max_build_slots():
+		AudioManager.play_sfx("menu_click")
+		_set_status_message("Build jest pelny. Sprzedaj cos przed zakupem.", true)
+		return false
+
+	if item is WeaponBase and _get_current_weapon_count() >= _get_max_weapon_slots():
+		AudioManager.play_sfx("menu_click")
+		_set_status_message("Osiagnieto limit broni.", true)
+		return false
+
+	_set_status_message("")
+	return true
+
+func _save_weapon_to_pending(weapon: WeaponBase, gd) -> void:
+	if not gd:
+		return
+
+	var all_weps = WeaponItems.get_all_weapons()
+	for i in range(all_weps.size()):
+		var candidate = all_weps[i]
+		if candidate != null and _items_match(candidate, weapon):
+			if not gd.pending_weapon_ids.has(i):
+				gd.pending_weapon_ids.append(i)
+			break
+
+func _find_matching_build_item(item: ItemBase) -> ItemBase:
+	if not build_system:
+		return null
+
+	var build_items = build_system.get("items")
+	if build_items is Array:
+		for owned_item in build_items:
+			if owned_item is ItemBase and _items_match(owned_item, item):
+				return owned_item
+	return null
+
+func _remove_matching_item_from_array(items: Array, item: ItemBase) -> void:
+	for i in range(items.size()):
+		var owned_item = items[i]
+		if owned_item is ItemBase and _items_match(owned_item, item):
+			items.remove_at(i)
+			return
+
+func _items_match(left: ItemBase, right: ItemBase) -> bool:
+	if left == null or right == null:
+		return false
+	return left.item_name == right.item_name and left.item_type == right.item_type
+
+func _set_status_message(message: String, is_error: bool = false) -> void:
+	_status_message = message
+	_status_is_error = is_error
+
 func _update_item_states() -> void:
 	for child in items_container.get_children():
 		if child.has_method("update_affordability"):
@@ -310,19 +434,31 @@ func _update_item_states() -> void:
 
 func _update_ui() -> void:
 	current_shop_tier = _get_shop_tier(current_wave_number)
+	refresh_cost = BalanceData.get_reroll_cost(current_wave_number, current_shop_tier, rerolls_this_visit)
 	gold_label.text = "ZLOTO: %d" % gold
+	if reroll_button:
+		reroll_button.text = "Reroll (%dG)" % refresh_cost
 	if weapon_count_label:
-		var count = _get_current_weapon_count()
-		weapon_count_label.text = "TIER %d   BRONIE: %d / 6" % [current_shop_tier, count]
-		if count >= 6:
+		var build_count = _get_current_build_count()
+		var weapon_count = _get_current_weapon_count()
+		weapon_count_label.text = "TIER %d   BUILD: %d / %d   BRONIE: %d / %d" % [
+			current_shop_tier,
+			build_count,
+			_get_max_build_slots(),
+			weapon_count,
+			_get_max_weapon_slots()
+		]
+		if _status_message != "":
+			weapon_count_label.text += "   |   " + _status_message
+		if _status_is_error or build_count >= _get_max_build_slots():
 			weapon_count_label.modulate = Color(1, 0.4, 0.4)
 		else:
 			weapon_count_label.modulate = Color(0.7, 0.8, 1.0)
 
 	if inventory_button:
-		var count = _get_current_weapon_count()
+		var count = _get_current_build_count()
 		if not showing_inventory:
-			inventory_button.text = "Moje EQ (%d/6)" % count
+			inventory_button.text = "Moje EQ (%d/%d)" % [count, _get_max_build_slots()]
 
 func _on_close_pressed() -> void:
 	AudioManager.play_sfx("menu_click")

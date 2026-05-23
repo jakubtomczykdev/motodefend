@@ -11,6 +11,7 @@ signal damaged(amount: int)
 @export var attack_cooldown: float = 1.0
 @export var knockback_resistance: float = 0.0
 @export var score_value: int = 10
+@export var gold_reward: int = -1
 @export var xp_value: int = 10
 @export var is_wandering: bool = true
 @export var is_boss: bool = false
@@ -43,8 +44,14 @@ var base_sprite_scale: Vector2 = Vector2.ONE
 var _health_bar: ProgressBar
 var _health_bar_scale: float = 1.0
 var is_dead: bool = false
+var current_wave_number: int = 1
+var _base_gold_reward: int = -1
 
 func scale_stats(wave_number: int) -> void:
+	current_wave_number = max(wave_number, 1)
+	if _base_gold_reward < 0:
+		_base_gold_reward = gold_reward if gold_reward > 0 else score_value
+
 	var checkpoint_bonus := float(int((wave_number - 1) / 5))
 	var health_multiplier := 1.0 + (wave_number - 1) * 0.18 + checkpoint_bonus * 0.18
 	var damage_multiplier := 1.0 + (wave_number - 1) * 0.10 + checkpoint_bonus * 0.12
@@ -57,6 +64,7 @@ func scale_stats(wave_number: int) -> void:
 	original_move_speed = move_speed
 	attack_cooldown = maxf(0.45, attack_cooldown * (1.0 - minf(0.35, (wave_number - 1) * 0.015)))
 	xp_value = int(xp_value * (1.0 + (wave_number - 1) * 0.1))
+	gold_reward = BalanceData.get_enemy_gold_reward(_base_gold_reward, current_wave_number)
 	
 	if _health_bar:
 		_health_bar.max_value = max_health
@@ -69,6 +77,9 @@ func make_giant_boss() -> void:
 	current_health = max_health
 	damage *= 2
 	score_value *= 5
+	if _base_gold_reward < 0:
+		_base_gold_reward = gold_reward if gold_reward > 0 else score_value
+	gold_reward = BalanceData.get_enemy_gold_reward(_base_gold_reward, current_wave_number, true)
 	move_speed *= 0.8
 	boss_special_timer = 5.0
 	
@@ -83,6 +94,8 @@ func _ready() -> void:
 	visible = true
 	add_to_group("Enemies")
 	enemy_type_name = name.to_lower()
+	_base_gold_reward = gold_reward if gold_reward > 0 else score_value
+	gold_reward = BalanceData.get_enemy_gold_reward(_base_gold_reward, current_wave_number)
 	collision_layer = 2 
 	collision_mask = 1 | 4
 	
@@ -355,11 +368,14 @@ func die() -> void:
 	is_dead = true
 	AudioManager.play_sfx("enemy_death", 0.1, -15.0)
 	var gd := get_node_or_null("/root/GameData")
-	if gd: gd.gold += score_value
+	if gd:
+		gd.gold += gold_reward
+		if gd.has_method("record_gold_income"):
+			gd.record_gold_income("enemy_kill", gold_reward, current_wave_number)
 	var main_game = get_tree().current_scene
 	if main_game and main_game.has_method("gain_xp"):
 		main_game.gain_xp(xp_value)
-	_spawn_gold_number(score_value)
+	_spawn_gold_number(gold_reward)
 	if _health_bar and is_instance_valid(_health_bar):
 		_health_bar.queue_free()
 	died.emit()

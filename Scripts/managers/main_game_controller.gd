@@ -40,7 +40,7 @@ var gold: int:
 	get:
 		if _game_data_ref == null:
 			_game_data_ref = get_node_or_null("/root/GameData")
-		return _game_data_ref.gold if _game_data_ref else 100
+		return _game_data_ref.gold if _game_data_ref else BalanceData.STARTING_GOLD
 	set(value):
 		if _game_data_ref == null:
 			_game_data_ref = get_node_or_null("/root/GameData")
@@ -395,9 +395,9 @@ func start_game() -> void:
 		build_system.clear_build()
 		print("[MainGame] build cleared OK")
 
-	# Jeśli GameData nie ma złota (świeża gra) – ustaw domyślne 300 przez setter
+	# Jeśli GameData nie ma złota, ustaw wartość startową z balansu.
 	if gd and gd.gold <= 0:
-		gold = 300
+		gold = BalanceData.STARTING_GOLD
 
 	if player:
 		if player.has_method("heal"):
@@ -427,6 +427,8 @@ func start_game() -> void:
 		gd.current_level = 1
 		gd.experience = 0
 		gd.experience_to_next_level = BalanceData.STARTING_XP_REQUIREMENT
+		if gd.has_method("reset_economy_tracking"):
+			gd.reset_economy_tracking()
 		if gd.has_method("clear_level_upgrades"):
 			gd.clear_level_upgrades()
 		if build_system:
@@ -496,7 +498,10 @@ func _on_wave_ended(wave_number: int) -> void:
 
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
-		gd.gold += 10
+		var wave_gold_reward := BalanceData.get_wave_gold_reward(wave_number)
+		gd.gold += wave_gold_reward
+		if gd.has_method("record_gold_income"):
+			gd.record_gold_income("wave_reward", wave_gold_reward, wave_number)
 	score += wave_number * 100
 
 	# Zapisz progresję w GameData
@@ -504,6 +509,8 @@ func _on_wave_ended(wave_number: int) -> void:
 		gd.run_started = true
 		gd.current_wave = wave_number
 		gd.score = score
+		if gd.has_method("print_economy_report"):
+			gd.print_economy_report(wave_number)
 	
 	# Zapisz bronie gracza do GameData przed zmianą sceny
 	_save_weapons_to_gamedata(gd)
@@ -715,7 +722,7 @@ func _restart_from_wave_one() -> void:
 	player.global_position = Vector2(960, 540)
 	
 	# Reset złota do wartości początkowej (setter zapisze do GameData)
-	gold = 300
+	gold = BalanceData.STARTING_GOLD
 	
 	# Ukryj ekran końcowy
 	if end_screen:
@@ -755,12 +762,18 @@ func show_game_over() -> void:
 	if end_screen and wave_manager:
 		var playtime := Time.get_unix_time_from_system() - game_start_time
 		end_screen.show_game_over(score, wave_manager.current_wave, items_collected, playtime)
+		var gd := get_node_or_null("/root/GameData")
+		if gd and gd.has_method("print_economy_report"):
+			gd.print_economy_report()
 		get_tree().paused = true
 
 func show_victory() -> void:
 	if end_screen and wave_manager:
 		var playtime := Time.get_unix_time_from_system() - game_start_time
 		end_screen.show_victory(score, wave_manager.current_wave, items_collected, playtime)
+		var gd := get_node_or_null("/root/GameData")
+		if gd and gd.has_method("print_economy_report"):
+			gd.print_economy_report()
 		get_tree().paused = true
 
 func _input(event: InputEvent) -> void:

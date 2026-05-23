@@ -142,7 +142,7 @@ func _setup_screen() -> void:
 		var seconds := int(time_played) % 60
 		time_label.text = "CZAS: %d:%02d" % [minutes, seconds]
 	if items_label:
-		items_label.text = "ITEMY: %d/6" % items_collected.size()
+		items_label.text = "ITEMY: %d/%d" % [items_collected.size(), BalanceData.MAX_BUILD_SLOTS]
 
 	# Wyświetl zebrane itemy
 	_display_items()
