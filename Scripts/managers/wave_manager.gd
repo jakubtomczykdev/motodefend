@@ -375,6 +375,8 @@ func check_wave_completion() -> void:
 func update_ui() -> void:
 	if wave_ui:
 		wave_ui.text = "FALA: %d" % current_wave
+	if enemies_ui:
+		enemies_ui.visible = false
 
 func update_timer_ui() -> void:
 	if timer_ui:

@@ -48,31 +48,22 @@ func _count_nearby_bots() -> int:
 
 
 func _ai_gathering() -> void:
-	# Move toward nearest bot (with "bot" in name)
-	var nearest_bot: Node2D = null
-	var nearest_dist: float = INF
-	var enemies := get_tree().get_nodes_in_group("Enemies")
-	for enemy in enemies:
-		if enemy == self or not is_instance_valid(enemy):
-			continue
-		if "bot" not in enemy.name.to_lower():
-			continue
-		var dist := global_position.distance_to(enemy.global_position)
-		if dist < nearest_dist:
-			nearest_dist = dist
-			nearest_bot = enemy
-
-	if nearest_bot:
-		var direction = (nearest_bot.global_position - global_position).normalized()
-		velocity = direction * move_speed
+	# Move toward player slowly — bots converge near the action, not corners
+	if player and is_instance_valid(player):
+		var to_player = player.global_position - global_position
+		var dist = to_player.length()
+		var direction = to_player.normalized()
+		if dist > 350.0:
+			velocity = direction * (move_speed * 0.7)
+		elif dist < 250.0:
+			velocity = -direction * (move_speed * 0.3)
+		else:
+			velocity = direction.rotated(PI / 2) * (move_speed * 0.4)
 		if sprite and "scale" in sprite:
 			if direction.x > 0:
 				sprite.scale.x = abs(sprite.scale.x)
 			elif direction.x < 0:
 				sprite.scale.x = -abs(sprite.scale.x)
-	else:
-		# No other bots — wander randomly, spread across map
-		_handle_wander(delta)
 
 
 func _ai_attacking() -> void:
