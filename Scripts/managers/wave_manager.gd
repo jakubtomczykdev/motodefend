@@ -1,14 +1,22 @@
 extends Node
 
 const BossRewardChestScript := preload("res://Scripts/entities/boss_reward_chest.gd")
-## Zarządza falami wrogów - spawnowanie, progresja, pauzy
+## Zarządza falami wrogów - spawnowanie, progresja, pauzy — time‑based waves
 
 signal wave_started(wave_number: int)
 signal wave_ended(wave_number: int)
 signal all_waves_completed
 signal game_over
 
-@export var wave_duration: float = 30.0
+# ---- Time‑based wave settings ----
+@export var wave_base_duration: float = 25.0       # wave 1 duration
+@export var wave_duration_per_level: float = 3.0    # +3s per wave
+@export var spawn_interval_base: float = 0.9
+@export var spawn_interval_min: float = 0.3
+@export var spawn_interval_decay: float = 0.03       # per wave
+@export var spawn_refill_threshold: int = 5           # refill queue when below this
+@export var wave_pause_duration: float = 5.0          # pause between waves
+
 @export var base_enemy_count: int = 8
 @export var max_enemy_count: int = 50
 
@@ -16,13 +24,16 @@ var current_wave: int = 0
 var enemies_in_wave: int = 0
 var enemies_remaining: int = 0
 var is_wave_active: bool = false
-var wave_elapsed: float = 0.0
+var wave_timer: float = 0.0          # time elapsed in current wave
+var wave_max_time: float = 0.0       # max duration for current wave
+var between_waves: bool = false
+var between_waves_timer: float = 0.0
 var reward_chests_pending: int = 0
 
 # System rozłożonego spawnowania
 var spawn_queue: Array[String] = []
 var spawn_timer: float = 0.0
-@export var spawn_interval: float = 1.0 # Czas między spawnem kolejnych wrogów
+@export var spawn_interval: float = 1.0   # set dynamically each wave
 
 var player_node: Node2D
 var spawn_points: Array[Node2D] = []
@@ -63,24 +74,33 @@ func register_extra_enemy() -> void:
 	update_ui()
 
 func _process(delta: float) -> void:
-	if is_wave_active:
-		wave_elapsed += delta
-		update_timer_ui()
+	if not is_wave_active:
+		return
 
-		# Rozłożone spawnowanie w czasie
-		if not spawn_queue.is_empty():
-			spawn_timer -= delta
-			if spawn_timer <= 0:
-				# Oblicz ile wrogów zespawnować naraz (zwiększa się co 3 fale)
-				var burst_size = _get_spawn_burst_size(current_wave)
-				for i in range(burst_size):
-					if not spawn_queue.is_empty():
-						var enemy_type = spawn_queue.pop_front()
-						_spawn_enemy(enemy_type)
-				
-				spawn_timer = spawn_interval
+	# Wave timer — ends wave when time runs out
+	wave_timer += delta
+	if wave_timer >= wave_max_time:
+		end_wave()
+		return
 
-		check_wave_completion()
+	# Refill spawn queue when running low
+	if spawn_queue.size() < spawn_refill_threshold:
+		_refill_spawn_queue(8)
+
+	# Rozłożone spawnowanie w czasie
+	if not spawn_queue.is_empty():
+		spawn_timer -= delta
+		if spawn_timer <= 0.0:
+			# Oblicz ile wrogów zespawnować naraz (zwiększa się co 3 fale)
+			var burst_size = _get_spawn_burst_size(current_wave)
+			for i in range(burst_size):
+				if not spawn_queue.is_empty():
+					var enemy_type = spawn_queue.pop_front()
+					_spawn_enemy(enemy_type)
+
+			spawn_timer = spawn_interval
+
+	update_timer_ui()
 
 func _find_player() -> void:
 	var players := get_tree().get_nodes_in_group("Player")
@@ -125,20 +145,25 @@ func start_game() -> void:
 
 func start_next_wave() -> void:
 	current_wave += 1
+	wave_max_time = wave_base_duration + float(current_wave - 1) * wave_duration_per_level
+	wave_timer = 0.0
 	is_wave_active = true
-	wave_elapsed = 0.0
+	between_waves = false
+	between_waves_timer = 0.0
 	spawn_timer = 0.0
 	reward_chests_pending = 0
 	spawn_queue.clear()
 
 	var wave_config := _get_wave_config(current_wave)
-	enemies_in_wave = wave_config.enemy_count + (1 if wave_config.has_boss else 0)
+	# Use at least 15 enemies in the initial queue
+	var initial_count := maxi(15, wave_config.enemy_count)
+	enemies_in_wave = initial_count + (1 if wave_config.has_boss else 0)
 	enemies_remaining = enemies_in_wave
-	
+
 	# Oblicz interwał spawnu - przyspiesza z każdą falą
 	spawn_interval = _get_spawn_interval(current_wave)
 
-	_spawn_wave(wave_config)
+	_spawn_wave(wave_config, initial_count)
 	wave_started.emit(current_wave)
 	update_ui()
 
@@ -169,10 +194,10 @@ func _get_wave_config(wave: int) -> Dictionary:
 
 	return config
 
-func _spawn_wave(config: Dictionary) -> void:
+func _spawn_wave(config: Dictionary, initial_count: int = 15) -> void:
 	# Kolejkuj normalnych wrogów zamiast spawnować ich natychmiast
 	var enemy_weights: Dictionary = config.get("enemy_weights", {"worm": 1.0})
-	for i in range(config.enemy_count):
+	for i in range(initial_count):
 		var enemy_type: String = _pick_weighted_enemy(enemy_weights)
 		spawn_queue.append(enemy_type)
 
@@ -183,26 +208,36 @@ func _spawn_wave(config: Dictionary) -> void:
 		else:
 			spawn_queue.append("apt_boss")
 
-	# Gwarancja minimum 5 botow w kazdej fali
+	# Gwarancja minimum 8 botów w każdej fali
 	var bot_count := 0
 	for etype in spawn_queue:
 		if etype == "bot":
 			bot_count += 1
-	var missing_bots := max(0, 5 - bot_count)
+	var missing_bots := maxi(0, 8 - bot_count)
 	for i in range(missing_bots):
 		spawn_queue.append("bot")
 	if missing_bots > 0:
 		enemies_in_wave += missing_bots
 		enemies_remaining += missing_bots
 
+## Refill spawn queue with `count` weighted-random enemies (called during wave)
+func _refill_spawn_queue(count: int) -> void:
+	var wave_config := _get_wave_config(current_wave)
+	var enemy_weights: Dictionary = wave_config.get("enemy_weights", {"worm": 1.0})
+	for i in range(count):
+		var enemy_type: String = _pick_weighted_enemy(enemy_weights)
+		spawn_queue.append(enemy_type)
+	enemies_in_wave += count
+	enemies_remaining += count
+
 func _spawn_enemy(enemy_type: String) -> void:
 	var is_giant_boss = false
 	var actual_enemy_type = enemy_type
-	
+
 	if enemy_type.begins_with("giant_"):
 		is_giant_boss = true
 		actual_enemy_type = enemy_type.replace("giant_", "")
-		
+
 	var scene_path: String = str(enemy_scenes.get(actual_enemy_type, ""))
 	if scene_path == "":
 		push_warning("Brak sceny dla wroga: " + actual_enemy_type)
@@ -227,7 +262,7 @@ func _spawn_enemy(enemy_type: String) -> void:
 
 	if enemy.has_signal("died"):
 		enemy.connect("died", _on_enemy_died.bind(enemy))
-	
+
 	# Dodaj do sceny - preferujemy nadrzędny węzeł MainGame
 	var target_parent = get_parent()
 	if not (target_parent is Node2D):
@@ -248,7 +283,7 @@ func _get_enemy_count_for_wave(wave: int) -> int:
 	return clampi(count, 8, max_enemy_count)
 
 func _get_spawn_interval(wave: int) -> float:
-	return maxf(0.45, 1.12 - float(wave - 1) * 0.03)
+	return maxf(spawn_interval_min, spawn_interval_base - float(wave - 1) * spawn_interval_decay)
 
 func _get_spawn_burst_size(wave: int) -> int:
 	return clampi(1 + int(wave / 7), 1, 4)
@@ -296,15 +331,13 @@ func _pick_weighted_enemy(weights: Dictionary) -> String:
 			return str(enemy_type)
 	return str(weights.keys()[0])
 
+## Called when an enemy dies — only decrements counter, does NOT end the wave
 func _on_enemy_died(enemy: Node2D = null) -> void:
 	if enemy and enemy.get_meta("drops_boss_reward_chest", false):
 		_spawn_boss_reward_chest(enemy.global_position)
 
 	enemies_remaining = max(0, enemies_remaining - 1)
 	update_ui()
-
-	if spawn_queue.is_empty() and enemies_remaining <= 0 and reward_chests_pending <= 0:
-		end_wave()
 
 func _spawn_boss_reward_chest(spawn_position: Vector2) -> void:
 	var chest := Node2D.new()
@@ -325,55 +358,34 @@ func _spawn_boss_reward_chest(spawn_position: Vector2) -> void:
 
 func _on_boss_reward_chest_opened() -> void:
 	reward_chests_pending = max(0, reward_chests_pending - 1)
-	if is_wave_active and spawn_queue.is_empty() and enemies_remaining <= 0:
-		end_wave()
+	# No longer triggers end_wave — timer handles wave completion
 
 func end_wave() -> void:
 	if not is_wave_active:
 		return
 
 	is_wave_active = false
-
-	update_ui()
 	wave_ended.emit(current_wave)
+	update_ui()
 
+# check_wave_completion removed — timer handles wave end now
 func check_wave_completion() -> void:
-	if not is_wave_active:
-		return
-	
-	# Fala kończy się gdy kolejka jest pusta I wszyscy wrogowie nie żyją
-	if spawn_queue.is_empty() and reward_chests_pending <= 0:
-		# Fail-safe: Sprawdź rzeczywistą liczbę wrogów w grupie
-		var actual_enemies = get_tree().get_nodes_in_group("Enemies")
-		if actual_enemies.is_empty():
-			if enemies_remaining > 0:
-				print("[WaveManager] Fail-safe: Reconciling enemies_remaining from %d to 0" % enemies_remaining)
-				enemies_remaining = 0
-				update_ui()
-			end_wave()
-		elif enemies_remaining <= 0:
-			# Jeśli licznik mówi 0, ale wrogowie są - zsynchronizuj w górę (rzadki przypadek błędu rejestracji)
-			enemies_remaining = actual_enemies.size()
-			update_ui()
+	pass
 
 func update_ui() -> void:
 	if wave_ui:
 		wave_ui.text = "FALA: %d" % current_wave
 
-	if enemies_ui:
-		enemies_ui.text = "WRÓGÓW: %d" % enemies_remaining
-
 func update_timer_ui() -> void:
 	if timer_ui:
-		timer_ui.visible = false
-		# var remaining: float = maxf(0.0, wave_duration - wave_elapsed)
-		# timer_ui.text = "POZOSTAŁO: %.1fs" % remaining
+		timer_ui.visible = true
+		var remaining: float = maxf(0.0, wave_max_time - wave_timer)
+		timer_ui.text = "POZOSTAŁO: %.0fs" % remaining
 
 func get_wave_progress() -> float:
-	if enemies_in_wave == 0:
+	if wave_max_time <= 0.0:
 		return 0.0
-
-	return float(enemies_in_wave - enemies_remaining) / float(enemies_in_wave)
+	return clampf(wave_timer / wave_max_time, 0.0, 1.0)
 
 func get_total_progress() -> float:
 	# Opcjonalnie: zwróć postęp całej gry
