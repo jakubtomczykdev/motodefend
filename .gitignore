@@ -13,3 +13,17 @@ CLAUDE.md
 handoff.md
 .agents/skills
 caveman
+
+# Hermes agent files
+.hermes/
+
+# Cursor / Windsurf AI
+.cursor/
+.cursorrules
+.windsurf/
+
+# Misc AI agents
+.copilot/
+.codex/
+.aider/
+.trae/
