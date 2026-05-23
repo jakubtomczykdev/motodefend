@@ -309,7 +309,7 @@ func _process(delta: float) -> void:
 
 	if game_state == "playing":
 		if playtime_label and wave_manager:
-			playtime_label.text = "FALA: %d - %02d:%02d" % [wave_manager.current_wave, int(wave_manager.wave_elapsed) / 60, int(wave_manager.wave_elapsed) % 60]
+			playtime_label.text = "FALA: %d - %02d:%02d" % [wave_manager.current_wave, int(wave_manager.wave_timer) / 60, int(wave_manager.wave_timer) % 60]
 		
 		# Wywołaj efekty aktywne przedmiotów
 		if player:
