@@ -183,6 +183,18 @@ func _spawn_wave(config: Dictionary) -> void:
 		else:
 			spawn_queue.append("apt_boss")
 
+	# Gwarancja minimum 5 botow w kazdej fali
+	var bot_count := 0
+	for etype in spawn_queue:
+		if etype == "bot":
+			bot_count += 1
+	var missing_bots := max(0, 5 - bot_count)
+	for i in range(missing_bots):
+		spawn_queue.append("bot")
+	if missing_bots > 0:
+		enemies_in_wave += missing_bots
+		enemies_remaining += missing_bots
+
 func _spawn_enemy(enemy_type: String) -> void:
 	var is_giant_boss = false
 	var actual_enemy_type = enemy_type

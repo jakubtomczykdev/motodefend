@@ -18,6 +18,16 @@ func _ready() -> void:
 	super._ready()
 
 
+func _physics_process(delta: float) -> void:
+	super._physics_process(delta)
+	_clamp_to_screen()
+
+
+func _clamp_to_screen() -> void:
+	global_position.x = clamp(global_position.x, 30, 1890)
+	global_position.y = clamp(global_position.y, 30, 1050)
+
+
 func handle_ai(delta: float) -> void:
 	if is_dead:
 		return
