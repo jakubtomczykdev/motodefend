@@ -18,16 +18,6 @@ func _ready() -> void:
 	super._ready()
 
 
-func _physics_process(delta: float) -> void:
-	super._physics_process(delta)
-	_clamp_to_screen()
-
-
-func _clamp_to_screen() -> void:
-	global_position.x = clamp(global_position.x, 30, 1890)
-	global_position.y = clamp(global_position.y, 30, 1050)
-
-
 func handle_ai(delta: float) -> void:
 	if is_dead:
 		return
@@ -81,15 +71,8 @@ func _ai_gathering() -> void:
 			elif direction.x < 0:
 				sprite.scale.x = -abs(sprite.scale.x)
 	else:
-		# No other bots — flee from player
-		if player and is_instance_valid(player):
-			var direction = (global_position - player.global_position).normalized()
-			velocity = direction * (move_speed * 0.8)
-			if sprite and "scale" in sprite:
-				if direction.x > 0:
-					sprite.scale.x = abs(sprite.scale.x)
-				elif direction.x < 0:
-					sprite.scale.x = -abs(sprite.scale.x)
+		# No other bots — wander randomly, spread across map
+		_handle_wander(delta)
 
 
 func _ai_attacking() -> void:
