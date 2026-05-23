@@ -71,10 +71,10 @@ func _ai_gathering() -> void:
 			elif direction.x < 0:
 				sprite.scale.x = -abs(sprite.scale.x)
 	else:
-		# No other bots — slow drift toward player
+		# No other bots — flee from player
 		if player and is_instance_valid(player):
-			var direction = (player.global_position - global_position).normalized()
-			velocity = direction * (move_speed * 0.6)
+			var direction = (global_position - player.global_position).normalized()
+			velocity = direction * (move_speed * 0.8)
 			if sprite and "scale" in sprite:
 				if direction.x > 0:
 					sprite.scale.x = abs(sprite.scale.x)
