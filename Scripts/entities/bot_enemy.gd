@@ -109,7 +109,7 @@ func attack() -> void:
 		extra_bots = nearby_count - MIN_GROUP_SIZE
 	var total_damage := damage + (extra_bots * GROUP_BONUS_DAMAGE)
 
-	var kb_dir := (target.global_position - global_position).normalized()
+	var kb_dir = (target.global_position - global_position).normalized()
 	target.take_damage(total_damage, kb_dir * 300.0)
 	can_attack = false
 	attack_timer = attack_cooldown
