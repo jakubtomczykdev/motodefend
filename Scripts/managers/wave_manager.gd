@@ -243,15 +243,15 @@ func _get_spawn_burst_size(wave: int) -> int:
 
 func _get_enemy_weights_for_wave(wave: int) -> Dictionary:
 	if wave <= 1:
-		return {"worm": 0.92, "bot": 0.08}
+		return {"worm": 0.75, "bot": 0.25}
 	if wave == 2:
-		return {"worm": 0.70, "trojan": 0.23, "bot": 0.07}
+		return {"worm": 0.60, "trojan": 0.20, "bot": 0.20}
 	if wave == 3:
-		return {"worm": 0.52, "trojan": 0.33, "ransomware": 0.09, "bot": 0.06}
+		return {"worm": 0.47, "trojan": 0.28, "ransomware": 0.08, "bot": 0.17}
 	if wave == 4:
-		return {"worm": 0.33, "trojan": 0.38, "ransomware": 0.23, "bot": 0.06}
+		return {"worm": 0.30, "trojan": 0.34, "ransomware": 0.20, "bot": 0.16}
 	if wave == 5:
-		return {"worm": 0.43, "trojan": 0.33, "ransomware": 0.18, "bot": 0.06}
+		return {"worm": 0.39, "trojan": 0.30, "ransomware": 0.16, "bot": 0.15}
 	if wave <= 7:
 		return {"worm": 0.23, "trojan": 0.27, "ransomware": 0.22, "spyware": 0.13, "bot": 0.15}
 	if wave <= 9:
