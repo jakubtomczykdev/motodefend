@@ -96,9 +96,9 @@ static func get_wave_gold_reward(wave_number: int) -> int:
 	return LATE_WAVE_GOLD_REWARD
 
 static func get_enemy_gold_reward(base_score_value: int, wave_number: int, is_giant_boss: bool = false) -> int:
-	var base_reward := max(1, int(round(float(base_score_value) * ENEMY_GOLD_REWARD_FACTOR)))
-	var wave_bonus := 1.0 + minf(float(maxi(wave_number - 1, 0)) * ENEMY_GOLD_REWARD_WAVE_STEP, ENEMY_GOLD_REWARD_WAVE_STEP_CAP)
-	var reward := max(1, int(round(float(base_reward) * wave_bonus)))
+	var base_reward = max(1, int(round(float(base_score_value) * ENEMY_GOLD_REWARD_FACTOR)))
+	var wave_bonus = 1.0 + minf(float(maxi(wave_number - 1, 0)) * ENEMY_GOLD_REWARD_WAVE_STEP, ENEMY_GOLD_REWARD_WAVE_STEP_CAP)
+	var reward = max(1, int(round(float(base_reward) * wave_bonus)))
 
 	if is_giant_boss:
 		reward = max(reward + int(BOSS_FALLBACK_GOLD_REWARD / 2), int(round(float(reward) * GIANT_BOSS_GOLD_MULTIPLIER)))
