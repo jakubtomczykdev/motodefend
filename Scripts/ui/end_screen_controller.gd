@@ -126,10 +126,10 @@ func _setup_screen() -> void:
 	# Ustaw tytuł
 	if title_label:
 		if screen_type == "game_over":
-			title_label.text = "Przegrałeś"
+			title_label.text = "SYSTEM PRZELAMANY"
 			title_label.modulate = Color(0.9, 0.2, 0.2)
 		else:
-			title_label.text = "ZWYCIĘSTWO!"
+			title_label.text = "SIEC OBRONIONA!"
 			title_label.modulate = Color(0.278, 0.549, 0.749)
 
 	# Ustaw statystyki

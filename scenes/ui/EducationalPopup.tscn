@@ -19,7 +19,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.102, 0.227, 0.361, 0.85)
+color = Color(0.015, 0.045, 0.075, 0.82)
 
 [node name="MainContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -30,7 +30,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="Panel" parent="MainContainer"]
-custom_minimum_size = Vector2(1000, 800)
+custom_minimum_size = Vector2(980, 660)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MainContainer/Panel"]
@@ -40,55 +40,58 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 40
+theme_override_constants/margin_left = 34
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 34
+theme_override_constants/margin_bottom = 28
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/Panel/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 14
 
 [node name="TitleLabel" type="Label" parent="MainContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 43
+custom_minimum_size = Vector2(0, 76)
+theme_override_font_sizes/font_size = 39
 text = "Title"
 horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="HSeparator" type="HSeparator" parent="MainContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MainContainer/Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 390)
 layout_mode = 2
 size_flags_vertical = 3
 
 [node name="ContentBox" type="VBoxContainer" parent="MainContainer/Panel/MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 15
+theme_override_constants/separation = 12
 
 [node name="DescriptionLabel" type="Label" parent="MainContainer/Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 23
 text = "Description"
 autowrap_mode = 3
 
 [node name="ImpactLabel" type="Label" parent="MainContainer/Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 23
 text = "Impact"
 autowrap_mode = 3
 
 [node name="PreventionLabel" type="Label" parent="MainContainer/Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 23
 text = "Prevention"
 autowrap_mode = 3
 
 [node name="RealWorldLabel" type="Label" parent="MainContainer/Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 23
 text = "Real World Example"
 autowrap_mode = 3
 
@@ -96,8 +99,8 @@ autowrap_mode = 3
 layout_mode = 2
 
 [node name="ContinueButton" type="Button" parent="MainContainer/Panel/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(400, 100)
+custom_minimum_size = Vector2(380, 72)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 38
+theme_override_font_sizes/font_size = 32
 text = "Kontynuuj"

@@ -26,13 +26,18 @@ func _ready() -> void:
 	shop_button.pressed.connect(_on_shop_pressed)
 	lobby_button.pressed.connect(_on_lobby_pressed)
 
-func show_transition(wave: int, score: int, gold: int) -> void:
+func show_transition(wave: int, score: int, gold: int, reward_gold: int = 0, next_wave: int = -1, next_preview: String = "") -> void:
 	if not is_node_ready():
 		await ready
 	if title_label:
 		title_label.text = "FALA %d UKONCZONA" % wave
 	if stats_label:
-		stats_label.text = "WYNIK  %d\nZLOTO  %d" % [score, gold]
+		var next_text := next_preview
+		if next_text == "" and next_wave > 0:
+			next_text = "Nastepna fala: %d" % next_wave
+		stats_label.text = "WYNIK  %d\nNAGRODA  +%dG\nZLOTO  %d" % [score, reward_gold, gold]
+		if next_text != "":
+			stats_label.text += "\n" + next_text
 	visible = true
 	if next_button:
 		next_button.grab_focus()
@@ -59,11 +64,11 @@ func _setup_pixel_style() -> void:
 		dim_bg.color = Color(0.005, 0.01, 0.018, 0.76)
 
 	if panel:
-		panel.custom_minimum_size = Vector2(760, 420)
-		panel.offset_left = -380.0
-		panel.offset_top = -210.0
-		panel.offset_right = 380.0
-		panel.offset_bottom = 210.0
+		panel.custom_minimum_size = Vector2(860, 500)
+		panel.offset_left = -430.0
+		panel.offset_top = -250.0
+		panel.offset_right = 430.0
+		panel.offset_bottom = 250.0
 		panel.add_theme_stylebox_override("panel", _make_panel_style())
 
 	if vbox:
@@ -84,7 +89,7 @@ func _setup_pixel_style() -> void:
 		title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 	if stats_label:
-		stats_label.custom_minimum_size = Vector2(0, 108)
+		stats_label.custom_minimum_size = Vector2(0, 160)
 		stats_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		stats_label.add_theme_font_override("font", _ui_font)

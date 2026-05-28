@@ -16,6 +16,8 @@ signal game_over
 @export var spawn_interval_decay: float = 0.03       # per wave
 @export var spawn_refill_threshold: int = 5           # refill queue when below this
 @export var wave_pause_duration: float = 5.0          # pause between waves
+@export var final_spawn_lock_time: float = 4.0         # lets the last seconds breathe
+@export var max_waves: int = 20
 
 @export var base_enemy_count: int = 8
 @export var max_enemy_count: int = 50
@@ -34,6 +36,7 @@ var reward_chests_pending: int = 0
 var spawn_queue: Array[String] = []
 var spawn_timer: float = 0.0
 @export var spawn_interval: float = 1.0   # set dynamically each wave
+var current_intensity: float = 0.0
 
 var player_node: Node2D
 var spawn_points: Array[Node2D] = []
@@ -82,9 +85,10 @@ func _process(delta: float) -> void:
 	if wave_timer >= wave_max_time:
 		end_wave()
 		return
+	current_intensity = _get_wave_intensity()
 
 	# Refill spawn queue when running low
-	if spawn_queue.size() < spawn_refill_threshold:
+	if _should_refill_spawn_queue():
 		_refill_spawn_queue(8)
 
 	# Rozłożone spawnowanie w czasie
@@ -98,7 +102,7 @@ func _process(delta: float) -> void:
 					var enemy_type = spawn_queue.pop_front()
 					_spawn_enemy(enemy_type)
 
-			spawn_timer = spawn_interval
+			spawn_timer = _get_current_spawn_interval()
 
 	update_timer_ui()
 
@@ -156,7 +160,7 @@ func start_next_wave() -> void:
 
 	var wave_config := _get_wave_config(current_wave)
 	# Use at least 15 enemies in the initial queue
-	var initial_count := maxi(15, wave_config.enemy_count)
+	var initial_count := maxi(10, wave_config.enemy_count)
 	enemies_in_wave = initial_count + (1 if wave_config.has_boss else 0)
 	enemies_remaining = enemies_in_wave
 
@@ -285,8 +289,24 @@ func _get_enemy_count_for_wave(wave: int) -> int:
 func _get_spawn_interval(wave: int) -> float:
 	return maxf(spawn_interval_min, spawn_interval_base - float(wave - 1) * spawn_interval_decay)
 
+func _get_current_spawn_interval() -> float:
+	var pressure_multiplier := lerpf(1.15, 0.72, current_intensity)
+	return maxf(spawn_interval_min, spawn_interval * pressure_multiplier)
+
 func _get_spawn_burst_size(wave: int) -> int:
-	return clampi(1 + int(wave / 7), 1, 4)
+	var progress_bonus := 1 if current_intensity > 0.68 else 0
+	return clampi(1 + int(wave / 7) + progress_bonus, 1, 4)
+
+func _should_refill_spawn_queue() -> bool:
+	if spawn_queue.size() >= spawn_refill_threshold:
+		return false
+	var time_left := wave_max_time - wave_timer
+	return time_left > final_spawn_lock_time
+
+func _get_wave_intensity() -> float:
+	if wave_max_time <= 0.0:
+		return 0.0
+	return clampf(wave_timer / wave_max_time, 0.0, 1.0)
 
 func _get_enemy_weights_for_wave(wave: int) -> Dictionary:
 	if wave <= 1:
@@ -365,7 +385,12 @@ func end_wave() -> void:
 		return
 
 	is_wave_active = false
-	wave_ended.emit(current_wave)
+	spawn_queue.clear()
+	enemies_remaining = 0
+	if current_wave >= max_waves:
+		all_waves_completed.emit()
+	else:
+		wave_ended.emit(current_wave)
 	update_ui()
 
 # check_wave_completion removed — timer handles wave end now

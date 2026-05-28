@@ -157,6 +157,9 @@ func _populate_items() -> void:
 		item_ui.setup_item(item, gold)
 		item_ui.item_clicked.connect(_on_item_clicked)
 		item_ui.mouse_entered.connect(_update_preview.bind(item))
+	if not shop_items.is_empty():
+		_update_preview(shop_items[0])
+	_update_item_states()
 
 func _populate_inventory() -> void:
 	var player = get_tree().get_first_node_in_group("Player")

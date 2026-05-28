@@ -46,6 +46,7 @@ var _health_bar_scale: float = 1.0
 var is_dead: bool = false
 var current_wave_number: int = 1
 var _base_gold_reward: int = -1
+var _damage_number_cooldown: float = 0.0
 
 func scale_stats(wave_number: int) -> void:
 	current_wave_number = max(wave_number, 1)
@@ -155,6 +156,9 @@ func _setup_health_bar() -> void:
 func _physics_process(delta: float) -> void:
 	if not player or not is_instance_valid(player):
 		_find_player()
+
+	if _damage_number_cooldown > 0.0:
+		_damage_number_cooldown -= delta
 
 	handle_ai(delta)
 	handle_attack_cooldown(delta)
@@ -289,7 +293,10 @@ func _on_damaged(_amount: int) -> void:
 
 func _spawn_hit_effect() -> void:
 	if not is_inside_tree(): return
-	for i in range(4):
+	var gd := get_node_or_null("/root/GameData")
+	if gd and not gd.particles_enabled:
+		return
+	for i in range(2):
 		var spark := ColorRect.new()
 		spark.size = Vector2(4, 4)
 		spark.color = Color(0.5 + randf() * 0.5, 0.8, 0.3, 1.0)
@@ -357,7 +364,9 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 			final_damage = int(amount * (1.0 + bonus))
 	current_health -= final_damage
 	damaged.emit(final_damage)
-	_spawn_damage_number(final_damage)
+	if _damage_number_cooldown <= 0.0:
+		_spawn_damage_number(final_damage)
+		_damage_number_cooldown = 0.12
 	if knockback != Vector2.ZERO:
 		knockback_velocity = knockback * (1.0 - knockback_resistance)
 	update_health_bar()
@@ -373,6 +382,8 @@ func die() -> void:
 		if gd.has_method("record_gold_income"):
 			gd.record_gold_income("enemy_kill", gold_reward, current_wave_number)
 	var main_game = get_tree().current_scene
+	if main_game and main_game.has_method("on_enemy_defeated"):
+		main_game.on_enemy_defeated(self)
 	if main_game and main_game.has_method("gain_xp"):
 		main_game.gain_xp(xp_value)
 	_spawn_gold_number(gold_reward)

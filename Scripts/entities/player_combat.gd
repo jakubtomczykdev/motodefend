@@ -46,6 +46,7 @@ var collision: CollisionShape2D
 var interaction_area: Area2D
 var interaction_prompt: Label
 var muzzle: Marker2D # punkt wylotu pocisku
+var camera: Camera2D
 
 var projectile_scene: PackedScene = preload("res://scenes/game/Projectile.tscn")
 var weapon_manager: Node
@@ -72,6 +73,8 @@ func _ready() -> void:
 		interaction_prompt = $InteractionPrompt
 	if has_node("Muzzle"):
 		muzzle = $Muzzle
+	if has_node("Camera2D"):
+		camera = $Camera2D
 
 	current_health = max_health
 	health_changed.emit(current_health, max_health)
@@ -362,6 +365,7 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 	health_changed.emit(current_health, max_health)
 	
 	_spawn_damage_number(final_damage)
+	_pulse_camera(8.0)
 	
 	if knockback != Vector2.ZERO:
 		knockback_velocity = knockback
@@ -374,6 +378,17 @@ func take_damage(amount: int, knockback: Vector2 = Vector2.ZERO) -> void:
 func heal(amount: int) -> void:
 	current_health = min(current_health + amount, max_health)
 	health_changed.emit(current_health, max_health)
+
+func _pulse_camera(strength: float) -> void:
+	if not camera:
+		return
+	var gd := get_node_or_null("/root/GameData")
+	if gd and not gd.screen_shake:
+		return
+	var original_offset := camera.offset
+	camera.offset = original_offset + Vector2(randf_range(-strength, strength), randf_range(-strength, strength))
+	var tween := create_tween()
+	tween.tween_property(camera, "offset", original_offset, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 func die() -> void:
 	AudioManager.play_sfx("player_death")
