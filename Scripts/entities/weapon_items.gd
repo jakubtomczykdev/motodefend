@@ -2,7 +2,7 @@
 extends Resource
 class_name WeaponItems
 
-## Wszystkie bronie w sklepie. Kazda linia ma poziom i minimalny tier sklepu.
+## Wszystkie bronie w sklepie. Każda linia ma poziom i minimalny tier sklepu.
 
 static func _make_weapon(
 	p_name: String,

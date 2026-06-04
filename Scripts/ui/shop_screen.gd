@@ -30,6 +30,7 @@ var _opened_externally: bool = false
 var rerolls_this_visit: int = 0
 var _status_message: String = ""
 var _status_is_error: bool = false
+var _purchased_offer_item_keys: Dictionary = {}
 
 @onready var gold_label: Label = $TopBar/GoldLabel
 @onready var items_container: Control = $MainArea/ItemsContainer
@@ -64,6 +65,7 @@ func _ready() -> void:
 func open_shop(available_items: Array[ItemBase], player_build: Node, manager: Node, wave_number: int = 1) -> void:
 	_opened_externally = true
 	shop_items = available_items
+	_purchased_offer_item_keys.clear()
 	build_system = player_build
 	item_manager = manager
 	current_wave_number = max(wave_number, 1)
@@ -138,11 +140,11 @@ func _setup_retro_style() -> void:
 func _refresh_view() -> void:
 	_clear_items()
 	if showing_inventory:
-		view_title.text = "TWOJE WYPOSAZENIE"
+		view_title.text = "TWOJE WYPOSAŻENIE"
 		_populate_inventory()
-		inventory_button.text = "Pokaz SKLEP"
+		inventory_button.text = "Pokaż SKLEP"
 	else:
-		view_title.text = "DOSTEPNA TECHNOLOGIA | SKLEP TIER %d | FALA %d" % [current_shop_tier, current_wave_number]
+		view_title.text = "DOSTĘPNA TECHNOLOGIA | SKLEP TIER %d | FALA %d" % [current_shop_tier, current_wave_number]
 		_populate_items()
 		inventory_button.text = "Moje EQ (%d/%d)" % [_get_current_build_count(), _get_max_build_slots()]
 
@@ -200,7 +202,7 @@ func _on_inventory_item_sold(item: ItemBase) -> void:
 				break
 
 	if not sold:
-		_set_status_message("Nie mozna sprzedac tego przedmiotu.", true)
+		_set_status_message("Nie można sprzedać tego przedmiotu.", true)
 		return
 
 	var all_weps = WeaponItems.get_all_weapons()
@@ -241,13 +243,13 @@ func _update_preview(item: ItemBase) -> void:
 	preview_name.text = item.item_name
 	if item is WeaponBase:
 		var weapon := item as WeaponBase
-		preview_rarity.text = "Rzadkosc: %s | LVL %s | Tier %d+" % [item.rarity.capitalize(), weapon.get_level_suffix(), weapon.min_shop_tier]
+		preview_rarity.text = "Rzadkość: %s | LVL %s | Tier %d+" % [item.rarity.capitalize(), weapon.get_level_suffix(), weapon.min_shop_tier]
 	else:
-		preview_rarity.text = "Rzadkosc: " + item.rarity.capitalize()
+		preview_rarity.text = "Rzadkość: " + item.rarity.capitalize()
 	preview_description.text = item.description
 
 	if showing_inventory:
-		preview_cost.text = "Wartosc sprzedazy: " + str(int(item.cost * 0.5))
+		preview_cost.text = "Wartość sprzedaży: " + str(int(item.cost * 0.5))
 	else:
 		preview_cost.text = "Koszt: " + str(item.cost)
 
@@ -270,27 +272,32 @@ func _on_item_clicked(item: ItemBase) -> void:
 	var gd = get_node_or_null("/root/GameData")
 	var player = get_tree().get_first_node_in_group("Player")
 	var added_to_build := false
+	var queued_for_hub := false
 
 	if build_system:
 		if not build_system.add_item(item):
 			AudioManager.play_sfx("menu_click")
-			_set_status_message("Build jest pelny. Sprzedaj cos przed zakupem.", true)
+			_set_status_message("Build jest pełny. Sprzedaj coś przed zakupem.", true)
 			return
 		added_to_build = true
 
 	if item is WeaponBase:
-		if not player or not player.has_method("add_weapon"):
-			if added_to_build and build_system:
-				build_system.remove_item(item)
-			AudioManager.play_sfx("menu_click")
-			_set_status_message("Nie udalo sie dodac broni do ekwipunku.", true)
-			return
-		if not player.add_weapon(item):
-			if added_to_build and build_system:
-				build_system.remove_item(item)
-			AudioManager.play_sfx("menu_click")
-			_set_status_message("Brak wolnego slotu na bron.", true)
-			return
+		if build_system == null and gd:
+			_save_weapon_to_pending(item as WeaponBase, gd)
+			queued_for_hub = true
+		else:
+			if not player or not player.has_method("add_weapon"):
+				if added_to_build and build_system:
+					build_system.remove_item(item)
+				AudioManager.play_sfx("menu_click")
+				_set_status_message("Nie udało się dodać broni do ekwipunku.", true)
+				return
+			if not player.add_weapon(item):
+				if added_to_build and build_system:
+					build_system.remove_item(item)
+				AudioManager.play_sfx("menu_click")
+				_set_status_message("Brak wolnego slotu na broń.", true)
+				return
 	elif build_system == null and gd:
 		gd.add_inventory_item(item)
 
@@ -299,11 +306,13 @@ func _on_item_clicked(item: ItemBase) -> void:
 	if gd and gd.has_method("record_gold_spent"):
 		gd.record_gold_spent("shop_purchase", item.cost, current_wave_number)
 
-	if build_system == null and gd and item is WeaponBase:
-		_save_weapon_to_pending(item as WeaponBase, gd)
+	if queued_for_hub:
+		_set_status_message("Kupiono: %s. Broń będzie dostępna od następnej fali." % item.item_name)
+	else:
+		_set_status_message("Kupiono: %s" % item.item_name)
 
+	_purchased_offer_item_keys[_get_item_key(item)] = true
 	item_purchased.emit(item)
-	_set_status_message("Kupiono: %s" % item.item_name)
 
 	_update_ui()
 	_update_item_states()
@@ -311,7 +320,7 @@ func _on_item_clicked(item: ItemBase) -> void:
 func _on_refresh_pressed() -> void:
 	if gold < refresh_cost:
 		AudioManager.play_sfx("menu_click")
-		_set_status_message("Za malo zlota na reroll.", true)
+		_set_status_message("Za mało złota na reroll.", true)
 		return
 
 	var gd = get_node_or_null("/root/GameData")
@@ -327,6 +336,7 @@ func _on_refresh_pressed() -> void:
 	_refresh_shop_items()
 
 func _refresh_shop_items() -> void:
+	_purchased_offer_item_keys.clear()
 	current_shop_tier = _get_shop_tier(current_wave_number)
 	if item_manager and item_manager.has_method("get_shop_items"):
 		shop_items = item_manager.get_shop_items(4, current_wave_number)
@@ -373,14 +383,19 @@ func _get_max_weapon_slots() -> int:
 	return BalanceData.MAX_WEAPON_SLOTS
 
 func _can_purchase_item(item: ItemBase) -> bool:
+	if _is_offer_item_purchased(item):
+		AudioManager.play_sfx("menu_click")
+		_set_status_message("Ten przedmiot zostal juz kupiony z tej oferty.", true)
+		return false
+
 	if gold < item.cost:
 		AudioManager.play_sfx("menu_click")
-		_set_status_message("Za malo zlota na ten zakup.", true)
+		_set_status_message("Za mało złota na ten zakup.", true)
 		return false
 
 	if _get_current_build_count() >= _get_max_build_slots():
 		AudioManager.play_sfx("menu_click")
-		_set_status_message("Build jest pelny. Sprzedaj cos przed zakupem.", true)
+		_set_status_message("Build jest pełny. Sprzedaj coś przed zakupem.", true)
 		return false
 
 	if item is WeaponBase and _get_current_weapon_count() >= _get_max_weapon_slots():
@@ -399,8 +414,7 @@ func _save_weapon_to_pending(weapon: WeaponBase, gd) -> void:
 	for i in range(all_weps.size()):
 		var candidate = all_weps[i]
 		if candidate != null and _items_match(candidate, weapon):
-			if not gd.pending_weapon_ids.has(i):
-				gd.pending_weapon_ids.append(i)
+			gd.pending_weapon_ids.append(i)
 			break
 
 func _find_matching_build_item(item: ItemBase) -> ItemBase:
@@ -426,19 +440,29 @@ func _items_match(left: ItemBase, right: ItemBase) -> bool:
 		return false
 	return left.item_name == right.item_name and left.item_type == right.item_type
 
+func _get_item_key(item: ItemBase) -> String:
+	if item == null:
+		return ""
+	return "%s|%s" % [item.item_type, item.item_name]
+
+func _is_offer_item_purchased(item: ItemBase) -> bool:
+	return _purchased_offer_item_keys.has(_get_item_key(item))
+
 func _set_status_message(message: String, is_error: bool = false) -> void:
 	_status_message = message
 	_status_is_error = is_error
 
 func _update_item_states() -> void:
 	for child in items_container.get_children():
+		if child.has_method("set_sold_out"):
+			child.set_sold_out(_is_offer_item_purchased(child.item_data))
 		if child.has_method("update_affordability"):
 			child.update_affordability(gold)
 
 func _update_ui() -> void:
 	current_shop_tier = _get_shop_tier(current_wave_number)
 	refresh_cost = BalanceData.get_reroll_cost(current_wave_number, current_shop_tier, rerolls_this_visit)
-	gold_label.text = "ZLOTO: %d" % gold
+	gold_label.text = "ZŁOTO: %d" % gold
 	if reroll_button:
 		reroll_button.text = "Reroll (%dG)" % refresh_cost
 	if weapon_count_label:

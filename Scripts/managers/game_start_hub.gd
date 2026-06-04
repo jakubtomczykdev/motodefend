@@ -34,7 +34,7 @@ func _update_gold_display() -> void:
 	if gd:
 		gold = gd.gold
 	if gold_label:
-		gold_label.text = "ZLOTO: %d" % gold
+		gold_label.text = "ZŁOTO: %d" % gold
 
 func _on_start_game_button_pressed() -> void:
 	get_tree().paused = false
@@ -212,7 +212,9 @@ func _open_shop() -> void:
 	shop_layer.add_child(shop)
 	
 	# Pobierz przedmioty dla sklepu (4 losowe dla huba)
-	var item_manager = get_node_or_null("/root/ItemManager")
+	var item_manager = get_node_or_null("ItemManager")
+	if not item_manager:
+		item_manager = get_node_or_null("/root/ItemManager")
 	var items: Array[ItemBase] = []
 	var gd := get_node_or_null("/root/GameData")
 	var shop_wave := 1

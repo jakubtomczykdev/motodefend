@@ -12,6 +12,7 @@ signal item_clicked(item: ItemBase)
 
 var item_data: ItemBase
 var is_inventory_mode: bool = false
+var is_sold_out: bool = false
 
 func _ready() -> void:
 	if buy_button:
@@ -69,6 +70,12 @@ func update_affordability(gold: int) -> void:
 		buy_button.text = "SPRZEDAJ"
 		return
 
+	if is_sold_out:
+		buy_button.disabled = true
+		buy_button.modulate = Color(1, 1, 1, 0.35)
+		buy_button.text = "SPRZEDANE"
+		return
+
 	if gold < item_data.cost:
 		buy_button.disabled = true
 		buy_button.modulate = Color(1, 1, 1, 0.5)
@@ -83,6 +90,9 @@ func set_as_inventory_item() -> void:
 	if is_node_ready():
 		buy_button.text = "SPRZEDAJ"
 		buy_button.modulate = Color(1, 0.4, 0.4, 1.0)
+
+func set_sold_out(value: bool) -> void:
+	is_sold_out = value
 
 func _on_buy_pressed() -> void:
 	item_clicked.emit(item_data)

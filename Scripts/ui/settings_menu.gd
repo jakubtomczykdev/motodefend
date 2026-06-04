@@ -171,4 +171,4 @@ func _on_add_gold_pressed() -> void:
 func _update_gold_display() -> void:
 	var gd := get_node_or_null("/root/GameData")
 	if gd and current_gold_label:
-		current_gold_label.text = "ZLOTO: %d" % gd.gold
+		current_gold_label.text = "ZŁOTO: %d" % gd.gold

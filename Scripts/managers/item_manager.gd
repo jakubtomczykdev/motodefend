@@ -1,5 +1,5 @@
 extends Node
-## Zarzadza dostepnoscia i tworzeniem itemow w sklepie.
+## Zarządza dostępnością i tworzeniem itemów w sklepie.
 
 signal item_pool_updated
 

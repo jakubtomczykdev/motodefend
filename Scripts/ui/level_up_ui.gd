@@ -1,6 +1,6 @@
 extends Control
 
-## LevelUpUI - obsluguje wybor ulepszen po awansie poziomu.
+## LevelUpUI - obsługuje wybór ulepszeń po awansie poziomu.
 
 signal upgrade_selected(upgrade)
 

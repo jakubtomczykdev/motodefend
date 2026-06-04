@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://glrrl0imiuif" path="res://Scripts/managers/game_start_hub.gd" id="8_hub"]
 [ext_resource type="Script" uid="uid://fv5etw6m4nrg" path="res://Scripts/ui/start_game_trigger.gd" id="10_trigger"]
 [ext_resource type="PackedScene" uid="uid://bag1npbdd1mlm" path="res://scenes/world/Laptop.tscn" id="11_laptop"]
+[ext_resource type="Script" uid="uid://dailkyrs24a4o" path="res://Scripts/managers/item_manager.gd" id="12_item"]
 [ext_resource type="Texture2D" uid="uid://bg4ia3v3cbgbx" path="res://Assets/Lobby_bg.png" id="bg_tex"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
@@ -30,6 +31,9 @@ size = Vector2(216, 171)
 [node name="Node2D" type="Node2D" unique_id=720583781]
 y_sort_enabled = true
 script = ExtResource("8_hub")
+
+[node name="ItemManager" type="Node" parent="."]
+script = ExtResource("12_item")
 
 [node name="MapBoundaries" type="StaticBody2D" parent="." unique_id=993547456]
 collision_mask = 0

@@ -481,7 +481,7 @@ func _process(delta: float) -> void:
 
 	# Aktualizuj wyświetlanie golda (tylko gdy się zmieni)
 	if should_update_hud and gold_label and gold != _last_gold_display:
-		gold_label.text = "ZLOTO: %d" % gold
+		gold_label.text = "ZŁOTO: %d" % gold
 		_last_gold_display = gold
 
 	# Aktualizuj licznik wrogów
@@ -822,7 +822,7 @@ func _get_next_wave_preview(next_wave: int) -> String:
 		if preview != "":
 			preview += "  |  "
 		preview += tag
-	return "Nastepna fala: %s" % preview
+	return "Następna fala: %s" % preview
 
 func _on_next_wave_requested() -> void:
 	if transition_screen:

@@ -34,8 +34,8 @@ func show_transition(wave: int, score: int, gold: int, reward_gold: int = 0, nex
 	if stats_label:
 		var next_text := next_preview
 		if next_text == "" and next_wave > 0:
-			next_text = "Nastepna fala: %d" % next_wave
-		stats_label.text = "WYNIK  %d\nNAGRODA  +%dG\nZLOTO  %d" % [score, reward_gold, gold]
+			next_text = "Następna fala: %d" % next_wave
+		stats_label.text = "WYNIK  %d\nNAGRODA  +%dG\nZŁOTO  %d" % [score, reward_gold, gold]
 		if next_text != "":
 			stats_label.text += "\n" + next_text
 	visible = true
@@ -101,7 +101,7 @@ func _setup_pixel_style() -> void:
 		buttons_row.add_theme_constant_override("separation", 18)
 		buttons_row.alignment = BoxContainer.ALIGNMENT_CENTER
 
-	_style_action_button(next_button, "NASTEPNA\nFALA", Color(0.35, 0.94, 1.0))
+	_style_action_button(next_button, "NASTĘPNA\nFALA", Color(0.35, 0.94, 1.0))
 	_style_action_button(shop_button, "SKLEP", Color(1.0, 0.82, 0.28))
 	_style_action_button(lobby_button, "LOBBY", Color(0.72, 0.82, 0.92))
 
