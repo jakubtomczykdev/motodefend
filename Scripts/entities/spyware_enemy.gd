@@ -80,7 +80,7 @@ func _start_scan_shot() -> void:
 		return
 
 	is_scanning = true
-	var aim_dir := (player.global_position - global_position).normalized()
+	var aim_dir: Vector2 = (player.global_position - global_position).normalized()
 	_spawn_line_warning(global_position, aim_dir, 720.0, 16.0, 0.7, Color(1.0, 0.05, 0.05, 0.38))
 	modulate = Color(1.4, 0.55, 0.55)
 	await get_tree().create_timer(0.7).timeout
@@ -88,9 +88,9 @@ func _start_scan_shot() -> void:
 		return
 
 	if player and is_instance_valid(player) and player.has_method("take_damage"):
-		var to_player := player.global_position - global_position
-		var distance_along := to_player.dot(aim_dir)
-		var perpendicular := abs(to_player.cross(aim_dir))
+		var to_player: Vector2 = player.global_position - global_position
+		var distance_along: float = to_player.dot(aim_dir)
+		var perpendicular: float = abs(to_player.cross(aim_dir))
 		if distance_along > 0.0 and distance_along < 720.0 and perpendicular < 28.0:
 			player.take_damage(int(damage * 1.45), aim_dir * 320.0)
 

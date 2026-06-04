@@ -186,10 +186,12 @@ func _get_wave_config(wave: int) -> Dictionary:
 		elif wave == 15:
 			config.boss_type = "giant_ransomware"
 		elif wave == 20:
-			config.boss_type = "giant_spyware"
+			config.boss_type = "apt_boss"
 		elif wave == 25:
-			config.boss_type = "giant_phishing"
+			config.boss_type = "giant_spyware"
 		elif wave == 30:
+			config.boss_type = "giant_phishing"
+		elif wave == 35:
 			config.boss_type = "giant_sql"
 		else:
 			config.boss_type = "apt_boss"
@@ -217,7 +219,7 @@ func _spawn_wave(config: Dictionary, initial_count: int = 15) -> void:
 	for etype in spawn_queue:
 		if etype == "bot":
 			bot_count += 1
-	var missing_bots := maxi(0, 8 - bot_count)
+	var missing_bots := maxi(0, _get_min_bot_count_for_wave(current_wave) - bot_count)
 	for i in range(missing_bots):
 		spawn_queue.append("bot")
 	if missing_bots > 0:
@@ -286,6 +288,15 @@ func _get_enemy_count_for_wave(wave: int) -> int:
 		count -= 3
 	return clampi(count, 8, max_enemy_count)
 
+func _get_min_bot_count_for_wave(wave: int) -> int:
+	if wave <= 1:
+		return 2
+	if wave <= 4:
+		return 4
+	if wave <= 9:
+		return 6
+	return 8
+
 func _get_spawn_interval(wave: int) -> float:
 	return maxf(spawn_interval_min, spawn_interval_base - float(wave - 1) * spawn_interval_decay)
 
@@ -310,29 +321,45 @@ func _get_wave_intensity() -> float:
 
 func _get_enemy_weights_for_wave(wave: int) -> Dictionary:
 	if wave <= 1:
-		return {"worm": 0.75, "bot": 0.25}
+		return {"worm": 0.82, "bot": 0.18}
 	if wave == 2:
-		return {"worm": 0.60, "trojan": 0.20, "bot": 0.20}
+		return {"worm": 0.58, "trojan": 0.17, "bot": 0.25}
 	if wave == 3:
-		return {"worm": 0.47, "trojan": 0.28, "ransomware": 0.08, "bot": 0.17}
+		return {"worm": 0.45, "trojan": 0.27, "ransomware": 0.10, "bot": 0.18}
 	if wave == 4:
-		return {"worm": 0.30, "trojan": 0.34, "ransomware": 0.20, "bot": 0.16}
+		return {"worm": 0.22, "trojan": 0.34, "ransomware": 0.24, "bot": 0.20}
 	if wave == 5:
-		return {"worm": 0.39, "trojan": 0.30, "ransomware": 0.16, "bot": 0.15}
-	if wave <= 7:
-		return {"worm": 0.23, "trojan": 0.27, "ransomware": 0.22, "spyware": 0.13, "bot": 0.15}
-	if wave <= 9:
-		return {"worm": 0.12, "trojan": 0.20, "ransomware": 0.20, "spyware": 0.18, "phishing": 0.12, "bot": 0.18}
+		return {"worm": 0.46, "trojan": 0.23, "ransomware": 0.11, "bot": 0.20}
+	if wave == 6:
+		return {"worm": 0.22, "trojan": 0.18, "ransomware": 0.16, "spyware": 0.24, "bot": 0.20}
+	if wave == 7:
+		return {"worm": 0.12, "trojan": 0.24, "ransomware": 0.12, "spyware": 0.32, "bot": 0.20}
+	if wave == 8:
+		return {"worm": 0.08, "trojan": 0.16, "ransomware": 0.14, "spyware": 0.27, "phishing": 0.17, "bot": 0.18}
+	if wave == 9:
+		return {"worm": 0.06, "trojan": 0.26, "ransomware": 0.10, "spyware": 0.20, "phishing": 0.22, "bot": 0.16}
 	if wave == 10:
-		return {"trojan": 0.24, "ransomware": 0.21, "spyware": 0.19, "phishing": 0.13, "worm": 0.08, "bot": 0.15}
-	if wave <= 12:
-		return {"trojan": 0.16, "ransomware": 0.18, "spyware": 0.19, "phishing": 0.17, "sql": 0.10, "bot": 0.20}
-	if wave <= 14:
-		return {"trojan": 0.12, "ransomware": 0.16, "spyware": 0.18, "phishing": 0.18, "sql": 0.18, "bot": 0.18}
-	if wave <= 19:
-		return {"worm": 0.08, "trojan": 0.13, "ransomware": 0.17, "spyware": 0.17, "phishing": 0.15, "sql": 0.14, "bot": 0.16}
+		return {"trojan": 0.34, "ransomware": 0.14, "spyware": 0.16, "phishing": 0.18, "worm": 0.04, "bot": 0.14}
+	if wave == 11:
+		return {"trojan": 0.13, "ransomware": 0.13, "spyware": 0.24, "phishing": 0.20, "sql": 0.10, "bot": 0.20}
+	if wave == 12:
+		return {"trojan": 0.22, "ransomware": 0.12, "spyware": 0.13, "phishing": 0.13, "sql": 0.23, "bot": 0.17}
+	if wave == 13:
+		return {"trojan": 0.10, "ransomware": 0.13, "spyware": 0.22, "phishing": 0.22, "sql": 0.19, "bot": 0.14}
+	if wave == 14:
+		return {"trojan": 0.08, "ransomware": 0.26, "spyware": 0.18, "phishing": 0.12, "sql": 0.22, "bot": 0.14}
+	if wave == 15:
+		return {"worm": 0.04, "trojan": 0.08, "ransomware": 0.33, "spyware": 0.15, "phishing": 0.10, "sql": 0.16, "bot": 0.14}
+	if wave == 16:
+		return {"worm": 0.06, "trojan": 0.12, "ransomware": 0.16, "spyware": 0.19, "phishing": 0.17, "sql": 0.16, "bot": 0.14}
+	if wave == 17:
+		return {"worm": 0.04, "trojan": 0.08, "ransomware": 0.12, "spyware": 0.24, "phishing": 0.22, "sql": 0.18, "bot": 0.12}
+	if wave == 18:
+		return {"worm": 0.03, "trojan": 0.08, "ransomware": 0.10, "spyware": 0.30, "phishing": 0.25, "sql": 0.14, "bot": 0.10}
+	if wave == 19:
+		return {"worm": 0.03, "trojan": 0.18, "ransomware": 0.22, "spyware": 0.10, "phishing": 0.10, "sql": 0.27, "bot": 0.10}
 	if wave <= 24:
-		return {"worm": 0.07, "trojan": 0.12, "ransomware": 0.15, "spyware": 0.17, "phishing": 0.15, "sql": 0.20, "bot": 0.14}
+		return {"worm": 0.04, "trojan": 0.11, "ransomware": 0.14, "spyware": 0.17, "phishing": 0.18, "sql": 0.24, "bot": 0.12}
 	return {"worm": 0.07, "trojan": 0.12, "ransomware": 0.15, "spyware": 0.16, "phishing": 0.18, "sql": 0.18, "bot": 0.14}
 
 func _pick_weighted_enemy(weights: Dictionary) -> String:

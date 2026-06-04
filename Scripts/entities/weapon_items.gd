@@ -49,76 +49,106 @@ static func _roman(level: int) -> String:
 			return str(level)
 
 static func get_all_weapons() -> Array[WeaponBase]:
-	var old_radio := load("res://Assets/newAssets/oldRadio.png") as Texture2D
-	var new_radio := load("res://Assets/newAssets/newRadio.png") as Texture2D
-	var old_drone := load("res://Assets/newAssets/oldDrone.png") as Texture2D
-	var fighting_drone := load("res://Assets/newAssets/fightingDrone.png") as Texture2D
-	var blaster := load("res://Assets/newAssets/Blaster.png") as Texture2D
-	var sword := load("res://Assets/newAssets/sword.png") as Texture2D
+	var radio_t1 := load("res://Assets/newweapons/radio_t1.png") as Texture2D
+	var radio_t2 := load("res://Assets/newweapons/radio_t2.png") as Texture2D
+	var radio_t3 := load("res://Assets/newweapons/radio_t3.png") as Texture2D
+	var radio_t4 := load("res://Assets/newweapons/radio_t4.png") as Texture2D
+	var drone_t1 := load("res://Assets/newweapons/dron_t1.png") as Texture2D
+	var drone_t2 := load("res://Assets/newweapons/dron_t2.png") as Texture2D
+	var drone_t3 := load("res://Assets/newweapons/dron_t3.png") as Texture2D
+	var drone_t4 := load("res://Assets/newweapons/dron_t4.png") as Texture2D
+	var blaster_t1 := load("res://Assets/newweapons/blaster_t1.png") as Texture2D
+	var blaster_t2 := load("res://Assets/newweapons/blaster_t2.png") as Texture2D
+	var blaster_t3 := load("res://Assets/newweapons/blaster_t3.png") as Texture2D
+	var blaster_t4 := load("res://Assets/newweapons/blaster_t4.png") as Texture2D
+	var sword_t1 := load("res://Assets/newweapons/swords_t1.png") as Texture2D
+	var sword_t2 := load("res://Assets/newweapons/swords_t2.png") as Texture2D
+	var sword_t3 := load("res://Assets/newweapons/swords_t3.png") as Texture2D
+	var sword_t4 := load("res://Assets/newweapons/swords_t4.png") as Texture2D
 
 	return [
 		_make_weapon(
 			"Radio", "shockwave", "radio", 1, 1, "common", 90,
-			42.0, 1.65, 145.0, old_radio,
+			42.0, 1.65, 145.0, radio_t1,
 			"Podstawowa fala obszarowa. Tania i dobra na pierwsze infekcje.", true
 		),
 		_make_weapon(
 			"Radio Motorola", "shockwave", "radio", 2, 2, "rare", 170,
-			62.0, 1.35, 230.0, new_radio,
+			62.0, 1.35, 230.0, radio_t2,
 			"Mocniejsza fala o wiekszym zasiegu. Stabilny upgrade do kontroli tlumu."
 		),
 		_make_weapon(
 			"Radio Motorola", "shockwave", "radio", 3, 4, "epic", 300,
-			86.0, 1.1, 330.0, new_radio,
+			86.0, 1.1, 330.0, radio_t3,
 			"Zaawansowana fala Motorola. Spowalnia wrogow i czysci wieksze grupy."
+		),
+		_make_weapon(
+			"Radio Motorola", "shockwave", "radio", 4, 5, "legendary", 430,
+			116.0, 0.92, 420.0, radio_t4,
+			"Najwyzszy tier radia. Bardzo mocna fala do kontroli poznych fal."
 		),
 
 		_make_weapon(
 			"Dron", "drone", "drone", 1, 1, "common", 105,
-			26.0, 1.35, 280.0, old_drone,
+			26.0, 1.35, 280.0, drone_t1,
 			"Autonomiczny dron patrolowy. Slabszy, ale dziala bez celowania.", true
 		),
 		_make_weapon(
 			"Dron Patrolowy", "drone", "drone", 2, 2, "rare", 190,
-			40.0, 1.0, 390.0, old_drone,
+			40.0, 1.0, 390.0, drone_t2,
 			"Szybszy dron z lepszym zasiegiem i czestszym ostrzalem."
 		),
 		_make_weapon(
 			"Dron Bojowy", "drone", "drone", 3, 4, "legendary", 360,
-			58.0, 0.72, 520.0, fighting_drone,
+			58.0, 0.72, 520.0, drone_t3,
 			"Elitarny dron bojowy. Agresywnie namierza cele i zadaje wysokie obrazenia."
+		),
+		_make_weapon(
+			"Dron Bojowy", "drone", "drone", 4, 5, "legendary", 480,
+			76.0, 0.58, 640.0, drone_t4,
+			"Najwyzszy tier drona bojowego. Szybciej namierza cele i mocniej skaluje obrazenia."
 		),
 
 		_make_weapon(
 			"Blaster", "blaster", "blaster", 1, 1, "common", 115,
-			48.0, 0.75, 420.0, blaster,
+			48.0, 0.75, 420.0, blaster_t1,
 			"Seria szybkich pakietow danych. Dobry startowy wybor dystansowy."
 		),
 		_make_weapon(
 			"Blaster Motorola", "blaster", "blaster", 2, 3, "rare", 220,
-			72.0, 0.52, 540.0, blaster,
+			72.0, 0.52, 540.0, blaster_t2,
 			"Szybsza i mocniejsza seria. Lepiej skaluje sie z obrazeniami gracza."
 		),
 		_make_weapon(
 			"Blaster Motorola", "blaster", "blaster", 3, 5, "epic", 340,
-			98.0, 0.38, 650.0, blaster,
+			98.0, 0.38, 650.0, blaster_t3,
 			"Wysokowydajny blaster do poznych fal. Bardzo szybki burst."
+		),
+		_make_weapon(
+			"Blaster Motorola", "blaster", "blaster", 4, 5, "legendary", 470,
+			126.0, 0.3, 760.0, blaster_t4,
+			"Najwyzszy tier blastera. Ekstremalnie szybki burst do koncowki gry."
 		),
 
 		_make_weapon(
 			"Miecz", "sword", "sword", 1, 1, "common", 100,
-			62.0, 0.82, 210.0, sword,
+			62.0, 0.82, 210.0, sword_t1,
 			"Ryzykowna bron w zwarciu. Wysokie obrazenia za bliski dystans."
 		),
 		_make_weapon(
 			"Miecz Taktyczny", "sword", "sword", 2, 3, "rare", 205,
-			86.0, 0.64, 270.0, sword,
+			86.0, 0.64, 270.0, sword_t2,
 			"Szerszy zamach i lepszy cooldown. Dobra bron do agresywnego stylu."
 		),
 		_make_weapon(
 			"Miecz Energetyczny", "sword", "sword", 3, 5, "epic", 330,
-			118.0, 0.48, 340.0, sword,
+			118.0, 0.48, 340.0, sword_t3,
 			"Pozny wariant miecza. Bardzo mocne ciosy i dluzszy zasieg."
+		),
+		_make_weapon(
+			"Miecz Energetyczny", "sword", "sword", 4, 5, "legendary", 455,
+			150.0, 0.38, 420.0, sword_t4,
+			"Najwyzszy tier miecza. Najmocniejszy wariant do walki w zwarciu."
 		),
 	]
 

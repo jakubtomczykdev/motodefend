@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://phishing_enemy"]
 
 [ext_resource type="Script" path="res://Scripts/entities/phishing_enemy.gd" id="1"]
-[ext_resource type="Texture2D" uid="uid://dcgub7wue710o" path="res://Assets/Characters/phishing.png" id="2"]
+[ext_resource type="Texture2D" path="res://Assets/Characters/phishing_malware.png" id="2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(32, 32)
