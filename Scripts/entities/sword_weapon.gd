@@ -83,7 +83,7 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 
 	# Główny sprite miecza
 	var sword_sprite := Sprite2D.new()
-	var tex := load("res://Assets/newAssets/sword.png") as Texture2D
+	var tex := load("res://Assets/newweapons/swords_t1.png") as Texture2D
 	if tex:
 		sword_sprite.texture = tex
 		sword_sprite.scale = Vector2(0.04, 0.04)

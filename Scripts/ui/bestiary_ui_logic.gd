@@ -39,7 +39,7 @@ func _build_entries() -> Array[Dictionary]:
 	return [
 		{
 			name = "ROBAK (Worm)",
-			texture_path = "res://Assets/Characters/mob.png",
+			texture_path = "res://Assets/Characters/worm.png",
 			category = "robactwo",
 			hp = 30, speed = 3, attack = 5, wave = "1-3", type = "ROBACTWO",
 			lore = "[color=#d0fff5]W ciemnych zakamarkach cyberprzestrzeni ROBAK drąży tunele przez warstwy ochronne firewalli. To samoreplikujący się byt – wystarczy jeden, by w ciągu minut zaroiło się od nich całe spektrum sieci. Jego kod ewoluuje z każdym cyklem, ucząc się omijać kolejne zapory. W grze Motodefend spotkasz go w pierwszych falach – jest szybki, liczny i nieprzewidywalny, ale pojedynczy osobnik nie stanowi dużego zagrożenia.[/color]",
@@ -47,7 +47,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "SPYWARE",
-			texture_path = "res://Assets/Characters/321.png",
+			texture_path = "res://Assets/Characters/spyware.png",
 			category = "robactwo",
 			hp = 25, speed = 5, attack = 3, wave = "1-4", type = "ROBACTWO",
 			lore = "[color=#d0fff5]Cichy obserwator w głębinach sieci – SPYWARE nie atakuje wprost. Prześlizguje się przez niedomknięte porty, kopiuje pakiety danych i wysyła je do swoich twórców. Jego obecność zdradza tylko nieznaczne spowolnienie łącza. W świecie Motodefend to jednostka szpiegowska – jeśli nie zniszczysz jej szybko, przeciwnik pozna słabe punkty Twojej obrony.[/color]",
@@ -55,7 +55,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "ADWARE",
-			texture_path = "res://Assets/Characters/mob.png",
+			texture_path = "res://Assets/Characters/bot_enemy.png",
 			category = "robactwo",
 			hp = 20, speed = 6, attack = 2, wave = "2-5", type = "ROBACTWO",
 			lore = "[color=#d0fff5]ADWARE to cyfrowy krzykacz – nie zabija, ale zagłusza. Zasypuje interfejs falą natrętnych reklam, spowalnia procesy i odwraca uwagę od prawdziwego zagrożenia. W Motodefend działa jak jednostka wsparcia – podczas gdy Ty walczysz z jego reklamowym spamem, cięższe wirusy przechodzą dalej. Ignorujesz go na własną odpowiedzialność.[/color]",
@@ -63,7 +63,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "TROJAN",
-			texture_path = "res://Assets/Characters/phishing.png",
+			texture_path = "res://Assets/Characters/Trojan.png",
 			category = "zlosliwe",
 			hp = 50, speed = 2, attack = 8, wave = "2-6", type = "ZŁOŚLIWE",
 			lore = "[color=#ffaa00]TROJAN to mistrz kamuflażu – przybiera postać legalnego oprogramowania, by po cichu otworzyć backdoor do systemu. Jego nazwa nie jest przypadkowa: tak jak koń trojański, kryje w sobie niszczycielski ładunek. W Motodefend pojawia się znienacka – na pierwszy rzut oka wygląda jak zwykły plik systemowy, ale gdy przejdzie przez bramę, rozpętuje piekło.[/color]",
@@ -71,7 +71,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "RANSOMWARE",
-			texture_path = "res://Assets/Characters/dupa.png",
+			texture_path = "res://Assets/Characters/Ransomware.png",
 			category = "zlosliwe",
 			hp = 40, speed = 1, attack = 10, wave = "3-7", type = "ZŁOŚLIWE",
 			lore = "[color=#ffaa00]RANSOMWARE nie bawi się w subtelności – szyfruje wszystko, co napotka, a za klucz żąda okupu w kryptowalucie. Gdy widzisz jego czerwoną sygnaturę na swoich plikach, jest już za późno. W Motodefend to jeden z najgroźniejszych przeciwników – wolny, ale każdy jego cios to szyfrowanie kolejnego sektora pamięci. Zniszcz go, zanim zaszyfruje całą bazę.[/color]",
@@ -79,7 +79,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "KEYLOGGER (Phishing)",
-			texture_path = "res://Assets/Characters/phishing.png",
+			texture_path = "res://Assets/Characters/phishing_malware.png",
 			category = "zlosliwe",
 			hp = 15, speed = 7, attack = 4, wave = "2-5", type = "ZŁOŚLIWE",
 			lore = "[color=#ffaa00]KEYLOGGER to cyfrowy cień czający się nad klawiaturą. Każde naciśnięcie klawisza, każdy znak – wszystko rejestrowane i wysyłane do atakującego. W Motodefend jest niepozorny i szybki – zanim go zauważysz, przechwycił już Twoje kody dostępu. Poluj na niego priorytetowo, bo informacja to najcenniejsza waluta cyberprzestrzeni.[/color]",
@@ -87,7 +87,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "DDoS",
-			texture_path = "res://Assets/Characters/mob.png",
+			texture_path = "res://Assets/Characters/bot_enemy.png",
 			category = "ataki_sieciowe",
 			hp = 80, speed = 1, attack = 6, wave = "4-8", type = "ATAKI SIECIOWE",
 			lore = "[color=#00ccff]DDoS nie próbuje się ukryć – to frontalny atak tysięcy zainfekowanych maszyn, które jednocześnie bombardują serwer zapytaniami. Przytłacza infrastrukturę samą masą. W Motodefend działa jak boss – pojawia się w późniejszych falach z ogromnym HP i miażdży wszystko na swojej drodze. Żeby go powstrzymać, potrzebujesz najcięższych dział.[/color]",
@@ -95,7 +95,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "SQL INJECTION",
-			texture_path = "res://Assets/Characters/phishing.png",
+			texture_path = "res://Assets/Characters/sql_injection.png",
 			category = "ataki_sieciowe",
 			hp = 35, speed = 4, attack = 12, wave = "3-7", type = "ATAKI SIECIOWE",
 			lore = "[color=#00ccff]SQL INJECTION to chirurgicznie precyzyjny atak – zamiast siły używa luk w zapytaniach bazodanowych. Wstrzykuje złośliwy kod prosto w serce bazy danych, skąd może wykradać, modyfikować lub niszczyć informacje. W Motodefend uderza z dystansu z niszczycielską siłą – jego ataki ignorują część pancerza, bo trafiają w logikę, nie w hardware.[/color]",
@@ -103,7 +103,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "BOTNET",
-			texture_path = "res://Assets/Characters/mob.png",
+			texture_path = "res://Assets/Characters/bot_enemy.png",
 			category = "ataki_sieciowe",
 			hp = 45, speed = 3, attack = 7, wave = "5-10", type = "ATAKI SIECIOWE",
 			lore = "[color=#00ccff]BOTNET to armia zombi – setki przejętych urządzeń, które nieświadomie wykonują rozkazy swojego pana. Każdy smartfon, router czy laptop może stać się żołnierzem w tej cyfrowej armii. W Motodefend Botnet uderza zmasowaną falą – pojedyncza jednostka jest słaba, ale działa w grupie. Zaatakuj komturię (C2), by rozproszyć rój.[/color]",
@@ -111,7 +111,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "APT (BOSS)",
-			texture_path = "res://Assets/Characters/dupa.png",
+			texture_path = "res://Assets/Characters/apt_boss.png",
 			category = "bossy",
 			hp = 200, speed = 1, attack = 20, wave = "10", type = "BOSS",
 			lore = "[color=#ff0044]APT to nie wirus – to operacja. Zaawansowane, długotrwałe, finansowane przez państwa lub organizacje przestępcze. APT nie włamuje się na chwilę – on infiltruje system na miesiące, cierpliwie zbierając dane wywiadowcze. W Motodefend to ostateczny boss: ogromne HP, druzgocący atak i zdolność adaptacji. Pokonanie go wymaga pełnego arsenału i perfekcyjnej strategii.[/color]",
@@ -119,7 +119,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "ROOTKIT (BOSS)",
-			texture_path = "res://Assets/Characters/dupa.png",
+			texture_path = "res://Assets/Characters/apt_boss.png",
 			category = "bossy",
 			hp = 150, speed = 2, attack = 15, wave = "8", type = "BOSS",
 			lore = "[color=#ff0044]ROOTKIT to zło w najczystszej formie – nie widzisz go, nie wykrywasz, ale on jest wszędzie. Działa na poziomie jądra systemu, ukrywając swoją obecność przed antywirusami i administratorem. W Motodefend to drugi boss: ma mniej HP niż APT, ale jest szybszy i potrafi stać się niewidzialny. Tylko specjalistyczne skanery (lub odpowiedni upgrade) ujawnią jego pozycję.[/color]",

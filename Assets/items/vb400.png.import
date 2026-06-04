@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ccbyaeqsq61jd"
-path="res://.godot/imported/esa.png-bddf4dc41c6e066848be6c74656043e3.ctex"
+uid="uid://di8e2ihtnex26"
+path="res://.godot/imported/vb400.png-71b5eaffcb84fe79e3db8945c1d2e054.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Characters/esa.png"
-dest_files=["res://.godot/imported/esa.png-bddf4dc41c6e066848be6c74656043e3.ctex"]
+source_file="res://Assets/items/vb400.png"
+dest_files=["res://.godot/imported/vb400.png-71b5eaffcb84fe79e3db8945c1d2e054.ctex"]
 
 [params]
 

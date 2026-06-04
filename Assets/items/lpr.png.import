@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cqclagheysa52"
-path="res://.godot/imported/sql_injection.png-3cf08b13574e281b7f3b8c74a8d24af4.ctex"
+uid="uid://corr6fwktfaoa"
+path="res://.godot/imported/lpr.png-8a7ef019dd86bc7a312cfa2788623d19.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/newenemies/sql_injection.png"
-dest_files=["res://.godot/imported/sql_injection.png-3cf08b13574e281b7f3b8c74a8d24af4.ctex"]
+source_file="res://Assets/items/lpr.png"
+dest_files=["res://.godot/imported/lpr.png-8a7ef019dd86bc7a312cfa2788623d19.ctex"]
 
 [params]
 

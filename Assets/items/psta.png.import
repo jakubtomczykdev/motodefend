@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b6okp2y2ql0ax"
-path="res://.godot/imported/dupa.png-550278fa4c6a0ca14f4fe94bd3c01ee4.ctex"
+uid="uid://cy1xlou63g7lf"
+path="res://.godot/imported/psta.png-693086edb7468473ce74cbcb8daac290.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Characters/dupa.png"
-dest_files=["res://.godot/imported/dupa.png-550278fa4c6a0ca14f4fe94bd3c01ee4.ctex"]
+source_file="res://Assets/items/psta.png"
+dest_files=["res://.godot/imported/psta.png-693086edb7468473ce74cbcb8daac290.ctex"]
 
 [params]
 

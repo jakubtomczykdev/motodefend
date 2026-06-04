@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cai4hw0kiix7v"
-path="res://.godot/imported/321.png-13a42fa15d0720fe4e8e4693fc7debb5.ctex"
+uid="uid://ba1y5jt1bqiy2"
+path="res://.godot/imported/tactical_vest.png-a26ff3e2e9ed153ea8ce22182dbe1e32.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Characters/321.png"
-dest_files=["res://.godot/imported/321.png-13a42fa15d0720fe4e8e4693fc7debb5.ctex"]
+source_file="res://Assets/items/tactical_vest.png"
+dest_files=["res://.godot/imported/tactical_vest.png-a26ff3e2e9ed153ea8ce22182dbe1e32.ctex"]
 
 [params]
 

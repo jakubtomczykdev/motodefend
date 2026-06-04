@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://t75o01348p5h"
-path="res://.godot/imported/sql.png-84dba45635300f655d6ccdb5dfbf9926.ctex"
+uid="uid://dfga23i1314je"
+path="res://.godot/imported/body_camera.png-2e5b74113d74f1d28b83b47fc3173cff.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Characters/sql.png"
-dest_files=["res://.godot/imported/sql.png-84dba45635300f655d6ccdb5dfbf9926.ctex"]
+source_file="res://Assets/items/body_camera.png"
+dest_files=["res://.godot/imported/body_camera.png-2e5b74113d74f1d28b83b47fc3173cff.ctex"]
 
 [params]
 

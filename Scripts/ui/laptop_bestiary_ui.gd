@@ -29,7 +29,7 @@ func _build_entries() -> Array[Dictionary]:
 	return [
 		{
 			name = "ROBAK (Worm)",
-			texture_path = "res://Assets/Characters/mob.png",
+			texture_path = "res://Assets/Characters/worm.png",
 			category = "robactwo",
 			hp = 30, speed = 3, attack = 5, wave = "1-3", type = "ROBACTWO",
 			lore = "[color=#e0e4f0]W ciemnych zakamarkach cyberprzestrzeni ROBAK drąży tunele przez warstwy ochronne firewalli. To samoreplikujący się byt – wystarczy jeden, by w ciągu minut zaroiło się od nich całe spektrum sieci. Jego kod ewoluuje z każdym cyklem.[/color]",
@@ -37,7 +37,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "SPYWARE",
-			texture_path = "res://Assets/Characters/321.png",
+			texture_path = "res://Assets/Characters/spyware.png",
 			category = "robactwo",
 			hp = 25, speed = 5, attack = 3, wave = "1-4", type = "ROBACTWO",
 			lore = "[color=#e0e4f0]Cichy obserwator w głębinach sieci – SPYWARE nie atakuje wprost. Prześlizguje się przez niedomknięte porty, kopiuje pakiety danych i wysyła je do swoich twórców. Jeśli nie zniszczysz go szybko, przeciwnik pozna Twoje słabe punkty.[/color]",
@@ -45,7 +45,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "ADWARE",
-			texture_path = "res://Assets/Characters/mob.png",
+			texture_path = "res://Assets/Characters/bot_enemy.png",
 			category = "robactwo",
 			hp = 20, speed = 6, attack = 2, wave = "2-5", type = "ROBACTWO",
 			lore = "[color=#e0e4f0]ADWARE to cyfrowy krzykacz – nie zabija, ale zagłusza. Zasypuje interfejs falą natrętnych reklam, spowalnia procesy i odwraca uwagę od prawdziwego zagrożenia. Podczas gdy Ty walczysz z jego spamem, cięższe wirusy przechodzą dalej.[/color]",
@@ -53,7 +53,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "TROJAN",
-			texture_path = "res://Assets/Characters/phishing.png",
+			texture_path = "res://Assets/Characters/Trojan.png",
 			category = "zlosliwe",
 			hp = 50, speed = 2, attack = 8, wave = "2-6", type = "ZŁOŚLIWE",
 			lore = "[color=#e0e4f0]TROJAN to mistrz kamuflażu – przybiera postać legalnego oprogramowania, by po cichu otworzyć backdoor do systemu. Gdy przejdzie przez bramę, rozpętuje chaos. Nie daj się zwieść jego niewinnej fasadzie.[/color]",
@@ -61,7 +61,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "RANSOMWARE",
-			texture_path = "res://Assets/Characters/dupa.png",
+			texture_path = "res://Assets/Characters/Ransomware.png",
 			category = "zlosliwe",
 			hp = 40, speed = 1, attack = 10, wave = "3-7", type = "ZŁOŚLIWE",
 			lore = "[color=#e0e4f0]RANSOMWARE nie bawi się w subtelności – szyfruje wszystko, co napotka, a za klucz żąda okupu w kryptowalucie. Gdy widzisz jego czerwoną sygnaturę, jest już za późno. Zniszcz go, zanim zaszyfruje całą bazę danych.[/color]",
@@ -69,7 +69,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "KEYLOGGER (Phishing)",
-			texture_path = "res://Assets/Characters/phishing.png",
+			texture_path = "res://Assets/Characters/phishing_malware.png",
 			category = "zlosliwe",
 			hp = 15, speed = 7, attack = 4, wave = "2-5", type = "ZŁOŚLIWE",
 			lore = "[color=#e0e4f0]KEYLOGGER to cyfrowy cień czający się nad klawiaturą. Każde naciśnięcie klawisza rejestrowane i wysyłane do atakującego. Niepozorny, szybki – zanim go zauważysz, przechwycił już Twoje kody dostępu do całego systemu.[/color]",
@@ -77,7 +77,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "DDoS",
-			texture_path = "res://Assets/Characters/mob.png",
+			texture_path = "res://Assets/Characters/bot_enemy.png",
 			category = "ataki_sieciowe",
 			hp = 80, speed = 1, attack = 6, wave = "4-8", type = "ATAKI SIECIOWE",
 			lore = "[color=#e0e4f0]DDoS nie próbuje się ukryć – to frontalny atak tysięcy zainfekowanych maszyn bombardujących serwer zapytaniami. Przytłacza infrastrukturę samą masą. Potrzebujesz najcięższych dział, by go powstrzymać.[/color]",
@@ -85,7 +85,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "SQL INJECTION",
-			texture_path = "res://Assets/Characters/phishing.png",
+			texture_path = "res://Assets/Characters/sql_injection.png",
 			category = "ataki_sieciowe",
 			hp = 35, speed = 4, attack = 12, wave = "3-7", type = "ATAKI SIECIOWE",
 			lore = "[color=#e0e4f0]SQL INJECTION to chirurgicznie precyzyjny atak – wykorzystuje luki w zapytaniach bazodanowych. Wstrzykuje złośliwy kod prosto w serce bazy danych, skąd może wykradać, modyfikować lub niszczyć informacje.[/color]",
@@ -93,7 +93,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "BOTNET",
-			texture_path = "res://Assets/Characters/mob.png",
+			texture_path = "res://Assets/Characters/bot_enemy.png",
 			category = "ataki_sieciowe",
 			hp = 45, speed = 3, attack = 7, wave = "5-10", type = "ATAKI SIECIOWE",
 			lore = "[color=#e0e4f0]BOTNET to armia zombi – setki przejętych urządzeń nieświadomie wykonujących rozkazy swojego pana. Każdy smartfon, router czy laptop może być żołnierzem. Uderza zmasowaną falą – pojedyncza jednostka jest słaba, ale działa w grupie.[/color]",
@@ -101,7 +101,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "APT (BOSS)",
-			texture_path = "res://Assets/Characters/dupa.png",
+			texture_path = "res://Assets/Characters/apt_boss.png",
 			category = "bossy",
 			hp = 200, speed = 1, attack = 20, wave = "10", type = "BOSS",
 			lore = "[color=#e0e4f0]APT to nie wirus – to operacja. Zaawansowane, długotrwałe, finansowane przez państwa. Infiltruje system na miesiące, cierpliwie zbierając dane. Ostateczny boss: ogromne HP, druzgocący atak, zdolność adaptacji. Potrzebujesz pełnego arsenału.[/color]",
@@ -109,7 +109,7 @@ func _build_entries() -> Array[Dictionary]:
 		},
 		{
 			name = "ROOTKIT (BOSS)",
-			texture_path = "res://Assets/Characters/dupa.png",
+			texture_path = "res://Assets/Characters/apt_boss.png",
 			category = "bossy",
 			hp = 150, speed = 2, attack = 15, wave = "8", type = "BOSS",
 			lore = "[color=#e0e4f0]ROOTKIT to zło w najczystszej formie – nie widzisz go, ale jest wszędzie. Działa na poziomie jądra systemu, ukrywając się przed antywirusami. Tylko specjalistyczne skanery ujawnią jego pozycję. Drugi boss: mniej HP, ale szybszy i potrafi być niewidzialny.[/color]",

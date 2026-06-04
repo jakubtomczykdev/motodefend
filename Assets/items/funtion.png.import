@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ckn8yxrubr1e8"
-path="res://.godot/imported/mob.png-21156f67e80296116f4e2291253f9925.ctex"
+uid="uid://b50p7l1r3dvoh"
+path="res://.godot/imported/funtion.png-4b07dc48eb0023898b22a676178d1b52.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Characters/mob.png"
-dest_files=["res://.godot/imported/mob.png-21156f67e80296116f4e2291253f9925.ctex"]
+source_file="res://Assets/items/funtion.png"
+dest_files=["res://.godot/imported/funtion.png-4b07dc48eb0023898b22a676178d1b52.ctex"]
 
 [params]
 

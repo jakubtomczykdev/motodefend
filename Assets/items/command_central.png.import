@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://coynbgw7m0ybm"
-path="res://.godot/imported/phishing.png-75c77336be3f527cd689b96b8816f2d1.ctex"
+uid="uid://cdy5rdqia508e"
+path="res://.godot/imported/command_central.png-a39c0b1093f43380007477b27e12c181.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Characters/phishing.png"
-dest_files=["res://.godot/imported/phishing.png-75c77336be3f527cd689b96b8816f2d1.ctex"]
+source_file="res://Assets/items/command_central.png"
+dest_files=["res://.godot/imported/command_central.png-a39c0b1093f43380007477b27e12c181.ctex"]
 
 [params]
 

@@ -11,7 +11,7 @@ class CrossPatchItem extends ItemBase:
 		description = "Łączy zespoły terenowe. Co 5s wysyła impuls odpychający wrogów."
 		rarity = "rare"
 		cost = 150
-		icon = preload("res://Assets/newAssets/oldRadio.png")
+		icon = preload("res://Assets/items/cross_patch.png")
 		stats = {
 			"attack_range": 0.2,
 			"projectile_speed": 0.1
@@ -42,7 +42,7 @@ class PSTAItem extends ItemBase:
 		description = "Analityka wideo. Zwiększa szansę na unik o 10%."
 		rarity = "epic"
 		cost = 300
-		icon = preload("res://Assets/newAssets/fightingDrone.png")
+		icon = preload("res://Assets/items/psta.png")
 		stats = {
 			"crit_chance": 0.15,
 			"attack_speed": 0.1,
@@ -57,7 +57,7 @@ class RadioAPXItem extends ItemBase:
 		description = "Komunikacja w kryzysie. Skraca cooldown uniku o 20%."
 		rarity = "common"
 		cost = 100
-		icon = preload("res://Assets/newAssets/oldRadio.png")
+		icon = preload("res://Assets/items/radio_apx.png")
 		stats = {
 			"attack_speed": 0.1,
 			"move_speed": 0.1,
@@ -72,7 +72,7 @@ class CommandCentralItem extends ItemBase:
 		description = "Centralne zarządzanie. Co 10s leczy 5 HP."
 		rarity = "legendary"
 		cost = 500
-		icon = preload("res://Assets/newAssets/newRadio.png")
+		icon = preload("res://Assets/items/command_central.png")
 		stats = {
 			"damage": 0.2,
 			"max_health": 0.2
@@ -93,7 +93,7 @@ class BodyCameraItem extends ItemBase:
 		description = "Kamera na body. Zwiększa obrażenia przeciwko bossom o 20%."
 		rarity = "rare"
 		cost = 200
-		icon = preload("res://Assets/newAssets/oldDrone.png")
+		icon = preload("res://Assets/items/body_camera.png")
 		stats = {
 			"attack_range": 0.15,
 			"crit_chance": 0.05,
@@ -108,7 +108,7 @@ class SolutionHubItem extends ItemBase:
 		description = "Centralny hub. Co 8s razi najbliższego wroga piorunem danych."
 		rarity = "legendary"
 		cost = 600
-		icon = preload("res://Assets/newAssets/Blaster.png")
+		icon = preload("res://Assets/items/solution_hub.png")
 		stats = {
 			"damage": 0.2,
 			"attack_speed": 0.15,
@@ -142,7 +142,7 @@ class RaveItem extends ItemBase:
 		description = "System łączności. Zwiększa prędkość pocisków o 30%."
 		rarity = "epic"
 		cost = 350
-		icon = preload("res://Assets/newAssets/newRadio.png")
+		icon = preload("res://Assets/items/rave.png")
 		stats = {
 			"attack_speed": 0.15,
 			"projectile_speed": 0.3
@@ -156,7 +156,7 @@ class LPRIItem extends ItemBase:
 		description = "Rozpoznawanie tablic. Zwiększa szansę na krytyka o 15%."
 		rarity = "rare"
 		cost = 180
-		icon = preload("res://Assets/newAssets/fightingDrone.png")
+		icon = preload("res://Assets/items/lpr.png")
 		stats = {
 			"damage": 0.1,
 			"crit_chance": 0.15
@@ -170,7 +170,7 @@ class PremierOneItem extends ItemBase:
 		description = "System CAD. Zwiększa pancerz o 15 i max HP o 30%."
 		rarity = "epic"
 		cost = 400
-		icon = preload("res://Assets/newAssets/newRadio.png")
+		icon = preload("res://Assets/items/premier_one.png")
 		stats = {
 			"max_health": 0.3,
 			"armor": 15
@@ -184,7 +184,7 @@ class TacticalVestItem extends ItemBase:
 		description = "Zwiększa pancerz o 10 i regenerację HP o 1/s."
 		rarity = "rare"
 		cost = 250
-		icon = preload("res://Assets/newAssets/sword.png")
+		icon = preload("res://Assets/items/tactical_vest.png")
 		stats = {
 			"armor": 10,
 			"hp_regen": 1.0
@@ -198,7 +198,7 @@ class VB400Item extends ItemBase:
 		description = "Wodoodporna kamera. Zwiększa szybkość ruchu o 15%."
 		rarity = "common"
 		cost = 120
-		icon = preload("res://Assets/newAssets/oldDrone.png")
+		icon = preload("res://Assets/items/vb400.png")
 		stats = {
 			"move_speed": 0.15
 		}
@@ -211,7 +211,7 @@ class FuntionItem extends ItemBase:
 		description = "Platforma komunikacyjna. Zwiększa attack speed o 20%."
 		rarity = "rare"
 		cost = 220
-		icon = preload("res://Assets/newAssets/Blaster.png")
+		icon = preload("res://Assets/items/funtion.png")
 		stats = {
 			"attack_speed": 0.2
 		}

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://br457ca0a4b5e"
-path="res://.godot/imported/oldRadio.png-9fdd99bf7b5ab9b3b5bf9f6b9fc2ba62.ctex"
+uid="uid://bk7lg0nlj1832"
+path="res://.godot/imported/radio_apx.png-d82156869f340af9a6a7c723e60e282a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/newAssets/oldRadio.png"
-dest_files=["res://.godot/imported/oldRadio.png-9fdd99bf7b5ab9b3b5bf9f6b9fc2ba62.ctex"]
+source_file="res://Assets/items/radio_apx.png"
+dest_files=["res://.godot/imported/radio_apx.png-d82156869f340af9a6a7c723e60e282a.ctex"]
 
 [params]
 

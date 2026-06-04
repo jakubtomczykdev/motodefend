@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://um85y4w4mn20"
-path="res://.godot/imported/fightingDrone.png-9247a79beb63862400bed0ae7d99d0f1.ctex"
+uid="uid://wh02c32luajx"
+path="res://.godot/imported/rave.png-a013f7f85d7ab8a3d4debda973b3f5f4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/newAssets/fightingDrone.png"
-dest_files=["res://.godot/imported/fightingDrone.png-9247a79beb63862400bed0ae7d99d0f1.ctex"]
+source_file="res://Assets/items/rave.png"
+dest_files=["res://.godot/imported/rave.png-a013f7f85d7ab8a3d4debda973b3f5f4.ctex"]
 
 [params]
 

@@ -26,9 +26,9 @@ func initialize(p_player_ref: Node2D, weapon_data: WeaponBase) -> void:
 	if weapon_data.icon:
 		_drone_sprite.texture = weapon_data.icon
 	else:
-		var tex := load("res://Assets/newAssets/fightingDrone.png") as Texture2D
+		var tex := load("res://Assets/newweapons/dron_t3.png") as Texture2D
 		if not tex:
-			tex = load("res://Assets/newAssets/oldDrone.png") as Texture2D
+			tex = load("res://Assets/newweapons/dron_t1.png") as Texture2D
 		_drone_sprite.texture = tex
 	_drone_sprite.scale = Vector2(0.10, 0.10)
 	if _drone_sprite.get_parent() == null:
