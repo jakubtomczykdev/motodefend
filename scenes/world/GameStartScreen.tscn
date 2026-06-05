@@ -121,12 +121,12 @@ text = "ZLOTO: 0"
 
 [node name="SellingMashine" parent="." unique_id=889363064 instance=ExtResource("4_4klen")]
 y_sort_enabled = true
-position = Vector2(1230, 381)
+position = Vector2(1450, 548)
 safe_margin = 0.001
 
 [node name="CybersecurityExpert" parent="." unique_id=594552917 instance=ExtResource("6_7s0oi")]
 y_sort_enabled = true
-position = Vector2(417, 472)
+position = Vector2(555, 790)
 script = ExtResource("7_vjy5m")
 
 [node name="StartGameTrigger" type="Area2D" parent="." unique_id=414210525 groups=["Interactable"]]
@@ -146,4 +146,4 @@ script = ExtResource("3_bml70")
 speed = 150.0
 
 [node name="Laptop" parent="." unique_id=751936299 instance=ExtResource("11_laptop")]
-position = Vector2(673, 363)
+position = Vector2(620, 548)

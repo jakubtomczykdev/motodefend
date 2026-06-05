@@ -28,6 +28,7 @@ metadata/logic_bricks_graph = {
 metadata/logic_bricks_frames = []
 
 [node name="Sklep" type="Sprite2D" parent="." unique_id=1672121466]
+visible = false
 position = Vector2(-2.9999962, 18)
 scale = Vector2(0.27444792, 0.27444792)
 texture = ExtResource("2_y54bd")

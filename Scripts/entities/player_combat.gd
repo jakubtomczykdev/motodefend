@@ -439,7 +439,7 @@ func update_animation() -> void:
 		return
 
 	if is_rolling:
-		sprite.play("right" if roll_direction.x >= 0 else "left")
+		sprite.play(_get_roll_animation_name())
 		return
 
 	if velocity.length() > 0:
@@ -469,6 +469,12 @@ func update_animation() -> void:
 		# Opcjonalnie: ustaw klatkę spoczynkową (idle) zależnie od ostatniego kierunku
 		# Na razie zatrzymujemy na bieżącej klatce lub zerujemy
 		sprite.frame = 0
+
+func _get_roll_animation_name() -> StringName:
+	var dir := roll_direction.normalized()
+	if absf(dir.x) > absf(dir.y):
+		return &"roll-right" if dir.x >= 0.0 else &"roll-left"
+	return &"roll-front" if dir.y >= 0.0 else &"roll-back"
 
 func _clamp_to_screen() -> void:
 	global_position.x = clamp(global_position.x, 30, 1890)
