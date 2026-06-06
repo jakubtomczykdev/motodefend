@@ -19,6 +19,7 @@ extends Control
 @onready var gold_input: LineEdit = $CenterContainer/VBoxContainer/GoldSection/GoldInput
 @onready var add_gold_btn: Button = $CenterContainer/VBoxContainer/GoldSection/AddGoldBtn
 @onready var current_gold_label: Label = $CenterContainer/VBoxContainer/GoldSection/CurrentGoldLabel
+@onready var test_wave_5_btn: Button = $CenterContainer/VBoxContainer/TestWave5Button
 
 @onready var apply_button: Button = %ApplyButton
 @onready var reset_button: Button = %ResetButton
@@ -37,8 +38,10 @@ const RESOLUTIONS: Array[Vector2i] = [
 
 var _general_nodes: Array[Control] = []
 var _controls_nodes: Array[Control] = []
+var _test_nodes: Array[Control] = []
 var _general_tab_button: Button
 var _controls_tab_button: Button
+var _test_tab_button: Button
 
 func _ready() -> void:
 	# Zapewnij widoczność kursora myszy w menu
@@ -53,6 +56,7 @@ func _ready() -> void:
 		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	_build_section_layout()
+	_configure_test_section()
 	_populate_resolutions()
 	_load_current_settings()
 	_connect_signals()
@@ -61,6 +65,8 @@ func _ready() -> void:
 
 	if add_gold_btn:
 		add_gold_btn.pressed.connect(_on_add_gold_pressed)
+	if test_wave_5_btn:
+		test_wave_5_btn.pressed.connect(_on_test_wave_5_pressed)
 	_update_gold_display()
 
 func _build_section_layout() -> void:
@@ -93,10 +99,13 @@ func _build_section_layout() -> void:
 
 		_general_tab_button = _make_section_button("OGOLNE")
 		_controls_tab_button = _make_section_button("STEROWANIE")
+		_test_tab_button = _make_section_button("TEST")
 		sidebar.add_child(_general_tab_button)
 		sidebar.add_child(_controls_tab_button)
+		sidebar.add_child(_test_tab_button)
 		_general_tab_button.pressed.connect(_show_section.bind("general"))
 		_controls_tab_button.pressed.connect(_show_section.bind("controls"))
+		_test_tab_button.pressed.connect(_show_section.bind("test"))
 
 		content_box.custom_minimum_size = Vector2(900, 0)
 		content_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -107,11 +116,12 @@ func _build_section_layout() -> void:
 func _collect_section_nodes() -> void:
 	_general_nodes.clear()
 	_controls_nodes.clear()
+	_test_nodes.clear()
 
 	for node_name in [
 		"AudioLabel", "MasterRow", "MusicRow", "SfxRow", "UiRow",
 		"HSeparator2", "VideoLabel", "ResolutionRow", "FullscreenRow",
-		"VsyncRow", "HSeparator3", "GoldSection"
+		"VsyncRow"
 	]:
 		var node := content_box.get_node_or_null(node_name) as Control
 		if node:
@@ -122,9 +132,27 @@ func _collect_section_nodes() -> void:
 		if node:
 			_controls_nodes.append(node)
 
+	for node_name in ["HSeparator3", "TestLabel", "TestWave5Button", "GoldSection"]:
+		var node := content_box.get_node_or_null(node_name) as Control
+		if node:
+			_test_nodes.append(node)
+
 	var controls_separator := content_box.get_node_or_null("HSeparatorControls") as Control
 	if controls_separator:
 		controls_separator.visible = false
+
+func _configure_test_section() -> void:
+	if name != "SettingsOverlay":
+		if _test_tab_button:
+			_test_tab_button.visible = false
+		return
+
+	if test_wave_5_btn and not _find_test_wave_controller():
+		test_wave_5_btn.disabled = true
+		test_wave_5_btn.text = "FALA 5 TYLKO W GRZE"
+
+	if _test_tab_button:
+		_test_tab_button.visible = true
 
 func _make_section_button(text_value: String) -> Button:
 	var button := Button.new()
@@ -154,16 +182,42 @@ func _make_tab_style(bg: Color, border: Color) -> StyleBoxFlat:
 
 func _show_section(section: String) -> void:
 	var show_general := section == "general"
+	var show_controls := section == "controls"
+	var show_test := section == "test"
 
 	for node in _general_nodes:
 		node.visible = show_general
 	for node in _controls_nodes:
-		node.visible = not show_general
+		node.visible = show_controls
+	for node in _test_nodes:
+		node.visible = show_test
 
 	if _general_tab_button:
 		_general_tab_button.button_pressed = show_general
 	if _controls_tab_button:
-		_controls_tab_button.button_pressed = not show_general
+		_controls_tab_button.button_pressed = show_controls
+	if _test_tab_button:
+		_test_tab_button.button_pressed = show_test
+
+func _on_test_wave_5_pressed() -> void:
+	if AudioManager.has_method("play_sfx"):
+		AudioManager.play_sfx("menu_click")
+
+	var controller := _find_test_wave_controller()
+	if controller and controller.has_method("start_data_hijacker_test_wave"):
+		controller.start_data_hijacker_test_wave()
+
+func _find_test_wave_controller() -> Node:
+	var node := get_parent()
+	while node:
+		if node.has_method("start_data_hijacker_test_wave"):
+			return node
+		node = node.get_parent()
+
+	var current_scene := get_tree().current_scene
+	if current_scene and current_scene.has_method("start_data_hijacker_test_wave"):
+		return current_scene
+	return null
 
 func _populate_resolutions() -> void:
 	resolution_dropdown.clear()

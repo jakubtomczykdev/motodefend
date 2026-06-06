@@ -397,6 +397,21 @@ custom_minimum_size = Vector2(320, 0)
 [node name="HSeparator3" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=441134]
 layout_mode = 2
 
+[node name="TestLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.278, 0.549, 0.749, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 56
+text = "TEST"
+horizontal_alignment = 1
+
+[node name="TestWave5Button" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(360, 56)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 34
+text = "URUCHOM FALE 5"
+
 [node name="GoldSection" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 alignment = 1
@@ -404,16 +419,23 @@ theme_override_constants/separation = 20
 
 [node name="GoldSectionLabel" type="Label" parent="CenterContainer/VBoxContainer/GoldSection"]
 layout_mode = 2
-text = "DEBUG:"
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 32
+text = "GOLD:"
 
 [node name="GoldInput" type="LineEdit" parent="CenterContainer/VBoxContainer/GoldSection"]
 layout_mode = 2
 custom_minimum_size = Vector2(80, 0)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 28
 placeholder_text = "9999"
 
 [node name="AddGoldBtn" type="Button" parent="CenterContainer/VBoxContainer/GoldSection"]
 layout_mode = 2
 custom_minimum_size = Vector2(140, 40)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 28
 text = "DODAJ ZŁOTO"
 
 [node name="CurrentGoldLabel" type="Label" parent="CenterContainer/VBoxContainer/GoldSection"]

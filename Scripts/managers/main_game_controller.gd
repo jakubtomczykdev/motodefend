@@ -34,6 +34,11 @@ var flow_toast: Label
 var low_hp_overlay: ColorRect
 var wave_progress_bar: ProgressBar
 var combo_label: Label
+var boss_bar_layer: CanvasLayer
+var boss_bar_panel: PanelContainer
+var boss_name_label: Label
+var boss_health_bar: ProgressBar
+var active_boss: Node
 
 var _shop_opened_mid_wave: bool = false
 var _pending_level_ups: int = 0
@@ -198,6 +203,7 @@ func _ready() -> void:
 
 	_setup_retro_hud()
 	_setup_game_flow_feedback()
+	_setup_boss_health_bar()
 
 	# Rozpocznij grę automatycznie po załadowaniu sceny
 	start_game()
@@ -457,6 +463,102 @@ func _make_flow_style(bg: Color, border: Color, border_width: int) -> StyleBoxFl
 	style.content_margin_bottom = 7
 	return style
 
+func _setup_boss_health_bar() -> void:
+	boss_bar_layer = get_node_or_null("BossBarLayer") as CanvasLayer
+	if boss_bar_layer:
+		boss_bar_layer.queue_free()
+
+	boss_bar_layer = CanvasLayer.new()
+	boss_bar_layer.name = "BossBarLayer"
+	boss_bar_layer.layer = 30
+	add_child(boss_bar_layer)
+
+	var ui_font = preload("res://Assets/fonts/VT323-Regular.ttf")
+	var margin := MarginContainer.new()
+	margin.name = "BossBarMargin"
+	margin.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE, Control.PRESET_MODE_MINSIZE, 0)
+	margin.offset_left = 420
+	margin.offset_top = 18
+	margin.offset_right = -420
+	margin.offset_bottom = 92
+	boss_bar_layer.add_child(margin)
+
+	boss_bar_panel = PanelContainer.new()
+	boss_bar_panel.visible = false
+	boss_bar_panel.add_theme_stylebox_override("panel", _make_flow_style(Color(0.05, 0.008, 0.012, 0.92), Color(0.95, 0.12, 0.14, 0.95), 3))
+	margin.add_child(boss_bar_panel)
+
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 5)
+	boss_bar_panel.add_child(box)
+
+	boss_name_label = Label.new()
+	boss_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	boss_name_label.add_theme_font_override("font", ui_font)
+	boss_name_label.add_theme_font_size_override("font_size", 31)
+	boss_name_label.add_theme_color_override("font_color", Color(1.0, 0.28, 0.28))
+	boss_name_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
+	boss_name_label.add_theme_constant_override("shadow_offset_x", 2)
+	boss_name_label.add_theme_constant_override("shadow_offset_y", 2)
+	box.add_child(boss_name_label)
+
+	boss_health_bar = ProgressBar.new()
+	boss_health_bar.show_percentage = false
+	boss_health_bar.custom_minimum_size = Vector2(0, 18)
+	boss_health_bar.add_theme_stylebox_override("background", _make_flow_style(Color(0.18, 0.02, 0.03, 0.95), Color(0.45, 0.04, 0.05, 0.95), 1))
+	boss_health_bar.add_theme_stylebox_override("fill", _make_flow_style(Color(0.9, 0.04, 0.05, 0.98), Color(1.0, 0.22, 0.16, 1.0), 1))
+	box.add_child(boss_health_bar)
+
+func _on_enemy_spawned(enemy: Node2D, _enemy_type: String) -> void:
+	if not enemy or not is_instance_valid(enemy):
+		return
+	var is_spawned_boss := false
+	if "is_boss" in enemy:
+		is_spawned_boss = bool(enemy.is_boss)
+	if enemy.get_meta("boss_name", "") != "":
+		is_spawned_boss = true
+	if not is_spawned_boss:
+		return
+
+	active_boss = enemy
+	if enemy.has_signal("damaged") and not enemy.damaged.is_connected(_on_boss_damaged):
+		enemy.damaged.connect(_on_boss_damaged)
+	if enemy.has_signal("died") and not enemy.died.is_connected(_on_boss_died):
+		enemy.died.connect(_on_boss_died)
+	_show_boss_health_bar(enemy)
+
+func _show_boss_health_bar(enemy: Node) -> void:
+	if not boss_bar_panel or not boss_health_bar or not boss_name_label:
+		return
+	boss_name_label.text = str(enemy.get_meta("boss_name", enemy.name)).to_upper()
+	if "max_health" in enemy:
+		boss_health_bar.max_value = enemy.max_health
+	if "current_health" in enemy:
+		boss_health_bar.value = enemy.current_health
+	boss_bar_panel.visible = true
+
+func _update_boss_health_bar() -> void:
+	if not boss_bar_panel or not boss_health_bar:
+		return
+	if active_boss == null or not is_instance_valid(active_boss):
+		_hide_boss_health_bar()
+		return
+	if "max_health" in active_boss:
+		boss_health_bar.max_value = active_boss.max_health
+	if "current_health" in active_boss:
+		boss_health_bar.value = max(0, active_boss.current_health)
+
+func _on_boss_damaged(_amount: int) -> void:
+	_update_boss_health_bar()
+
+func _on_boss_died() -> void:
+	_hide_boss_health_bar()
+
+func _hide_boss_health_bar() -> void:
+	active_boss = null
+	if boss_bar_panel:
+		boss_bar_panel.visible = false
+
 func _process(delta: float) -> void:
 	if hud_layer:
 		hud_layer.visible = (game_state == "playing")
@@ -517,6 +619,9 @@ func _process(delta: float) -> void:
 				xp_bar.value = gd.experience
 				_last_xp_display = gd.experience
 				_last_xp_required_display = gd.experience_to_next_level
+
+	if should_update_hud:
+		_update_boss_health_bar()
 
 func _update_flow_feedback(delta: float) -> void:
 	if _kill_streak_timer > 0.0:
@@ -622,6 +727,8 @@ func _connect_signals() -> void:
 			wave_manager.wave_started.connect(_on_wave_started)
 		if not wave_manager.wave_ended.is_connected(_on_wave_ended):
 			wave_manager.wave_ended.connect(_on_wave_ended)
+		if wave_manager.has_signal("enemy_spawned") and not wave_manager.enemy_spawned.is_connected(_on_enemy_spawned):
+			wave_manager.enemy_spawned.connect(_on_enemy_spawned)
 		if not wave_manager.all_waves_completed.is_connected(_on_all_waves_completed):
 			wave_manager.all_waves_completed.connect(_on_all_waves_completed)
 		if not wave_manager.game_over.is_connected(_on_game_over):
@@ -768,12 +875,14 @@ func _on_wave_started(_wave_number: int) -> void:
 	kill_streak = 0
 	if combo_label:
 		combo_label.visible = false
+	_hide_boss_health_bar()
 	var subtitle := "Przetrwaj %.0fs  |  bron endpointu" % (wave_manager.wave_max_time if wave_manager else 0.0)
 	_show_banner("FALA %d" % _wave_number, subtitle, Color(0.35, 0.96, 1.0), 1.1)
 
 func _on_wave_ended(wave_number: int) -> void:
 	if game_state != "playing" and game_state != "leveling":
 		return
+	_hide_boss_health_bar()
 
 	var gd := get_node_or_null("/root/GameData")
 	var wave_gold_reward := BalanceData.get_wave_gold_reward(wave_number)
@@ -1104,6 +1213,47 @@ func _toggle_pause() -> void:
 		_resume_game()
 	else:
 		_pause_game()
+
+func start_data_hijacker_test_wave() -> void:
+	var pause_layer := get_node_or_null("PauseLayer") as CanvasLayer
+	if pause_layer:
+		pause_layer.queue_free()
+
+	get_tree().paused = false
+	game_state = "playing"
+	_hide_boss_health_bar()
+	_cleanup_battlefield()
+	_clear_boss_reward_chests()
+
+	var gd := get_node_or_null("/root/GameData")
+	if gd:
+		gd.current_wave = 4
+		gd.run_started = true
+		gd.play_menu_spawn_intro = false
+
+	if player:
+		player.global_position = Vector2(960, 540)
+		if "max_health" in player and "current_health" in player:
+			player.current_health = player.max_health
+			if player.has_signal("health_changed"):
+				player.health_changed.emit(player.current_health, player.max_health)
+
+	if wave_manager:
+		wave_manager.is_wave_active = false
+		wave_manager.between_waves = false
+		wave_manager.spawn_queue.clear()
+		wave_manager.current_wave = 4
+		wave_manager.enemies_in_wave = 0
+		wave_manager.enemies_remaining = 0
+		wave_manager.reward_chests_pending = 0
+		wave_manager.start_next_wave()
+
+	_show_toast("TEST: DATA HIJACKER | FALA 5", Color(1.0, 0.22, 0.16))
+
+func _clear_boss_reward_chests() -> void:
+	for child in get_children():
+		if child and child.name == "BossRewardChest":
+			child.queue_free()
 
 func _pause_game() -> void:
 	var pause_layer := CanvasLayer.new()

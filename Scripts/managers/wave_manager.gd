@@ -5,6 +5,7 @@ const BossRewardChestScript := preload("res://Scripts/entities/boss_reward_chest
 
 signal wave_started(wave_number: int)
 signal wave_ended(wave_number: int)
+signal enemy_spawned(enemy: Node2D, enemy_type: String)
 signal all_waves_completed
 signal game_over
 
@@ -31,6 +32,7 @@ var wave_max_time: float = 0.0       # max duration for current wave
 var between_waves: bool = false
 var between_waves_timer: float = 0.0
 var reward_chests_pending: int = 0
+var boss_only_wave: bool = false
 
 # System rozłożonego spawnowania
 var spawn_queue: Array[String] = []
@@ -54,6 +56,7 @@ var enemy_scenes: Dictionary = {
 	"ransomware": "res://scenes/Enemies/Ransomware.tscn",
 	"spyware": "res://scenes/Enemies/Spyware.tscn",
 	"bot": "res://scenes/Enemies/Bot.tscn",
+	"data_hijacker": "res://scenes/Enemies/DataHijacker.tscn",
 	"apt_boss": "res://scenes/Enemies/APTBoss.tscn"
 }
 
@@ -159,8 +162,9 @@ func start_next_wave() -> void:
 	spawn_queue.clear()
 
 	var wave_config := _get_wave_config(current_wave)
-	# Use at least 15 enemies in the initial queue
-	var initial_count := maxi(10, wave_config.enemy_count)
+	boss_only_wave = bool(wave_config.get("boss_only", false))
+	# Use at least 15 enemies in the initial queue, except for boss-only waves.
+	var initial_count := 0 if boss_only_wave else maxi(10, wave_config.enemy_count)
 	enemies_in_wave = initial_count + (1 if wave_config.has_boss else 0)
 	enemies_remaining = enemies_in_wave
 
@@ -180,7 +184,9 @@ func _get_wave_config(wave: int) -> Dictionary:
 	if wave % 5 == 0:
 		config.has_boss = true
 		if wave == 5:
-			config.boss_type = "giant_worm"
+			config.boss_type = "data_hijacker"
+			config.boss_only = true
+			config.enemy_count = 0
 		elif wave == 10:
 			config.boss_type = "giant_trojan"
 		elif wave == 15:
@@ -201,6 +207,10 @@ func _get_wave_config(wave: int) -> Dictionary:
 	return config
 
 func _spawn_wave(config: Dictionary, initial_count: int = 15) -> void:
+	if bool(config.get("boss_only", false)):
+		call_deferred("_spawn_enemy", str(config.get("boss_type", "apt_boss")))
+		return
+
 	# Kolejkuj normalnych wrogów zamiast spawnować ich natychmiast
 	var enemy_weights: Dictionary = config.get("enemy_weights", {"worm": 1.0})
 	for i in range(initial_count):
@@ -255,7 +265,7 @@ func _spawn_enemy(enemy_type: String) -> void:
 		return
 
 	var enemy: Node2D = scene.instantiate()
-	var drops_boss_reward := is_giant_boss or actual_enemy_type == "apt_boss"
+	var drops_boss_reward := is_giant_boss or actual_enemy_type == "apt_boss" or actual_enemy_type == "data_hijacker"
 	if drops_boss_reward:
 		enemy.set_meta("drops_boss_reward_chest", true)
 
@@ -279,6 +289,7 @@ func _spawn_enemy(enemy_type: String) -> void:
 			enemy.scale_stats(current_wave)
 		if is_giant_boss and enemy.has_method("make_giant_boss"):
 			enemy.make_giant_boss()
+		enemy_spawned.emit(enemy, actual_enemy_type)
 	else:
 		push_warning("Cannot add enemy - no valid parent found")
 
@@ -309,6 +320,8 @@ func _get_spawn_burst_size(wave: int) -> int:
 	return clampi(1 + int(wave / 7) + progress_bonus, 1, 4)
 
 func _should_refill_spawn_queue() -> bool:
+	if boss_only_wave:
+		return false
 	if spawn_queue.size() >= spawn_refill_threshold:
 		return false
 	var time_left := wave_max_time - wave_timer

@@ -181,6 +181,35 @@ var lesson_content: Dictionary = {
 			"feedback": "Tak. Parametry oddzielają dane od kodu zapytania."
 		}
 	},
+	"hijacking": {
+		"title": "HIJACKING",
+		"subtitle": "Przejecie sesji, polaczenia albo kontroli nad zasobem",
+		"image": "res://Assets/Characters/data_hijacker.png",
+		"accent": Color(1.0, 0.22, 0.18),
+		"steps": [
+			{
+				"title": "Co widzisz w tej fali?",
+				"body": "Hijacking oznacza przejecie czegos, co powinno nalezec do uzytkownika: sesji logowania, polaczenia, domeny, przegladarki albo konta. Atakujacy nie musi niszczyc systemu - wystarczy, ze podszyje sie pod legalny dostep.",
+				"bullets": ["cel: przejecie kontroli", "wektor: skradziony token, cookie lub sesja", "efekt w grze: szybka szarza po oznaczonym torze"]
+			},
+			{
+				"title": "Jak dziala atak?",
+				"body": "Atakujacy najpierw zdobywa identyfikator sesji albo kieruje ruch przez falszywy punkt. Potem uzywa tego dostepu, zanim ofiara lub system zauwazy anomalie.",
+				"bullets": ["kradziez tokenu lub cookie", "podszycie pod legalnego uzytkownika", "szybkie wykorzystanie dostepu"]
+			},
+			{
+				"title": "Jak sie bronic?",
+				"body": "Najwazniejsze sa MFA, krotki czas zycia sesji, ponowna autoryzacja dla wrazliwych akcji i wykrywanie nietypowego miejsca lub urzadzenia logowania.",
+				"bullets": ["MFA i rotacja tokenow", "Secure/HttpOnly/SameSite cookies", "monitoring nietypowych sesji"]
+			}
+		],
+		"quiz": {
+			"question": "Co najlepiej ogranicza skutki session hijackingu?",
+			"answers": ["MFA, krotkie sesje i wykrywanie anomalii", "Udostepnienie tokenu w URL", "Wylaczenie powiadomien o logowaniu"],
+			"correct": 0,
+			"feedback": "Tak. Nawet skradziona sesja ma wtedy mniejsza wartosc i latwiej wykryc naduzycie."
+		}
+	},
 	"apt_boss": {
 		"title": "APT",
 		"subtitle": "Długotrwała i ukryta kampania ataku",
@@ -651,6 +680,8 @@ func _restore_combat_ui() -> void:
 		flow.visible = _previous_flow_visible
 
 func _get_enemy_type_for_wave(wave: int) -> String:
+	if wave == 5:
+		return "hijacking"
 	if wave == 1 or wave == 2:
 		return "worm"
 	if wave == 3 or wave == 4:
