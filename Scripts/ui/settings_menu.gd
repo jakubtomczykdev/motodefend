@@ -23,6 +23,7 @@ extends Control
 @onready var apply_button: Button = %ApplyButton
 @onready var reset_button: Button = %ResetButton
 @onready var back_button: Button = %BackButton
+@onready var content_box: VBoxContainer = $CenterContainer/VBoxContainer
 
 const RESOLUTIONS: Array[Vector2i] = [
 	Vector2i(3840, 2160),
@@ -33,6 +34,11 @@ const RESOLUTIONS: Array[Vector2i] = [
 	Vector2i(1280, 720),
 	Vector2i(1024, 576),
 ]
+
+var _general_nodes: Array[Control] = []
+var _controls_nodes: Array[Control] = []
+var _general_tab_button: Button
+var _controls_tab_button: Button
 
 func _ready() -> void:
 	# Zapewnij widoczność kursora myszy w menu
@@ -46,14 +52,114 @@ func _ready() -> void:
 	if bg:
 		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
+	_build_section_layout()
 	_populate_resolutions()
 	_load_current_settings()
 	_connect_signals()
+	_show_section("general")
 	back_button.grab_focus()
 
 	if add_gold_btn:
 		add_gold_btn.pressed.connect(_on_add_gold_pressed)
 	_update_gold_display()
+
+func _build_section_layout() -> void:
+	var center := $CenterContainer
+	if not center or not content_box:
+		return
+
+	if content_box.get_parent() == center:
+		center.remove_child(content_box)
+
+		var layout := HBoxContainer.new()
+		layout.name = "SettingsLayout"
+		layout.custom_minimum_size = Vector2(1220, 0)
+		layout.add_theme_constant_override("separation", 32)
+		center.add_child(layout)
+
+		var sidebar := VBoxContainer.new()
+		sidebar.name = "SectionMenu"
+		sidebar.custom_minimum_size = Vector2(250, 0)
+		sidebar.add_theme_constant_override("separation", 14)
+		layout.add_child(sidebar)
+
+		var menu_title := Label.new()
+		menu_title.text = "MENU"
+		menu_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		menu_title.add_theme_font_override("font", preload("res://Assets/fonts/VT323-Regular.ttf"))
+		menu_title.add_theme_font_size_override("font_size", 42)
+		menu_title.add_theme_color_override("font_color", Color(0.35, 0.94, 1.0))
+		sidebar.add_child(menu_title)
+
+		_general_tab_button = _make_section_button("OGOLNE")
+		_controls_tab_button = _make_section_button("STEROWANIE")
+		sidebar.add_child(_general_tab_button)
+		sidebar.add_child(_controls_tab_button)
+		_general_tab_button.pressed.connect(_show_section.bind("general"))
+		_controls_tab_button.pressed.connect(_show_section.bind("controls"))
+
+		content_box.custom_minimum_size = Vector2(900, 0)
+		content_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		layout.add_child(content_box)
+
+	_collect_section_nodes()
+
+func _collect_section_nodes() -> void:
+	_general_nodes.clear()
+	_controls_nodes.clear()
+
+	for node_name in [
+		"AudioLabel", "MasterRow", "MusicRow", "SfxRow", "UiRow",
+		"HSeparator2", "VideoLabel", "ResolutionRow", "FullscreenRow",
+		"VsyncRow", "HSeparator3", "GoldSection"
+	]:
+		var node := content_box.get_node_or_null(node_name) as Control
+		if node:
+			_general_nodes.append(node)
+
+	for node_name in ["HSeparatorControls", "ControlsLabel", "ControlsGrid"]:
+		var node := content_box.get_node_or_null(node_name) as Control
+		if node:
+			_controls_nodes.append(node)
+
+func _make_section_button(text_value: String) -> Button:
+	var button := Button.new()
+	button.text = text_value
+	button.toggle_mode = true
+	button.custom_minimum_size = Vector2(230, 62)
+	button.add_theme_font_override("font", preload("res://Assets/fonts/VT323-Regular.ttf"))
+	button.add_theme_font_size_override("font_size", 36)
+	button.add_theme_stylebox_override("normal", _make_tab_style(Color(0.018, 0.032, 0.05), Color(0.10, 0.55, 0.75)))
+	button.add_theme_stylebox_override("hover", _make_tab_style(Color(0.035, 0.07, 0.10), Color(0.35, 0.94, 1.0)))
+	button.add_theme_stylebox_override("pressed", _make_tab_style(Color(0.06, 0.14, 0.18), Color(1.0, 0.82, 0.28)))
+	return button
+
+func _make_tab_style(bg: Color, border: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = bg
+	style.border_color = border
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_right = 4
+	style.corner_radius_bottom_left = 4
+	return style
+
+func _show_section(section: String) -> void:
+	var show_general := section == "general"
+
+	for node in _general_nodes:
+		node.visible = show_general
+	for node in _controls_nodes:
+		node.visible = not show_general
+
+	if _general_tab_button:
+		_general_tab_button.button_pressed = show_general
+	if _controls_tab_button:
+		_controls_tab_button.button_pressed = not show_general
 
 func _populate_resolutions() -> void:
 	resolution_dropdown.clear()

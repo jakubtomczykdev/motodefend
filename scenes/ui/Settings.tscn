@@ -271,143 +271,127 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.278, 0.549, 0.749, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 42
+theme_override_font_sizes/font_size = 56
 text = "STEROWANIE"
 horizontal_alignment = 1
 
 [node name="ControlsGrid" type="GridContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/h_separation = 34
-theme_override_constants/v_separation = 4
-columns = 4
+theme_override_constants/h_separation = 44
+theme_override_constants/v_separation = 12
+columns = 2
 
 [node name="MoveKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "WASD / STRZALKI"
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(300, 0)
 
 [node name="MoveAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "Ruch"
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(320, 0)
 
 [node name="InteractKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "E"
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(300, 0)
 
 [node name="InteractAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "Interakcja"
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(320, 0)
 
 [node name="DodgeKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "SPACJA / ENTER"
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(300, 0)
 
 [node name="DodgeAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "Unik"
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(320, 0)
 
 [node name="AttackKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "MYSZ"
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(300, 0)
 
 [node name="AttackAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "Celowanie"
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(320, 0)
 
 [node name="StatsKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "TAB"
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(300, 0)
 
 [node name="StatsAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "Statystyki"
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(320, 0)
 
 [node name="InventoryKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "I"
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(300, 0)
 
 [node name="InventoryAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "Ekwipunek"
-custom_minimum_size = Vector2(180, 0)
-
-[node name="WeaponKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
-theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
-text = "1 / 2 / SCROLL"
-custom_minimum_size = Vector2(220, 0)
-
-[node name="WeaponAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
-theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
-text = "Zmiana broni"
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(320, 0)
 
 [node name="PauseKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "ESC"
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(300, 0)
 
 [node name="PauseAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
 theme_override_fonts/font = ExtResource("4")
-theme_override_font_sizes/font_size = 29
+theme_override_font_sizes/font_size = 38
 text = "Menu pauzy"
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(320, 0)
 
 [node name="HSeparator3" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=441134]
 layout_mode = 2
