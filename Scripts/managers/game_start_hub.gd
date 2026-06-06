@@ -59,7 +59,7 @@ func _play_menu_spawn_intro() -> void:
 
 	player.visible = original_visible
 	player.modulate = Color(0.35, 1.0, 1.0, 0.0)
-	player.scale = Vector2(0.78, 0.78)
+	player.scale = Vector2(0.72, 0.72)
 	_spawn_intro_flash(spawn_position)
 
 	var tween: Tween = create_tween()

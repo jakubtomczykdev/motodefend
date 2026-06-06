@@ -117,10 +117,14 @@ func _collect_section_nodes() -> void:
 		if node:
 			_general_nodes.append(node)
 
-	for node_name in ["HSeparatorControls", "ControlsLabel", "ControlsGrid"]:
+	for node_name in ["ControlsLabel", "ControlsGrid"]:
 		var node := content_box.get_node_or_null(node_name) as Control
 		if node:
 			_controls_nodes.append(node)
+
+	var controls_separator := content_box.get_node_or_null("HSeparatorControls") as Control
+	if controls_separator:
+		controls_separator.visible = false
 
 func _make_section_button(text_value: String) -> Button:
 	var button := Button.new()

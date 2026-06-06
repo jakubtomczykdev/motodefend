@@ -128,12 +128,14 @@ text = "Rzadkość: -"
 
 [node name="PreviewDescription" type="Label" parent="MainArea/PreviewPanel/PreviewVBox/DetailsVBox" unique_id=1195793821]
 layout_mode = 2
-size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 64)
 text = "Najedź kursorem na przedmiot"
 autowrap_mode = 2
+max_lines_visible = 2
 
 [node name="PreviewCost" type="Label" parent="MainArea/PreviewPanel/PreviewVBox/DetailsVBox" unique_id=1093760322]
 layout_mode = 2
+custom_minimum_size = Vector2(0, 30)
 theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_font_sizes/font_size = 24
 text = "Koszt: -"
