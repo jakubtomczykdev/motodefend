@@ -128,7 +128,7 @@ text = "Rzadkość: -"
 
 [node name="PreviewDescription" type="Label" parent="MainArea/PreviewPanel/PreviewVBox/DetailsVBox" unique_id=1195793821]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 64)
+custom_minimum_size = Vector2(0, 52)
 text = "Najedź kursorem na przedmiot"
 autowrap_mode = 2
 max_lines_visible = 2
