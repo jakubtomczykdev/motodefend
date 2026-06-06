@@ -59,12 +59,12 @@ func _play_menu_spawn_intro() -> void:
 
 	player.visible = original_visible
 	player.modulate = Color(0.35, 1.0, 1.0, 0.0)
-	player.scale = Vector2(0.55, 1.35)
+	player.scale = Vector2(0.65, 0.65)
 	_spawn_intro_flash(spawn_position)
 
 	var tween: Tween = create_tween()
 	tween.tween_property(player, "modulate:a", 1.0, 0.25)
-	tween.parallel().tween_property(player, "scale", Vector2(1.12, 0.92), 0.18)
+	tween.parallel().tween_property(player, "scale", Vector2(1.08, 0.94), 0.18)
 	tween.tween_property(player, "scale", Vector2.ONE, 0.16)
 	tween.parallel().tween_property(player, "modulate", Color.WHITE, 0.16)
 	await tween.finished
