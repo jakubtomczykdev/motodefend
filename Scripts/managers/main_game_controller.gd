@@ -426,10 +426,13 @@ func _setup_game_flow_feedback() -> void:
 	combo_label.visible = false
 	combo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	combo_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 24)
-	combo_label.offset_left = -360
-	combo_label.offset_bottom = 86
+	combo_label.custom_minimum_size = Vector2(260, 38)
+	combo_label.offset_left = -280
+	combo_label.offset_top = 112
+	combo_label.offset_right = -20
+	combo_label.offset_bottom = 150
 	combo_label.add_theme_font_override("font", ui_font)
-	combo_label.add_theme_font_size_override("font_size", 37)
+	combo_label.add_theme_font_size_override("font_size", 31)
 	combo_label.add_theme_color_override("font_color", Color(1.0, 0.82, 0.28))
 	combo_label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.85))
 	combo_label.add_theme_constant_override("shadow_offset_x", 3)
@@ -664,6 +667,8 @@ func start_game() -> void:
 	if build_system:
 		print("[MainGame] build_system.clear_build()...")
 		build_system.clear_build()
+		if build_system.has_method("sync_max_item_slots_from_game_data"):
+			build_system.sync_max_item_slots_from_game_data()
 		print("[MainGame] build cleared OK")
 
 	# Jeśli GameData nie ma złota, ustaw wartość startową z balansu.
@@ -941,6 +946,12 @@ func _on_shop_closed() -> void:
 		_on_next_wave_requested()
 
 func _on_item_purchased(item: ItemBase) -> void:
+	if item == null:
+		return
+	if item.item_type == "backpack_upgrade":
+		_update_player_stats()
+		return
+
 	if not items_collected.has(item):
 		items_collected.append(item)
 	
@@ -1003,6 +1014,8 @@ func _restart_from_wave_one() -> void:
 	
 	if build_system:
 		build_system.clear_build()
+		if build_system.has_method("sync_max_item_slots_from_game_data"):
+			build_system.sync_max_item_slots_from_game_data()
 	
 	# Wyczyść wrogów
 	var enemies := get_tree().get_nodes_in_group("Enemies")

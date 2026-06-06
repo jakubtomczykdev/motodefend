@@ -76,7 +76,7 @@ text = "CZAS: 0:00"
 [node name="ItemsLabel" type="Label" parent="Panel/VBoxContainer/StatsContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 29
-text = "ITEMY: 0/6"
+text = "PRZEDMIOTY: 0/6"
 
 [node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
 layout_mode = 2
@@ -84,7 +84,7 @@ layout_mode = 2
 [node name="ItemsLabel2" type="Label" parent="Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "ZEBRANE ITEMY:"
+text = "ZEBRANE PRZEDMIOTY:"
 horizontal_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBoxContainer"]

@@ -215,3 +215,30 @@ class FuntionItem extends ItemBase:
 		stats = {
 			"attack_speed": 0.2
 		}
+
+# Powiekszenie plecaka - specjalny zakup sklepu, nie zajmuje slotu buildu
+class BackpackExpansionItem extends ItemBase:
+	const SLOT_BONUS := 1
+
+	func _init():
+		item_name = "Powiększenie Plecaka"
+		item_type = "backpack_upgrade"
+		description = "Stałe ulepszenie ekwipunku. Dodaje +1 slot na przedmioty i nie zajmuje miejsca w buildzie."
+		rarity = "legendary"
+		cost = 1000
+		icon = preload("res://Assets/items/tactical_vest.png")
+		stats = {}
+
+	func apply_effects(build: Node) -> void:
+		if build == null:
+			return
+		var current_slots = build.get("max_item_slots")
+		if current_slots != null:
+			build.set("max_item_slots", int(current_slots) + SLOT_BONUS)
+
+	func remove_effects(build: Node) -> void:
+		if build == null:
+			return
+		var current_slots = build.get("max_item_slots")
+		if current_slots != null:
+			build.set("max_item_slots", maxi(BalanceData.MAX_BUILD_SLOTS, int(current_slots) - SLOT_BONUS))

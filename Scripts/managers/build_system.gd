@@ -30,6 +30,7 @@ var base_stats: Dictionary = player_stats.duplicate()
 
 func _ready() -> void:
 	_initialize_base_stats()
+	sync_max_item_slots_from_game_data()
 
 func _initialize_base_stats() -> void:
 	base_stats["damage"] = BalanceData.BASE_PLAYER_DAMAGE
@@ -41,6 +42,13 @@ func _initialize_base_stats() -> void:
 	base_stats["hp_regen"] = BalanceData.BASE_PLAYER_REGEN
 	
 	player_stats = base_stats.duplicate()
+
+func sync_max_item_slots_from_game_data() -> void:
+	var gd = get_node_or_null("/root/GameData")
+	if gd and gd.has_method("get_max_item_slots"):
+		max_item_slots = int(gd.get_max_item_slots())
+	else:
+		max_item_slots = BalanceData.MAX_BUILD_SLOTS
 
 func add_item(item: ItemBase) -> bool:
 	if items.size() >= max_item_slots:

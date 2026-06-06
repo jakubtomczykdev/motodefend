@@ -274,6 +274,24 @@ func _on_item_clicked(item: ItemBase) -> void:
 	var added_to_build := false
 	var queued_for_hub := false
 
+	if _is_backpack_expansion(item):
+		if not _apply_backpack_expansion(gd):
+			AudioManager.play_sfx("menu_click")
+			_set_status_message("Nie udało się powiększyć plecaka.", true)
+			return
+
+		AudioManager.play_sfx("buy_item")
+		gold -= item.cost
+		if gd and gd.has_method("record_gold_spent"):
+			gd.record_gold_spent("shop_purchase", item.cost, current_wave_number)
+
+		_purchased_offer_item_keys[_get_item_key(item)] = true
+		_set_status_message("Plecak powiększony: %d / %d slotów." % [_get_current_build_count(), _get_max_build_slots()])
+		item_purchased.emit(item)
+		_update_ui()
+		_update_item_states()
+		return
+
 	if build_system:
 		if not build_system.add_item(item):
 			AudioManager.play_sfx("menu_click")
@@ -367,6 +385,9 @@ func _get_max_build_slots() -> int:
 		var max_slots = build_system.get("max_item_slots")
 		if max_slots != null:
 			return int(max_slots)
+	var gd = get_node_or_null("/root/GameData")
+	if gd and gd.has_method("get_max_item_slots"):
+		return int(gd.get_max_item_slots())
 	return BalanceData.MAX_BUILD_SLOTS
 
 func _get_current_weapon_count() -> int:
@@ -392,6 +413,10 @@ func _can_purchase_item(item: ItemBase) -> bool:
 		AudioManager.play_sfx("menu_click")
 		_set_status_message("Za mało złota na ten zakup.", true)
 		return false
+
+	if _is_backpack_expansion(item):
+		_set_status_message("")
+		return true
 
 	if _get_current_build_count() >= _get_max_build_slots():
 		AudioManager.play_sfx("menu_click")
@@ -439,6 +464,25 @@ func _items_match(left: ItemBase, right: ItemBase) -> bool:
 	if left == null or right == null:
 		return false
 	return left.item_name == right.item_name and left.item_type == right.item_type
+
+func _is_backpack_expansion(item: ItemBase) -> bool:
+	return item != null and item.item_type == "backpack_upgrade"
+
+func _apply_backpack_expansion(gd) -> bool:
+	var new_limit := _get_max_build_slots() + 1
+	if gd:
+		if gd.has_method("add_max_item_slots_bonus"):
+			new_limit = int(gd.add_max_item_slots_bonus(1))
+		else:
+			return false
+
+	if build_system:
+		if build_system.has_method("sync_max_item_slots_from_game_data"):
+			build_system.sync_max_item_slots_from_game_data()
+		else:
+			build_system.set("max_item_slots", new_limit)
+
+	return gd != null or build_system != null
 
 func _get_item_key(item: ItemBase) -> String:
 	if item == null:

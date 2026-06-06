@@ -138,7 +138,7 @@ func _build_ui() -> void:
 	_items_container.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	_items_container.add_theme_constant_override("separation", 8)
 	_items_scroll.add_child(_items_container)
-	columns.add_child(_wrap_section("ITEMY I BRONIE", _items_scroll, Vector2(620, 0)))
+	columns.add_child(_wrap_section("PRZEDMIOTY I BRONIE", _items_scroll, Vector2(620, 0)))
 
 func _wrap_section(title_text: String, content: Control, min_size: Vector2) -> PanelContainer:
 	var panel: PanelContainer = PanelContainer.new()
@@ -215,7 +215,7 @@ func _refresh_items() -> void:
 		for weapon in weapons:
 			_add_item_card(weapon)
 
-	_add_inventory_section_title("ITEMY")
+	_add_inventory_section_title("PRZEDMIOTY")
 	if items.is_empty():
 		_add_empty_row(_items_container, "BRAK ITEMOW")
 	else:

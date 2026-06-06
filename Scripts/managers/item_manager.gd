@@ -4,6 +4,8 @@ extends Node
 signal item_pool_updated
 
 const RARITY_ORDER: Array[String] = ["common", "rare", "epic", "legendary"]
+const BACKPACK_EXPANSION_CHANCE := 0.18
+const BACKPACK_EXPANSION_MIN_WAVE := 3
 
 var all_items: Array[ItemBase] = []
 var shop_items: Array[ItemBase] = []
@@ -62,9 +64,15 @@ func get_shop_items(count: int = 3, wave_number: int = 1) -> Array[ItemBase]:
 		_initialize_all_items()
 	shop_items.clear()
 	var shop_tier := get_shop_tier(wave_number)
+	var backpack_slot := -1
+	if count > 0 and wave_number >= BACKPACK_EXPANSION_MIN_WAVE and rng.randf() < BACKPACK_EXPANSION_CHANCE:
+		backpack_slot = rng.randi_range(0, count - 1)
 
 	for i in range(count):
-		shop_items.append(_get_shop_roll(shop_tier))
+		if i == backpack_slot:
+			shop_items.append(MotorolaItems.BackpackExpansionItem.new())
+		else:
+			shop_items.append(_get_shop_roll(shop_tier))
 
 	item_pool_updated.emit()
 	return shop_items

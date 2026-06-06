@@ -32,6 +32,7 @@ var score: int = 0
 var gold: int = BalanceData.STARTING_GOLD
 var inventory: Array = []
 var pending_weapon_ids: Array = []
+var max_item_slots_bonus: int = 0
 var player_hp: int = 100
 var player_max_hp: int = 100
 var run_started: bool = false
@@ -143,6 +144,7 @@ func reset_to_defaults() -> void:
 	particles_enabled = true
 	shadows_enabled = true
 	screen_shake = true
+	max_item_slots_bonus = 0
 	clear_level_upgrades()
 
 	save_settings()
@@ -150,6 +152,13 @@ func reset_to_defaults() -> void:
 
 func add_inventory_item(item) -> void:
 	inventory.append(item)
+
+func add_max_item_slots_bonus(amount: int = 1) -> int:
+	max_item_slots_bonus = maxi(0, max_item_slots_bonus + amount)
+	return get_max_item_slots()
+
+func get_max_item_slots() -> int:
+	return BalanceData.MAX_BUILD_SLOTS + max_item_slots_bonus
 
 func add_level_upgrade(stat_name: String, value: float) -> void:
 	if _is_flat_level_upgrade(stat_name):
@@ -260,6 +269,7 @@ func reset_run_progress() -> void:
 	gold = BalanceData.STARTING_GOLD
 	inventory.clear()
 	pending_weapon_ids.clear()
+	max_item_slots_bonus = 0
 	player_max_hp = BalanceData.BASE_PLAYER_HP
 	player_hp = player_max_hp
 	clear_level_upgrades()

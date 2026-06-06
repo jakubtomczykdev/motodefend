@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bnelfappvg6h0" path="res://Assets/laptopCloseView.png" id="3_laptop"]
 
 [sub_resource type="StyleBoxFlat" id="style_screen"]
-bg_color = Color(0.15, 0.24, 0.48, 1)
+bg_color = Color(0.055, 0.095, 0.18, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -41,7 +41,7 @@ border_width_bottom = 1
 border_color = Color(0.906, 0.298, 0.235, 1)
 
 [sub_resource type="StyleBoxFlat" id="style_enemylist_panel"]
-bg_color = Color(0.12, 0.2, 0.35, 1)
+bg_color = Color(0.07, 0.12, 0.24, 1)
 border_width_right = 1
 border_color = Color(0.306, 0.804, 0.769, 0.4)
 
@@ -180,7 +180,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.92, 0.95, 1, 1)
+theme_override_colors/font_color = Color(0.94, 0.98, 1, 1)
 theme_override_colors/font_hovered_color = Color(0.306, 0.804, 0.769, 1)
 theme_override_colors/font_selected_color = Color(0.306, 0.804, 0.769, 1)
 theme_override_colors/guide_color = Color(0.306, 0.804, 0.769, 0.25)
@@ -242,7 +242,7 @@ text = " "
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_colors/default_color = Color(0.9, 0.92, 0.97, 1)
+theme_override_colors/default_color = Color(0.94, 0.98, 1, 1)
 theme_override_fonts/normal_font = ExtResource("2_font")
 theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
@@ -267,7 +267,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_colors/default_color = Color(0.92, 0.95, 1, 1)
+theme_override_colors/default_color = Color(0.94, 0.98, 1, 1)
 theme_override_fonts/normal_font = ExtResource("2_font")
 theme_override_font_sizes/normal_font_size = 17
 bbcode_enabled = true

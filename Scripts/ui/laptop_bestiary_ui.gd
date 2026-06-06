@@ -140,11 +140,11 @@ func _setup_scanline() -> void:
 uniform float scanline_offset : hint_range(0, 1) = 0.0;
 
 void fragment() {
-	vec4 col = texture(TEXTURE, UV);
-	float scanline = sin((UV.y * 600.0 + scanline_offset * 100.0) * 3.14159) * 0.05;
+	vec4 col = vec4(0.055, 0.095, 0.18, 1.0);
+	float scanline = sin((UV.y * 600.0 + scanline_offset * 100.0) * 3.14159) * 0.025;
 	col.rgb += scanline;
 	float line = smoothstep(0.48, 0.52, fract(UV.y * 300.0 + scanline_offset));
-	col.rgb = mix(col.rgb, col.rgb * 1.1, line * 0.15);
+	col.rgb = mix(col.rgb, vec3(0.12, 0.30, 0.36), line * 0.18);
 	COLOR = col;
 }"""
 	_scanline_material.shader = shader
@@ -193,9 +193,9 @@ func _populate_list() -> void:
 		var idx: int = _enemy_list.add_item(entry.name, icon, true)
 		# Alternating row colors
 		if idx % 2 == 0:
-			_enemy_list.set_item_custom_bg_color(idx, Color(0.08, 0.14, 0.28, 0.5))
+			_enemy_list.set_item_custom_bg_color(idx, Color(0.06, 0.11, 0.22, 0.85))
 		else:
-			_enemy_list.set_item_custom_bg_color(idx, Color(0.12, 0.18, 0.32, 0.3))
+			_enemy_list.set_item_custom_bg_color(idx, Color(0.08, 0.15, 0.28, 0.85))
 
 
 # ============================================================
@@ -217,10 +217,10 @@ func _show_entry_details(entry: Dictionary) -> void:
 	_enemy_name.text = entry.name
 
 	# Lore
-	_lore_label.text = entry.lore
+	_lore_label.text = String(entry.lore).replace("#e0e4f0", "#f4fbff")
 
 	# Definition
-	_definition_label.text = entry.definition
+	_definition_label.text = String(entry.definition).replace("#e0e4f0", "#f4fbff")
 
 	_update_status_bar()
 
