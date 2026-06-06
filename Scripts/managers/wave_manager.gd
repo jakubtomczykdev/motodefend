@@ -398,6 +398,7 @@ func _on_enemy_died(enemy: Node2D = null) -> void:
 
 	enemies_remaining = max(0, enemies_remaining - 1)
 	update_ui()
+	_try_finish_boss_only_wave()
 
 func _spawn_boss_reward_chest(spawn_position: Vector2) -> void:
 	var chest := Node2D.new()
@@ -418,7 +419,14 @@ func _spawn_boss_reward_chest(spawn_position: Vector2) -> void:
 
 func _on_boss_reward_chest_opened() -> void:
 	reward_chests_pending = max(0, reward_chests_pending - 1)
-	# No longer triggers end_wave — timer handles wave completion
+	_try_finish_boss_only_wave()
+
+func _try_finish_boss_only_wave() -> void:
+	if not boss_only_wave or not is_wave_active:
+		return
+	if enemies_remaining > 0 or reward_chests_pending > 0:
+		return
+	end_wave()
 
 func end_wave() -> void:
 	if not is_wave_active:
