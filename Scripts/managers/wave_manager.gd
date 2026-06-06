@@ -40,6 +40,9 @@ var between_waves_timer: float = 0.0
 var reward_chests_pending: int = 0
 var boss_only_wave: bool = false
 var selected_boss_by_wave: Dictionary = {}
+var boss_rng := RandomNumberGenerator.new()
+var checkpoint_boss_bag: Array[String] = []
+var last_checkpoint_boss_type: String = ""
 
 # System rozłożonego spawnowania
 var spawn_queue: Array[String] = []
@@ -71,6 +74,10 @@ var enemy_scenes: Dictionary = {
 
 func _ready() -> void:
 	add_to_group("WaveManager")
+	boss_rng.randomize()
+	var gd := get_node_or_null("/root/GameData")
+	if gd and gd.has_meta("last_checkpoint_boss_type"):
+		last_checkpoint_boss_type = str(gd.get_meta("last_checkpoint_boss_type"))
 	# Znajdź węzły UI bezpiecznie
 	if has_node("WaveUI"):
 		wave_ui = $WaveUI
@@ -206,6 +213,8 @@ func preview_boss_for_wave(wave: int) -> String:
 	return _get_checkpoint_boss_for_wave(wave)
 
 func reset_boss_selection_for_wave(wave: int) -> void:
+	if selected_boss_by_wave.has(wave):
+		last_checkpoint_boss_type = str(selected_boss_by_wave[wave])
 	selected_boss_by_wave.erase(wave)
 
 func get_education_type_for_wave(wave: int) -> String:
@@ -216,8 +225,31 @@ func get_education_type_for_wave(wave: int) -> String:
 
 func _get_checkpoint_boss_for_wave(wave: int) -> String:
 	if not selected_boss_by_wave.has(wave):
-		selected_boss_by_wave[wave] = CHECKPOINT_BOSSES.pick_random()
+		selected_boss_by_wave[wave] = _draw_checkpoint_boss()
 	return str(selected_boss_by_wave[wave])
+
+func _draw_checkpoint_boss() -> String:
+	if CHECKPOINT_BOSSES.is_empty():
+		return "apt_boss"
+	if checkpoint_boss_bag.is_empty():
+		checkpoint_boss_bag.assign(CHECKPOINT_BOSSES)
+		_shuffle_checkpoint_boss_bag()
+	if checkpoint_boss_bag.size() > 1 and checkpoint_boss_bag.has(last_checkpoint_boss_type):
+		checkpoint_boss_bag.erase(last_checkpoint_boss_type)
+		checkpoint_boss_bag.append(last_checkpoint_boss_type)
+	var boss_type := str(checkpoint_boss_bag.pop_front())
+	last_checkpoint_boss_type = boss_type
+	var gd := get_node_or_null("/root/GameData")
+	if gd:
+		gd.set_meta("last_checkpoint_boss_type", last_checkpoint_boss_type)
+	return boss_type
+
+func _shuffle_checkpoint_boss_bag() -> void:
+	for i in range(checkpoint_boss_bag.size() - 1, 0, -1):
+		var swap_index := boss_rng.randi_range(0, i)
+		var current := checkpoint_boss_bag[i]
+		checkpoint_boss_bag[i] = checkpoint_boss_bag[swap_index]
+		checkpoint_boss_bag[swap_index] = current
 
 func _spawn_wave(config: Dictionary, initial_count: int = 15) -> void:
 	if bool(config.get("boss_only", false)):

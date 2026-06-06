@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://smurfminionimg"
-path="res://.godot/imported/smurf_minion.png-ae9a515c5f46ba71f7f55e59b6ef36ad.ctex"
+uid="uid://cl3bnfnxq3lmc"
+path="res://.godot/imported/smurf_minion.png-0d2a8f5fece97ad5ccdb8103f0d6ae2f.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://Assets/Characters/smurf_minion.png"
-dest_files=["res://.godot/imported/smurf_minion.png-ae9a515c5f46ba71f7f55e59b6ef36ad.ctex"]
+dest_files=["res://.godot/imported/smurf_minion.png-0d2a8f5fece97ad5ccdb8103f0d6ae2f.ctex"]
 
 [params]
 

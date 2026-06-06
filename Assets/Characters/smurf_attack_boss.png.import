@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://smurfattackbossimg"
-path="res://.godot/imported/smurf_attack_boss.png-9f9d0e553cb72cfdc1ad4c2f0a9a7811.ctex"
+uid="uid://twrhxa8xu4nq"
+path="res://.godot/imported/smurf_attack_boss.png-70d865ffb65727c3d22c93ec76cba94b.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://Assets/Characters/smurf_attack_boss.png"
-dest_files=["res://.godot/imported/smurf_attack_boss.png-9f9d0e553cb72cfdc1ad4c2f0a9a7811.ctex"]
+dest_files=["res://.godot/imported/smurf_attack_boss.png-70d865ffb65727c3d22c93ec76cba94b.ctex"]
 
 [params]
 
