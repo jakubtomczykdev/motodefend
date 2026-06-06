@@ -9,6 +9,12 @@ signal enemy_spawned(enemy: Node2D, enemy_type: String)
 signal all_waves_completed
 signal game_over
 
+const CHECKPOINT_BOSSES: Array[String] = ["data_hijacker", "smurf_attack_boss"]
+const BOSS_EDUCATION_TYPES: Dictionary = {
+	"data_hijacker": "hijacking",
+	"smurf_attack_boss": "smurf_attack"
+}
+
 # ---- Time‑based wave settings ----
 @export var wave_base_duration: float = 25.0       # wave 1 duration
 @export var wave_duration_per_level: float = 3.0    # +3s per wave
@@ -33,6 +39,7 @@ var between_waves: bool = false
 var between_waves_timer: float = 0.0
 var reward_chests_pending: int = 0
 var boss_only_wave: bool = false
+var selected_boss_by_wave: Dictionary = {}
 
 # System rozłożonego spawnowania
 var spawn_queue: Array[String] = []
@@ -57,6 +64,8 @@ var enemy_scenes: Dictionary = {
 	"spyware": "res://scenes/Enemies/Spyware.tscn",
 	"bot": "res://scenes/Enemies/Bot.tscn",
 	"data_hijacker": "res://scenes/Enemies/DataHijacker.tscn",
+	"smurf_attack_boss": "res://scenes/Enemies/SmurfAttackBoss.tscn",
+	"smurf_minion": "res://scenes/Enemies/SmurfMinion.tscn",
 	"apt_boss": "res://scenes/Enemies/APTBoss.tscn"
 }
 
@@ -183,28 +192,32 @@ func _get_wave_config(wave: int) -> Dictionary:
 	# Co 5 fal: boss-checkpoint.
 	if wave % 5 == 0:
 		config.has_boss = true
-		if wave == 5:
-			config.boss_type = "data_hijacker"
-			config.boss_only = true
-			config.enemy_count = 0
-		elif wave == 10:
-			config.boss_type = "giant_trojan"
-		elif wave == 15:
-			config.boss_type = "giant_ransomware"
-		elif wave == 20:
-			config.boss_type = "apt_boss"
-		elif wave == 25:
-			config.boss_type = "giant_spyware"
-		elif wave == 30:
-			config.boss_type = "giant_phishing"
-		elif wave == 35:
-			config.boss_type = "giant_sql"
-		else:
-			config.boss_type = "apt_boss"
+		config.boss_type = _get_checkpoint_boss_for_wave(wave)
+		config.boss_only = true
+		config.enemy_count = 0
 	else:
 		config.has_boss = false
 
 	return config
+
+func preview_boss_for_wave(wave: int) -> String:
+	if wave % 5 != 0:
+		return ""
+	return _get_checkpoint_boss_for_wave(wave)
+
+func reset_boss_selection_for_wave(wave: int) -> void:
+	selected_boss_by_wave.erase(wave)
+
+func get_education_type_for_wave(wave: int) -> String:
+	var boss_type := preview_boss_for_wave(wave)
+	if boss_type != "":
+		return str(BOSS_EDUCATION_TYPES.get(boss_type, "apt_boss"))
+	return ""
+
+func _get_checkpoint_boss_for_wave(wave: int) -> String:
+	if not selected_boss_by_wave.has(wave):
+		selected_boss_by_wave[wave] = CHECKPOINT_BOSSES.pick_random()
+	return str(selected_boss_by_wave[wave])
 
 func _spawn_wave(config: Dictionary, initial_count: int = 15) -> void:
 	if bool(config.get("boss_only", false)):
@@ -265,7 +278,7 @@ func _spawn_enemy(enemy_type: String) -> void:
 		return
 
 	var enemy: Node2D = scene.instantiate()
-	var drops_boss_reward := is_giant_boss or actual_enemy_type == "apt_boss" or actual_enemy_type == "data_hijacker"
+	var drops_boss_reward := is_giant_boss or CHECKPOINT_BOSSES.has(actual_enemy_type) or actual_enemy_type == "apt_boss"
 	if drops_boss_reward:
 		enemy.set_meta("drops_boss_reward_chest", true)
 

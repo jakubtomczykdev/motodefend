@@ -204,18 +204,18 @@ func _on_test_wave_5_pressed() -> void:
 		AudioManager.play_sfx("menu_click")
 
 	var controller := _find_test_wave_controller()
-	if controller and controller.has_method("start_data_hijacker_test_wave"):
-		controller.start_data_hijacker_test_wave()
+	if controller and controller.has_method("start_boss_test_wave"):
+		controller.start_boss_test_wave()
 
 func _find_test_wave_controller() -> Node:
 	var node := get_parent()
 	while node:
-		if node.has_method("start_data_hijacker_test_wave"):
+		if node.has_method("start_boss_test_wave"):
 			return node
 		node = node.get_parent()
 
 	var current_scene := get_tree().current_scene
-	if current_scene and current_scene.has_method("start_data_hijacker_test_wave"):
+	if current_scene and current_scene.has_method("start_boss_test_wave"):
 		return current_scene
 	return null
 

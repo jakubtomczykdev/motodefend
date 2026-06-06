@@ -1214,7 +1214,7 @@ func _toggle_pause() -> void:
 	else:
 		_pause_game()
 
-func start_data_hijacker_test_wave() -> void:
+func start_boss_test_wave() -> void:
 	var pause_layer := get_node_or_null("PauseLayer") as CanvasLayer
 	if pause_layer:
 		pause_layer.queue_free()
@@ -1246,9 +1246,14 @@ func start_data_hijacker_test_wave() -> void:
 		wave_manager.enemies_in_wave = 0
 		wave_manager.enemies_remaining = 0
 		wave_manager.reward_chests_pending = 0
+		if wave_manager.has_method("reset_boss_selection_for_wave"):
+			wave_manager.reset_boss_selection_for_wave(5)
 		wave_manager.start_next_wave()
 
-	_show_toast("TEST: DATA HIJACKER | FALA 5", Color(1.0, 0.22, 0.16))
+	_show_toast("TEST: LOSOWY BOSS | FALA 5", Color(1.0, 0.22, 0.16))
+
+func start_data_hijacker_test_wave() -> void:
+	start_boss_test_wave()
 
 func _clear_boss_reward_chests() -> void:
 	for child in get_children():

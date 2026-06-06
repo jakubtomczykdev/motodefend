@@ -210,6 +210,35 @@ var lesson_content: Dictionary = {
 			"feedback": "Tak. Nawet skradziona sesja ma wtedy mniejsza wartosc i latwiej wykryc naduzycie."
 		}
 	},
+	"smurf_attack": {
+		"title": "SMURF ATTACK",
+		"subtitle": "Odbity flood pakietow, ktory zalewa cel ruchem",
+		"image": "res://Assets/Characters/smurf_attack_boss.png",
+		"accent": Color(0.12, 0.72, 1.0),
+		"steps": [
+			{
+				"title": "Co widzisz w tej fali?",
+				"body": "Smurf Attack to odmiana DDoS. Atakujacy wysyla pakiety ICMP z podrobionym adresem ofiary do sieci rozgloszeniowych. Wiele maszyn odpowiada wtedy ofierze naraz, wzmacniajac ruch.",
+				"bullets": ["cel: zalanie ruchem", "wektor: spoofing adresu IP", "efekt w grze: boss rzuca packet-minionami"]
+			},
+			{
+				"title": "Jak dziala atak?",
+				"body": "Zamiast atakowac samemu, napastnik wykorzystuje cudza infrastrukture jako wzmacniacz. Ofiara dostaje odpowiedzi z wielu hostow, choc sama ich nie prosila.",
+				"bullets": ["podrobiony adres zrodlowy", "broadcast albo zle filtrowana siec", "wiele odpowiedzi wraca do ofiary"]
+			},
+			{
+				"title": "Jak sie bronic?",
+				"body": "Najwazniejsze jest blokowanie directed broadcast, filtrowanie spoofingu na brzegach sieci i ochrona anty-DDoS, ktora odcina nietypowy flood zanim zapcha usluge.",
+				"bullets": ["wylacz directed broadcast", "BCP38 / anti-spoofing", "rate limiting i scrubbing DDoS"]
+			}
+		],
+		"quiz": {
+			"question": "Co najlepiej ogranicza Smurf Attack?",
+			"answers": ["Blokada spoofingu i directed broadcast", "Wylaczenie MFA", "Dluzsza nazwa uzytkownika"],
+			"correct": 0,
+			"feedback": "Tak. Bez spoofingu i wzmacniaczy broadcast atak traci najwazniejszy mechanizm."
+		}
+	},
 	"apt_boss": {
 		"title": "APT",
 		"subtitle": "Długotrwała i ukryta kampania ataku",
@@ -511,7 +540,15 @@ func show_wave_info(wave_number: int) -> void:
 	show_pre_wave_education(wave_number)
 
 func show_pre_wave_education(wave_number: int) -> void:
-	_show_lesson(_get_enemy_type_for_wave(wave_number), wave_number)
+	_show_lesson(_resolve_enemy_type_for_wave(wave_number), wave_number)
+
+func _resolve_enemy_type_for_wave(wave_number: int) -> String:
+	var wave_manager := get_tree().get_first_node_in_group("WaveManager")
+	if wave_manager and wave_manager.has_method("get_education_type_for_wave"):
+		var boss_lesson := str(wave_manager.get_education_type_for_wave(wave_number))
+		if boss_lesson != "":
+			return boss_lesson
+	return _get_enemy_type_for_wave(wave_number)
 
 func _show_lesson(enemy_type: String, wave_number: int) -> void:
 	current_enemy_type = enemy_type
@@ -680,8 +717,6 @@ func _restore_combat_ui() -> void:
 		flow.visible = _previous_flow_visible
 
 func _get_enemy_type_for_wave(wave: int) -> String:
-	if wave == 5:
-		return "hijacking"
 	if wave == 1 or wave == 2:
 		return "worm"
 	if wave == 3 or wave == 4:
