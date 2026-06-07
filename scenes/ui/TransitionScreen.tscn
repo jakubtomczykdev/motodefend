@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cx6y8v2u7k7m2"]
 
-[ext_resource type="Script" uid="uid://c5q3u2n2u7q6x" path="res://Scripts/ui/transition_screen.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://boyb32tix3p2m" path="res://Scripts/ui/transition_screen.gd" id="1_script"]
 
 [node name="TransitionScreen" type="Control"]
 process_mode = 3

@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/InventoryUI.tscn" id="10_inv"]
 [ext_resource type="PackedScene" uid="uid://c08csr311bgr6" path="res://scenes/ui/Shop.tscn" id="11_shop"]
 [ext_resource type="PackedScene" uid="uid://cx6y8v2u7k7m2" path="res://scenes/ui/TransitionScreen.tscn" id="12_transition"]
-[ext_resource type="Texture2D" uid="uid://bhyo3r36kpw4o" path="res://Assets/newAssets/bgFuturistic.png" id="bg_tex"]
+[ext_resource type="Texture2D" uid="uid://bt7inxt5w2s0s" path="res://Assets/normal_arena.png" id="normal_arena_tex"]
 [ext_resource type="Script" uid="uid://dgjcr1akb1ul0" path="res://Scripts/ui/level_up_ui.gd" id="Script_LevelUp"]
 [ext_resource type="Script" uid="uid://c5uc40nakdcrk" path="res://Scripts/ui/stats_ui.gd" id="Script_Stats"]
 
@@ -177,7 +177,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("bg_tex")
+texture = ExtResource("normal_arena_tex")
 expand_mode = 1
 stretch_mode = 5
 

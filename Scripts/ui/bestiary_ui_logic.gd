@@ -110,6 +110,38 @@ func _build_entries() -> Array[Dictionary]:
 			definition = "[color=#e8e8f0]Botnet to sieć zainfekowanych urządzeń (botów) kontrolowanych zdalnie przez atakującego (botmastera) za pośrednictwem serwerów dowodzenia C2 (Command & Control). Botnety wykorzystywane są do rozsyłania spamu, ataków DDoS, kradzieży danych, miningu kryptowalut oraz rozprzestrzeniania dalszego malware. Wykrycie botnetu jest trudne, ponieważ zainfekowane urządzenia działają pozornie normalnie – ochrona obejmuje monitoring ruchu sieciowego i regularne aktualizacje firmware.[/color]"
 		},
 		{
+			name = "SMURF MINION",
+			texture_path = "res://Assets/Characters/smurf_minion.png",
+			category = "ataki_sieciowe",
+			hp = 28, speed = 6, attack = 5, wave = "Boss", type = "ATAKI SIECIOWE",
+			lore = "[color=#00ccff]SMURF MINION to mały pakiet-pocisk wyrzucany przez bossa Smurf Attack. Sam nie wygląda groźnie, ale kilka takich jednostek naraz potrafi rozciągnąć obronę i zmusić gracza do ruchu.[/color]",
+			definition = "[color=#e8e8f0]W realnym ataku smurf pakiety są odbijane przez źle skonfigurowane sieci, wzmacniając ruch wracający do ofiary. Minion w grze reprezentuje pojedynczy odbity pakiet, który dokłada presję do głównego ataku DDoS.[/color]"
+		},
+		{
+			name = "DATA HIJACKER (BOSS)",
+			texture_path = "res://Assets/Characters/data_hijacker.png",
+			category = "bossy",
+			hp = 680, speed = 3, attack = 30, wave = "5+", type = "BOSS",
+			lore = "[color=#ff7a2f]DATA HIJACKER przejmuje tor walki jak skradzioną sesję: oznacza linię ataku, ładuje impuls i przebija się przez obronę szybką szarżą. To boss, który karze stanie w miejscu.[/color]",
+			definition = "[color=#e8e8f0]Hijacking oznacza przejęcie sesji, tokenu, połączenia, domeny albo konta. Obrona opiera się na MFA, krótkich sesjach, rotacji tokenów i wykrywaniu nietypowego zachowania.[/color]"
+		},
+		{
+			name = "SMURF ATTACK (BOSS)",
+			texture_path = "res://Assets/Characters/smurf_attack_boss.png",
+			category = "bossy",
+			hp = 760, speed = 3, attack = 24, wave = "5+", type = "BOSS",
+			lore = "[color=#ff7a2f]SMURF ATTACK zasypuje arenę pakietami-minionami i zmusza gracza do ciągłego czyszczenia przestrzeni. Walka jest testem kontroli tłumu i priorytetów celów.[/color]",
+			definition = "[color=#e8e8f0]Smurf Attack to odmiana DDoS oparta o spoofing adresu IP i wzmacnianie ruchu przez sieci broadcast. Ograniczają go anti-spoofing, blokada directed broadcast, rate limiting i ochrona anty-DDoS.[/color]"
+		},
+		{
+			name = "FIREWALL OVERLOAD (BOSS)",
+			texture_path = "res://Assets/Characters/firewall_overload_boss.png",
+			category = "bossy",
+			hp = 840, speed = 2, attack = 24, wave = "5+", type = "BOSS",
+			lore = "[color=#ff7a2f]FIREWALL OVERLOAD to ciężki cyber-rycerz w czarnym pancerzu, który zasłania się hex-tarczą i odcina sektory areny płonącymi ścianami firewall. Jest wolniejszy, ale kontroluje przestrzeń brutalnie i precyzyjnie.[/color]",
+			definition = "[color=#e8e8f0]Firewall overload oznacza przeciążenie warstwy ochronnej zbyt dużym lub źle filtrowanym ruchem. Pomagają reguły minimalnego dostępu, filtrowanie na brzegu sieci, rate limiting, monitoring anomalii i ochrona DDoS.[/color]"
+		},
+		{
 			name = "APT (BOSS)",
 			texture_path = "res://Assets/Characters/apt_boss.png",
 			category = "bossy",

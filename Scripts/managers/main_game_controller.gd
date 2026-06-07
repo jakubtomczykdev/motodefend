@@ -3,6 +3,8 @@ extends Node2D
 ## Główny kontroler gry - integruje wszystkie systemy
 
 const WeaponItemsClass := preload("res://Scripts/entities/weapon_items.gd")
+const NORMAL_ARENA_TEXTURE := preload("res://Assets/normal_arena.png")
+const BOSS_ARENA_TEXTURE := preload("res://Assets/boss_arena.png")
 
 signal game_started
 signal game_over
@@ -18,6 +20,7 @@ var educational_system: Control
 var transition_screen: Control
 var end_screen: Control
 var hud_layer: CanvasLayer
+var arena_background: TextureRect
 var playtime_label: Label
 var health_bar: ProgressBar
 var hp_label: Label
@@ -186,6 +189,7 @@ func _ready() -> void:
 	transition_screen = get_node_or_null("TransitionCanvasLayer/TransitionScreen")
 	end_screen = get_node_or_null("EndScreenCanvasLayer/EndScreen")
 	hud_layer = get_node_or_null("HUD") as CanvasLayer
+	arena_background = get_node_or_null("SOCBackground/TextureRect") as TextureRect
 	playtime_label = get_node_or_null("HUD/PlaytimeUI")
 	health_bar = get_node_or_null("HUD/HealthBar")
 	hp_label = get_node_or_null("HUD/HPLabel")
@@ -204,6 +208,7 @@ func _ready() -> void:
 	_setup_retro_hud()
 	_setup_game_flow_feedback()
 	_setup_boss_health_bar()
+	_apply_arena_background(false)
 
 	# Rozpocznij grę automatycznie po załadowaniu sceny
 	start_game()
@@ -876,8 +881,14 @@ func _on_wave_started(_wave_number: int) -> void:
 	if combo_label:
 		combo_label.visible = false
 	_hide_boss_health_bar()
+	_apply_arena_background(wave_manager.boss_only_wave if wave_manager else false)
 	var subtitle := "Przetrwaj %.0fs  |  bron endpointu" % (wave_manager.wave_max_time if wave_manager else 0.0)
 	_show_banner("FALA %d" % _wave_number, subtitle, Color(0.35, 0.96, 1.0), 1.1)
+
+func _apply_arena_background(is_boss_wave: bool) -> void:
+	if not arena_background:
+		return
+	arena_background.texture = BOSS_ARENA_TEXTURE if is_boss_wave else NORMAL_ARENA_TEXTURE
 
 func _on_wave_ended(wave_number: int) -> void:
 	if game_state != "playing" and game_state != "leveling":

@@ -239,6 +239,35 @@ var lesson_content: Dictionary = {
 			"feedback": "Tak. Bez spoofingu i wzmacniaczy broadcast atak traci najwazniejszy mechanizm."
 		}
 	},
+	"firewall_overload": {
+		"title": "FIREWALL OVERLOAD",
+		"subtitle": "Przeciazenie ochrony przez zbyt duzy i zle filtrowany ruch",
+		"image": "res://Assets/Characters/firewall_overload_boss.png",
+		"accent": Color(1.0, 0.42, 0.08),
+		"steps": [
+			{
+				"title": "Co widzisz w tej fali?",
+				"body": "Firewall Overload zalewa punkt ochrony ruchem i wymusza decyzje: co przepuscic, co odciac i gdzie postawic granice. W grze boss zamyka przestrzen scianami firewall.",
+				"bullets": ["cel: przeciazenie kontroli ruchu", "wektor: flood i bledne reguly", "efekt w grze: sciany i impuls obszarowy"]
+			},
+			{
+				"title": "Jak dziala atak?",
+				"body": "Napastnik generuje duzo polaczen albo pakietow, czesto z roznych zrodel. Slabe reguly, brak rate limitow i brak priorytetow sprawiaja, ze ochrona sama staje sie waskim gardlem.",
+				"bullets": ["duzy wolumen ruchu", "brak filtrowania na brzegu", "przeciazenie firewalla lub uslugi"]
+			},
+			{
+				"title": "Jak sie bronic?",
+				"body": "Pomaga filtrowanie jak najblizej brzegu sieci, rate limiting, jasne reguly allowlist/denylist i monitoring anomalii zanim ruch dojdzie do krytycznych zasobow.",
+				"bullets": ["rate limiting", "reguly minimalnego dostepu", "monitoring i ochrona DDoS"]
+			}
+		],
+		"quiz": {
+			"question": "Co najlepiej ogranicza przeciazenie firewalla?",
+			"answers": ["Rate limiting i filtrowanie ruchu na brzegu", "Otwarcie wszystkich portow", "Wylaczenie monitoringu"],
+			"correct": 0,
+			"feedback": "Tak. Im wczesniej odfiltrujesz zly ruch, tym mniej obciaza on system obrony."
+		}
+	},
 	"apt_boss": {
 		"title": "APT",
 		"subtitle": "Długotrwała i ukryta kampania ataku",

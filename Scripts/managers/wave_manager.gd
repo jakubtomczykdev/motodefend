@@ -9,10 +9,11 @@ signal enemy_spawned(enemy: Node2D, enemy_type: String)
 signal all_waves_completed
 signal game_over
 
-const CHECKPOINT_BOSSES: Array[String] = ["data_hijacker", "smurf_attack_boss"]
+const CHECKPOINT_BOSSES: Array[String] = ["data_hijacker", "smurf_attack_boss", "firewall_overload"]
 const BOSS_EDUCATION_TYPES: Dictionary = {
 	"data_hijacker": "hijacking",
-	"smurf_attack_boss": "smurf_attack"
+	"smurf_attack_boss": "smurf_attack",
+	"firewall_overload": "firewall_overload"
 }
 
 # ---- Time‑based wave settings ----
@@ -68,6 +69,7 @@ var enemy_scenes: Dictionary = {
 	"bot": "res://scenes/Enemies/Bot.tscn",
 	"data_hijacker": "res://scenes/Enemies/DataHijacker.tscn",
 	"smurf_attack_boss": "res://scenes/Enemies/SmurfAttackBoss.tscn",
+	"firewall_overload": "res://scenes/Enemies/FirewallOverloadBoss.tscn",
 	"smurf_minion": "res://scenes/Enemies/SmurfMinion.tscn",
 	"apt_boss": "res://scenes/Enemies/APTBoss.tscn"
 }
