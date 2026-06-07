@@ -49,6 +49,7 @@ corner_radius_bottom_left = 2
 script = ExtResource("1_main")
 
 [node name="MapBoundaries" type="StaticBody2D" parent="." unique_id=1650089044]
+collision_layer = 1
 collision_mask = 0
 
 [node name="Top" type="CollisionShape2D" parent="MapBoundaries" unique_id=1194503416]
@@ -96,6 +97,7 @@ color = Color(0.4, 0.4, 0.4, 1)
 visible = false
 position = Vector2(126, 131)
 scale = Vector2(3.639999, 3.1599994)
+collision_layer = 1
 collision_mask = 0
 
 [node name="ColorRect" type="ColorRect" parent="Obstacle1" unique_id=377441347]
@@ -112,6 +114,7 @@ shape = SubResource("RectangleShape2D_obstacle")
 visible = false
 position = Vector2(1797, 113)
 scale = Vector2(3.037525, 2.8185234)
+collision_layer = 1
 collision_mask = 0
 
 [node name="ColorRect" type="ColorRect" parent="Obstacle2" unique_id=367583989]
@@ -128,6 +131,7 @@ shape = SubResource("RectangleShape2D_obstacle")
 visible = false
 position = Vector2(131, 931)
 scale = Vector2(3.5672793, 3.463604)
+collision_layer = 1
 collision_mask = 0
 
 [node name="ColorRect" type="ColorRect" parent="Obstacle3" unique_id=1738415684]
@@ -144,6 +148,7 @@ shape = SubResource("RectangleShape2D_obstacle")
 visible = false
 position = Vector2(1780, 925)
 scale = Vector2(3.32, 4.0399976)
+collision_layer = 1
 collision_mask = 0
 
 [node name="ColorRect" type="ColorRect" parent="Obstacle4" unique_id=43593299]
@@ -154,6 +159,50 @@ offset_bottom = 40.0
 color = Color(0.4, 0.4, 0.4, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle4" unique_id=1276719268]
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="ArenaMapCollisions" type="StaticBody2D" parent="." unique_id=1669327044]
+collision_layer = 1
+collision_mask = 0
+
+[node name="TopWall" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1439893392]
+position = Vector2(960, 58)
+scale = Vector2(24, 1.45)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="BottomWall" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1111792426]
+position = Vector2(960, 1022)
+scale = Vector2(24, 1.45)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="LeftWall" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1112716962]
+position = Vector2(52, 540)
+scale = Vector2(1.3, 13.5)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="RightWall" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1104198931]
+position = Vector2(1868, 540)
+scale = Vector2(1.3, 13.5)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="TopLeftPad" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1492103668]
+position = Vector2(132, 118)
+scale = Vector2(2.55, 2.2)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="TopRightPad" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1892928214]
+position = Vector2(1788, 118)
+scale = Vector2(2.55, 2.2)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="BottomLeftPad" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=212260832]
+position = Vector2(132, 962)
+scale = Vector2(2.55, 2.2)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="BottomRightPad" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1461868318]
+position = Vector2(1788, 962)
+scale = Vector2(2.55, 2.2)
 shape = SubResource("RectangleShape2D_obstacle")
 
 [node name="MenuBackground" type="CanvasLayer" parent="." unique_id=1708269400]

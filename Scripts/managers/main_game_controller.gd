@@ -1039,16 +1039,18 @@ func _open_shop(is_mid_wave: bool = false) -> void:
 	
 	_shop_opened_mid_wave = is_mid_wave
 	game_state = "shop"
+	var shop_wave: int = 1
+	if wave_manager:
+		shop_wave = wave_manager.current_wave if is_mid_wave else wave_manager.current_wave + 1
 	
 	var shop_items: Array[ItemBase] = []
 	if item_manager and wave_manager:
 		# Pobierz 4 przedmioty dla nowego układu HFlow
-		shop_items = item_manager.get_shop_items(4, wave_manager.current_wave)
+		shop_items = item_manager.get_shop_items(4, shop_wave)
 
 	if shop_system:
 		get_tree().paused = true
 		if shop_system.has_method("open_shop"):
-			var shop_wave: int = wave_manager.current_wave if wave_manager else 1
 			shop_system.open_shop(shop_items, build_system, item_manager, shop_wave)
 		else:
 			shop_system.visible = true

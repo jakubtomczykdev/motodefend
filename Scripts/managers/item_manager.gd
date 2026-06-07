@@ -133,7 +133,7 @@ func _passive_available_in_tier(item: ItemBase, shop_tier: int) -> bool:
 		"rare":
 			return shop_tier >= 2
 		"epic":
-			return shop_tier >= 3
+			return shop_tier >= 2
 		"legendary":
 			return shop_tier >= 4
 		_:
@@ -158,11 +158,11 @@ func _get_rarity_weights(shop_tier: int) -> Dictionary:
 		1:
 			return {"common": 100.0, "rare": 0.0, "epic": 0.0, "legendary": 0.0}
 		2:
-			return {"common": 75.0, "rare": 25.0, "epic": 0.0, "legendary": 0.0}
+			return {"common": 62.0, "rare": 30.0, "epic": 8.0, "legendary": 0.0}
 		3:
-			return {"common": 55.0, "rare": 35.0, "epic": 10.0, "legendary": 0.0}
+			return {"common": 42.0, "rare": 38.0, "epic": 18.0, "legendary": 2.0}
 		4:
-			return {"common": 25.0, "rare": 45.0, "epic": 25.0, "legendary": 5.0}
+			return {"common": 22.0, "rare": 38.0, "epic": 32.0, "legendary": 8.0}
 		_:
 			return {"common": 10.0, "rare": 35.0, "epic": 40.0, "legendary": 15.0}
 

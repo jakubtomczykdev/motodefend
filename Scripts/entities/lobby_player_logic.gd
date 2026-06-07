@@ -14,6 +14,8 @@ var _step_interval: float = 0.35 # Czas między krokami (sekundy)
 var _use_step1: bool = true
 
 func _ready():
+	collision_layer = 4
+	collision_mask = 1 | 2
 	interaction_area.area_entered.connect(_on_interaction_area_area_entered)
 	interaction_area.area_exited.connect(_on_interaction_area_area_exited)
 	interaction_prompt.visible = false

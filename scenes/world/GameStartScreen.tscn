@@ -1,15 +1,15 @@
 [gd_scene format=3 uid="uid://bbohq175i5fyw"]
 
-[ext_resource type="PackedScene" path="res://scenes/world/playerScene.tscn" id="2_bml70"]
-[ext_resource type="Script" path="res://Scripts/entities/lobby_player_logic.gd" id="3_bml70"]
-[ext_resource type="PackedScene" path="res://scenes/world/shopkeeper.tscn" id="4_4klen"]
-[ext_resource type="PackedScene" path="res://scenes/world/cybersecurity_expert.tscn" id="6_7s0oi"]
-[ext_resource type="Script" path="res://Scripts/entities/npc_expert.gd" id="7_vjy5m"]
-[ext_resource type="Script" uid="uid://glrrl0imiuif" path="res://Scripts/managers/game_start_hub.gd" id="8_hub"]
-[ext_resource type="Script" uid="uid://fv5etw6m4nrg" path="res://Scripts/ui/start_game_trigger.gd" id="10_trigger"]
+[ext_resource type="PackedScene" uid="uid://dxqcwr5onpo55" path="res://scenes/world/playerScene.tscn" id="2_bml70"]
+[ext_resource type="Script" uid="uid://d2uotlwf33pgm" path="res://Scripts/entities/lobby_player_logic.gd" id="3_bml70"]
+[ext_resource type="PackedScene" uid="uid://116jl6uig251" path="res://scenes/world/shopkeeper.tscn" id="4_4klen"]
+[ext_resource type="PackedScene" uid="uid://tjeubeg1cp6j" path="res://scenes/world/cybersecurity_expert.tscn" id="6_7s0oi"]
+[ext_resource type="Script" uid="uid://5mq08o1svj51" path="res://Scripts/entities/npc_expert.gd" id="7_vjy5m"]
+[ext_resource type="Script" uid="uid://ih2hvinh6ybd" path="res://Scripts/managers/game_start_hub.gd" id="8_hub"]
+[ext_resource type="Script" uid="uid://cckgmmm0u2wc1" path="res://Scripts/ui/start_game_trigger.gd" id="10_trigger"]
 [ext_resource type="PackedScene" uid="uid://bag1npbdd1mlm" path="res://scenes/world/Laptop.tscn" id="11_laptop"]
-[ext_resource type="Script" uid="uid://dailkyrs24a4o" path="res://Scripts/managers/item_manager.gd" id="12_item"]
-[ext_resource type="Texture2D" uid="uid://bg4ia3v3cbgbx" path="res://Assets/Lobby_bg.png" id="bg_tex"]
+[ext_resource type="Script" uid="uid://d2oe475xflfle" path="res://Scripts/managers/item_manager.gd" id="12_item"]
+[ext_resource type="Texture2D" uid="uid://clmj3llh55vu6" path="res://Assets/Lobby_bg.png" id="bg_tex"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
 normal = Vector2(0, 1)
@@ -26,16 +26,17 @@ normal = Vector2(-1, 0)
 size = Vector2(100, 100)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
-size = Vector2(216, 171)
+size = Vector2(1917.5, 402)
 
 [node name="Node2D" type="Node2D" unique_id=720583781]
 y_sort_enabled = true
 script = ExtResource("8_hub")
 
-[node name="ItemManager" type="Node" parent="."]
+[node name="ItemManager" type="Node" parent="." unique_id=1422949443]
 script = ExtResource("12_item")
 
 [node name="MapBoundaries" type="StaticBody2D" parent="." unique_id=993547456]
+collision_layer = 1
 collision_mask = 0
 
 [node name="Top" type="CollisionShape2D" parent="MapBoundaries" unique_id=1600140728]
@@ -95,6 +96,83 @@ color = Color(0.4, 0.4, 0.4, 1)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle1" unique_id=2134446690]
 shape = SubResource("RectangleShape2D_obstacle")
 
+[node name="LobbyMapCollisions" type="StaticBody2D" parent="." unique_id=1449487430]
+collision_layer = 1
+collision_mask = 0
+
+[node name="TopBuildings" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=179205366]
+position = Vector2(960, 168)
+scale = Vector2(19.2, 3.35)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="LeftUpperWall" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=921762001]
+position = Vector2(140, 438)
+scale = Vector2(2.8, 2.08)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="LeftRampRail" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=1973269064]
+position = Vector2(300, 506)
+rotation = -0.523599
+scale = Vector2(0.65, 2.95)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="RightShopSideWall" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=1719117079]
+position = Vector2(1812, 530)
+scale = Vector2(2.16, 1.7)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="RightBenchPlanter" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=1373763267]
+position = Vector2(1747, 458)
+scale = Vector2(1.18, 1.22)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="LeftBottomBuildings" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=1309486512]
+position = Vector2(250, 906)
+scale = Vector2(5.0, 3.48)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="LeftBottomRail" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=1572389901]
+position = Vector2(395, 790)
+rotation = -0.872665
+scale = Vector2(0.78, 3.8)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="CenterBottomLeftBlock" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=1049098471]
+position = Vector2(520, 970)
+scale = Vector2(2.0, 2.2)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="RightBottomBuildings" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=1482139758]
+position = Vector2(1660, 904)
+scale = Vector2(5.2, 3.52)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="RightBottomRail" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=1655966110]
+position = Vector2(1515, 790)
+rotation = 0.872665
+scale = Vector2(0.78, 3.8)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="CenterBottomRightBlock" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=2040464624]
+position = Vector2(1400, 970)
+scale = Vector2(2.0, 2.2)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="BestiaryPlatform" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=1210638248]
+position = Vector2(548, 565)
+scale = Vector2(2.2, 1.45)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="LeftTopPlanters" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=1060788549]
+position = Vector2(520, 345)
+scale = Vector2(1.9, 0.78)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="RightTopPlanters" type="CollisionShape2D" parent="LobbyMapCollisions" unique_id=1076879828]
+position = Vector2(1400, 345)
+scale = Vector2(1.9, 0.78)
+shape = SubResource("RectangleShape2D_obstacle")
+
 [node name="BackgroundLayer" type="CanvasLayer" parent="." unique_id=124791235]
 layer = -1
 
@@ -136,7 +214,7 @@ collision_mask = 0
 script = ExtResource("10_trigger")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StartGameTrigger" unique_id=572524071]
-position = Vector2(-2, -202.5)
+position = Vector2(-10.75, -338)
 shape = SubResource("RectangleShape2D_trigger")
 
 [node name="Player" parent="." unique_id=654260357 instance=ExtResource("2_bml70")]

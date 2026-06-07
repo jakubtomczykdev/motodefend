@@ -4,6 +4,12 @@ var current_weapon: WeaponBase
 var can_attack: bool = true
 var attack_timer: float = 0.0
 var projectile_scene: PackedScene = preload("res://scenes/game/Projectile.tscn")
+var projectile_textures: Array[Texture2D] = [
+	preload("res://Assets/projectiles/blaster_shot_t1.png"),
+	preload("res://Assets/projectiles/blaster_shot_t2.png"),
+	preload("res://Assets/projectiles/blaster_shot_t3.png"),
+	preload("res://Assets/projectiles/blaster_shot_t4.png"),
+]
 var player_ref: Node2D = null
 
 var is_bursting: bool = false
@@ -71,8 +77,12 @@ func _fire_burst_shot(target_pos: Vector2, weapon_data: WeaponBase) -> void:
 
 		var sprite: Sprite2D = projectile.get_node_or_null("Sprite2D")
 		if sprite:
-			sprite.scale = Vector2(3.5, 1.5)
-			sprite.modulate = Color(0.2, 0.9, 1.0, 1.0)
+			var level_index := clampi(weapon_data.weapon_level - 1, 0, projectile_textures.size() - 1)
+			var visual_scale := 0.28 + float(level_index) * 0.08
+			sprite.texture = projectile_textures[level_index]
+			sprite.scale = Vector2(visual_scale, visual_scale)
+			sprite.offset = Vector2(58.0, 0.0)
+			sprite.modulate = Color.WHITE
 
 		get_tree().current_scene.add_child(projectile)
 		_spawn_muzzle_flash(spawn_pos, direction)
