@@ -146,7 +146,7 @@ func _refresh_view() -> void:
 	else:
 		view_title.text = "DOSTĘPNA TECHNOLOGIA | SKLEP TIER %d | FALA %d" % [current_shop_tier, current_wave_number]
 		_populate_items()
-		inventory_button.text = "Moje EQ (%d/%d)" % [_get_current_build_count(), _get_max_build_slots()]
+		inventory_button.text = "Moje EQ (%d)" % _get_current_build_count()
 
 func _clear_items() -> void:
 	for child in items_container.get_children():
@@ -165,24 +165,39 @@ func _populate_items() -> void:
 
 func _populate_inventory() -> void:
 	var player = get_tree().get_first_node_in_group("Player")
-	var owned_items = []
+	var owned_items: Array[ItemBase] = []
 
 	if player and player.has_method("get_weapons"):
-		owned_items = player.get_weapons()
+		for weapon in player.get_weapons():
+			if weapon is ItemBase:
+				_add_unique_inventory_item(owned_items, weapon)
 	else:
-		var gd = get_node_or_null("/root/GameData")
-		if gd:
+		var pending_gd = get_node_or_null("/root/GameData")
+		if pending_gd:
 			var all_weps = WeaponItems.get_all_weapons()
-			for wid in gd.pending_weapon_ids:
+			for wid in pending_gd.pending_weapon_ids:
 				if wid < all_weps.size():
-					owned_items.append(all_weps[wid])
+					_add_unique_inventory_item(owned_items, all_weps[wid])
+
+	if build_system:
+		var build_items = build_system.get("items")
+		if build_items is Array:
+			for item in build_items:
+				if item is ItemBase:
+					_add_unique_inventory_item(owned_items, item)
+
+	var gd = get_node_or_null("/root/GameData")
+	if gd:
+		for item in gd.inventory:
+			if item is ItemBase:
+				_add_unique_inventory_item(owned_items, item)
 
 	for item in owned_items:
 		var item_ui = item_scene.instantiate()
 		items_container.add_child(item_ui)
 		item_ui.set_as_inventory_item()
 		item_ui.setup_item(item, gold)
-		item_ui.item_clicked.connect(_on_inventory_item_sold)
+		item_ui.item_clicked.connect(_on_inventory_item_sold_fixed)
 		item_ui.mouse_entered.connect(_update_preview.bind(item))
 
 func _on_inventory_item_sold(item: ItemBase) -> void:
@@ -230,6 +245,65 @@ func _on_inventory_item_sold(item: ItemBase) -> void:
 	_set_status_message("Sprzedano: %s" % item.item_name)
 	_refresh_view()
 	_update_ui()
+
+func _on_inventory_item_sold_fixed(item: ItemBase) -> void:
+	var gd = get_node_or_null("/root/GameData")
+	if not gd or item == null:
+		return
+
+	var refund := int(item.cost * 0.5)
+	var player = get_tree().get_first_node_in_group("Player")
+	var sold := false
+
+	if item is WeaponBase and player and player.has_node("WeaponManager"):
+		var p_weapons = player.get_weapons()
+		for i in range(p_weapons.size()):
+			if _items_match(p_weapons[i], item):
+				player.get_node("WeaponManager").remove_weapon(i)
+				sold = true
+				break
+
+	if item is WeaponBase:
+		var all_weps = WeaponItems.get_all_weapons()
+		for i in range(gd.pending_weapon_ids.size()):
+			var wid = gd.pending_weapon_ids[i]
+			if wid >= 0 and wid < all_weps.size() and _items_match(all_weps[wid], item):
+				gd.pending_weapon_ids.remove_at(i)
+				sold = true
+				break
+
+	if _remove_matching_item_from_array(gd.inventory, item):
+		sold = true
+
+	if build_system:
+		var build_item := _find_matching_build_item(item)
+		if build_item != null and build_system.remove_item(build_item):
+			sold = true
+
+	var main = get_tree().current_scene
+	if main and "items_collected" in main:
+		_remove_matching_item_from_array(main.items_collected, item)
+
+	if not sold:
+		_set_status_message("Nie można sprzedać tego przedmiotu.", true)
+		_update_ui()
+		return
+
+	gold += refund
+	if gd.has_method("record_gold_income"):
+		gd.record_gold_income("sale_refund", refund, current_wave_number)
+	AudioManager.play_sfx("buy_item")
+	_set_status_message("Sprzedano: %s" % item.item_name)
+	_refresh_view()
+	_update_ui()
+
+func _add_unique_inventory_item(items: Array[ItemBase], item: ItemBase) -> void:
+	if item == null:
+		return
+	for owned_item in items:
+		if _items_match(owned_item, item):
+			return
+	items.append(item)
 
 func _toggle_inventory() -> void:
 	showing_inventory = !showing_inventory
@@ -295,7 +369,7 @@ func _on_item_clicked(item: ItemBase) -> void:
 	if build_system:
 		if not build_system.add_item(item):
 			AudioManager.play_sfx("menu_click")
-			_set_status_message("Build jest pełny. Sprzedaj coś przed zakupem.", true)
+			_set_status_message("Nie udało się dodać przedmiotu.", true)
 			return
 		added_to_build = true
 
@@ -370,15 +444,21 @@ func _refresh_shop_items() -> void:
 	_refresh_view()
 
 func _get_current_build_count() -> int:
+	var count := 0
 	if build_system:
 		var build_items = build_system.get("items")
 		if build_items is Array:
-			return build_items.size()
+			for item in build_items:
+				if item is ItemBase and not item is WeaponBase:
+					count += 1
+			return count
 
 	var gd = get_node_or_null("/root/GameData")
 	if gd:
-		return gd.inventory.size()
-	return 0
+		for item in gd.inventory:
+			if item is ItemBase and not item is WeaponBase:
+				count += 1
+	return count
 
 func _get_max_build_slots() -> int:
 	if build_system:
@@ -418,11 +498,6 @@ func _can_purchase_item(item: ItemBase) -> bool:
 		_set_status_message("")
 		return true
 
-	if _get_current_build_count() >= _get_max_build_slots():
-		AudioManager.play_sfx("menu_click")
-		_set_status_message("Build jest pełny. Sprzedaj coś przed zakupem.", true)
-		return false
-
 	if item is WeaponBase and _get_current_weapon_count() >= _get_max_weapon_slots():
 		AudioManager.play_sfx("menu_click")
 		_set_status_message("Osiagnieto limit broni.", true)
@@ -453,12 +528,13 @@ func _find_matching_build_item(item: ItemBase) -> ItemBase:
 				return owned_item
 	return null
 
-func _remove_matching_item_from_array(items: Array, item: ItemBase) -> void:
+func _remove_matching_item_from_array(items: Array, item: ItemBase) -> bool:
 	for i in range(items.size()):
 		var owned_item = items[i]
 		if owned_item is ItemBase and _items_match(owned_item, item):
 			items.remove_at(i)
-			return
+			return true
+	return false
 
 func _items_match(left: ItemBase, right: ItemBase) -> bool:
 	if left == null or right == null:
@@ -512,16 +588,15 @@ func _update_ui() -> void:
 	if weapon_count_label:
 		var build_count = _get_current_build_count()
 		var weapon_count = _get_current_weapon_count()
-		weapon_count_label.text = "TIER %d   BUILD: %d / %d   BRONIE: %d / %d" % [
+		weapon_count_label.text = "TIER %d   ITEMY: %d   BRONIE: %d / %d" % [
 			current_shop_tier,
 			build_count,
-			_get_max_build_slots(),
 			weapon_count,
 			_get_max_weapon_slots()
 		]
 		if _status_message != "":
 			weapon_count_label.text += "   |   " + _status_message
-		if _status_is_error or build_count >= _get_max_build_slots():
+		if _status_is_error:
 			weapon_count_label.modulate = Color(1, 0.4, 0.4)
 		else:
 			weapon_count_label.modulate = Color(0.7, 0.8, 1.0)
@@ -529,7 +604,7 @@ func _update_ui() -> void:
 	if inventory_button:
 		var count = _get_current_build_count()
 		if not showing_inventory:
-			inventory_button.text = "Moje EQ (%d/%d)" % [count, _get_max_build_slots()]
+			inventory_button.text = "Moje EQ (%d)" % count
 
 func _on_close_pressed() -> void:
 	AudioManager.play_sfx("menu_click")

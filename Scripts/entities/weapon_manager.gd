@@ -166,6 +166,8 @@ func _get_weapon_script(weapon_type: String) -> Script:
 func cleanup_for_wave_end() -> void:
 	for instance in weapon_instances:
 		if is_instance_valid(instance):
+			if instance.has_method("cleanup_for_wave_end"):
+				instance.cleanup_for_wave_end()
 			# Jeśli broń ma metodę resetowania/zatrzymywania, wywołaj ją
 			if "is_bursting" in instance:
 				instance.is_bursting = false

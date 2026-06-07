@@ -218,6 +218,7 @@ func _fire_projectile(direction: Vector2) -> void:
 
 	# Muzzle flash
 	var flash := ColorRect.new()
+	flash.add_to_group("WeaponEffects")
 	flash.size = Vector2(10, 10)
 	flash.color = Color(1, 0.6, 0.1, 0.8)
 	flash.global_position = global_position + direction * 15 - Vector2(5, 5)

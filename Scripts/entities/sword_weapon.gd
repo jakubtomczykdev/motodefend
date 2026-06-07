@@ -51,6 +51,7 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 		current_swing_area.queue_free()
 
 	var swing_area: Area2D = Area2D.new()
+	swing_area.add_to_group("WeaponEffects")
 	get_tree().current_scene.add_child(swing_area)
 	current_swing_area = swing_area
 	swing_area.global_position = swing_origin
@@ -72,6 +73,7 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 	# Wizualny łuk cięcia - 8 segmentów tworzących dłuższą smugę
 	for i in range(8):
 		var seg := ColorRect.new()
+		seg.add_to_group("WeaponEffects")
 		seg.size = Vector2(24, 6)
 		seg.color = Color(0.8, 0.95, 1, 0.7 - i * 0.12)
 		seg.global_position = swing_origin + direction * (10 + i * 14)
@@ -93,6 +95,7 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 
 	# Błysk przed cięciem
 	var flash := ColorRect.new()
+	flash.add_to_group("WeaponEffects")
 	flash.size = Vector2(30, 30)
 	flash.color = Color(0.8, 0.95, 1, 0.5)
 	flash.global_position = swing_origin
@@ -145,6 +148,7 @@ func _spawn_impact(target: Node2D) -> void:
 		return
 	for i in range(5):
 		var spark := ColorRect.new()
+		spark.add_to_group("WeaponEffects")
 		spark.size = Vector2(5 + randi() % 4, 5 + randi() % 4)
 		spark.color = Color(0.9 + randf() * 0.1, 0.7 + randf() * 0.3, 0.2, 1)
 		spark.global_position = target.global_position + Vector2(randf_range(-8, 8), randf_range(-8, 8))
@@ -169,3 +173,9 @@ func _roll_damage(base_damage: int) -> int:
 		var crit_mult: float = player_ref.crit_damage if "crit_damage" in player_ref else 1.5
 		return int(base_damage * crit_mult)
 	return base_damage
+
+func cleanup_for_wave_end() -> void:
+	if is_instance_valid(current_swing_area):
+		current_swing_area.queue_free()
+	current_swing_area = null
+	hit_enemies.clear()

@@ -51,9 +51,6 @@ func sync_max_item_slots_from_game_data() -> void:
 		max_item_slots = BalanceData.MAX_BUILD_SLOTS
 
 func add_item(item: ItemBase) -> bool:
-	if items.size() >= max_item_slots:
-		return false
-
 	items.append(item)
 	item.apply_effects(self)
 	item_added.emit(item)

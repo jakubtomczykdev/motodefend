@@ -177,7 +177,7 @@ func _setup_screen() -> void:
 	_add_stat_card("WYNIK", str(final_score), Color(1.0, 0.82, 0.28))
 	_add_stat_card("FALE", "%d / 20" % waves_completed, accent)
 	_add_stat_card("CZAS", "%d:%02d" % [minutes, seconds], Color(0.78, 0.92, 1.0))
-	_add_stat_card("PRZEDMIOTY", "%d / %d" % [items_collected.size(), BalanceData.MAX_BUILD_SLOTS], Color(0.42, 1.0, 0.72))
+	_add_stat_card("PRZEDMIOTY", "%d" % items_collected.size(), Color(0.42, 1.0, 0.72))
 
 	_diagnosis_label.text = _make_diagnosis_text(is_game_over)
 	_display_items(soft_accent)

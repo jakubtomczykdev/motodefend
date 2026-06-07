@@ -104,6 +104,10 @@ func _process(delta: float) -> void:
 	# Wave timer — ends wave when time runs out
 	wave_timer += delta
 	if wave_timer >= wave_max_time:
+		if boss_only_wave:
+			wave_timer = wave_max_time
+			_try_finish_boss_only_wave()
+			return
 		end_wave()
 		return
 	current_intensity = _get_wave_intensity()

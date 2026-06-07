@@ -4,7 +4,7 @@ extends Node
 signal item_pool_updated
 
 const RARITY_ORDER: Array[String] = ["common", "rare", "epic", "legendary"]
-const BACKPACK_EXPANSION_CHANCE := 0.18
+const BACKPACK_EXPANSION_CHANCE := 0.0
 const BACKPACK_EXPANSION_MIN_WAVE := 3
 
 var all_items: Array[ItemBase] = []

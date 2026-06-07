@@ -53,6 +53,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	# Wizualna fala - ColorRect rozszerzająca się
 	var wave_visual := ColorRect.new()
+	wave_visual.add_to_group("WeaponEffects")
 	wave_visual.size = Vector2(1, 1)
 	
 	# Motorola Cyan for New Radio, Default for Old
@@ -71,6 +72,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	# Drugi pierścień fali - efekt echo
 	var wave_ring := ColorRect.new()
+	wave_ring.add_to_group("WeaponEffects")
 	wave_ring.size = Vector2(1, 1)
 	wave_ring.color = Color(0.5, 0.9, 1, 0.2)
 	wave_ring.global_position = player_pos
@@ -84,6 +86,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 
 	# Area2D dla kolizji
 	var new_wave_area = Area2D.new()
+	new_wave_area.add_to_group("WeaponEffects")
 	new_wave_area.collision_layer = 8 # Projectiles
 	new_wave_area.collision_mask = 2 # Enemies
 
@@ -110,6 +113,7 @@ func activate(player_pos: Vector2, weapon_data: WeaponBase, target_dir: Vector2 
 					body.take_damage(_roll_damage(int(weapon_data.damage * dmg_mult)))
 				for i in range(2):
 					var spark := ColorRect.new()
+					spark.add_to_group("WeaponEffects")
 					spark.size = Vector2(5, 5)
 					spark.color = Color(0, 0.8, 1, 0.8)
 					spark.global_position = body.global_position + Vector2(randf_range(-8, 8), randf_range(-8, 8))
@@ -153,6 +157,7 @@ func _on_wave_body_entered(target: Node2D, weapon_data: WeaponBase, _wave: Area2
 	# Iskry przy trafieniu falą
 	for i in range(2):
 		var spark := ColorRect.new()
+		spark.add_to_group("WeaponEffects")
 		spark.size = Vector2(5, 5)
 		spark.color = Color(0, 0.8, 1, 0.8)
 		spark.global_position = enemy.global_position + Vector2(randf_range(-8, 8), randf_range(-8, 8))
@@ -166,3 +171,6 @@ func _roll_damage(base_damage: int) -> int:
 		var crit_mult: float = player_ref.crit_damage if "crit_damage" in player_ref else 1.5
 		return int(base_damage * crit_mult)
 	return base_damage
+
+func cleanup_for_wave_end() -> void:
+	hit_enemies.clear()

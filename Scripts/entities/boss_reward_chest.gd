@@ -4,6 +4,7 @@ signal opened
 
 const WeaponItemsClass := preload("res://Scripts/entities/weapon_items.gd")
 const UI_FONT := preload("res://Assets/fonts/VT323-Regular.ttf")
+const BOSS_CHEST_TEXTURE := preload("res://Assets/boss_reward_chest_v2.png")
 
 var wave_number: int = 1
 var _opened: bool = false
@@ -14,6 +15,7 @@ var _roll_panel: PanelContainer
 var _roll_name: Label
 var _roll_rarity: Label
 var _roll_icon: TextureRect
+var _chest_sprite: Sprite2D
 var _pulse_time: float = 0.0
 
 func setup(p_wave_number: int) -> void:
@@ -63,18 +65,15 @@ func _open_with_roll_animation() -> void:
 func _build_visuals() -> void:
 	_add_pixel_rect("ChestShadow", Vector2(-42, 22), Vector2(84, 12), Color(0.0, 0.0, 0.0, 0.42), 0)
 	_add_pixel_rect("ChestBackGlow", Vector2(-43, -36), Vector2(86, 66), Color(0.0, 0.72, 0.92, 0.20), 0)
-	_add_pixel_rect("ChestOuter", Vector2(-36, -20), Vector2(72, 48), Color(0.02, 0.05, 0.08, 1.0), 1)
-	_add_pixel_rect("ChestBody", Vector2(-31, -15), Vector2(62, 38), Color(0.08, 0.15, 0.22, 1.0), 2)
-	_add_pixel_rect("ChestBodyHi", Vector2(-27, -11), Vector2(54, 8), Color(0.14, 0.28, 0.36, 1.0), 3)
-	_add_pixel_rect("ChestBottom", Vector2(-31, 13), Vector2(62, 10), Color(0.02, 0.09, 0.13, 1.0), 3)
-	_add_pixel_rect("ChestLidOuter", Vector2(-40, -36), Vector2(80, 24), Color(0.02, 0.05, 0.08, 1.0), 5)
-	_add_pixel_rect("ChestLid", Vector2(-35, -32), Vector2(70, 16), Color(0.0, 0.78, 0.95, 1.0), 6)
-	_add_pixel_rect("ChestLidHi", Vector2(-29, -28), Vector2(58, 4), Color(0.65, 0.97, 1.0, 1.0), 7)
-	_add_pixel_rect("ChestStripeL", Vector2(-20, -15), Vector2(5, 38), Color(0.0, 0.72, 0.92, 1.0), 4)
-	_add_pixel_rect("ChestStripeR", Vector2(15, -15), Vector2(5, 38), Color(0.0, 0.72, 0.92, 1.0), 4)
-	_add_pixel_rect("ChestLockOuter", Vector2(-10, -12), Vector2(20, 22), Color(0.04, 0.03, 0.0, 1.0), 9)
-	_add_pixel_rect("ChestLock", Vector2(-7, -8), Vector2(14, 15), Color(1.0, 0.82, 0.22, 1.0), 10)
-	_add_pixel_rect("ChestLockCore", Vector2(-3, -2), Vector2(6, 6), Color(0.05, 0.08, 0.08, 1.0), 11)
+
+	_chest_sprite = Sprite2D.new()
+	_chest_sprite.name = "ChestSprite"
+	_chest_sprite.texture = BOSS_CHEST_TEXTURE
+	_chest_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_chest_sprite.position = Vector2(0, -8)
+	_chest_sprite.scale = Vector2(0.12, 0.12)
+	_chest_sprite.z_index = 8
+	add_child(_chest_sprite)
 
 	_label = Label.new()
 	_label.text = "BOSS CACHE\n[E]"
@@ -175,6 +174,26 @@ func _build_roll_panel() -> void:
 func _open_chest_lid() -> void:
 	if _label:
 		_label.visible = false
+	if _chest_sprite:
+		var sprite_tween := create_tween()
+		sprite_tween.tween_property(_chest_sprite, "scale", Vector2(0.13, 0.105), 0.12)
+		sprite_tween.parallel().tween_property(_chest_sprite, "modulate", Color(1.25, 1.45, 1.45, 1.0), 0.12)
+		sprite_tween.tween_property(_chest_sprite, "scale", Vector2(0.12, 0.12), 0.16)
+		sprite_tween.parallel().tween_property(_chest_sprite, "modulate", Color.WHITE, 0.16)
+
+		var flash := ColorRect.new()
+		flash.name = "ChestUnlockFlash"
+		flash.color = Color(0.35, 0.95, 1.0, 0.5)
+		flash.size = Vector2(76, 6)
+		flash.pivot_offset = flash.size / 2.0
+		flash.position = Vector2(-38, -7)
+		flash.z_index = 12
+		add_child(flash)
+		var flash_tween := create_tween()
+		flash_tween.tween_property(flash, "scale:x", 1.45, 0.16)
+		flash_tween.parallel().tween_property(flash, "modulate:a", 0.0, 0.2)
+		flash_tween.tween_callback(flash.queue_free)
+
 	var lid := get_node_or_null("ChestLid")
 	var lid_outer := get_node_or_null("ChestLidOuter")
 	var lid_hi := get_node_or_null("ChestLidHi")
@@ -196,27 +215,104 @@ func _play_loot_roll(candidates: Array[ItemBase], reward: ItemBase) -> void:
 	if pool.is_empty() and reward:
 		pool.append(reward)
 
-	var steps := 18
-	for i in range(steps):
-		var item: ItemBase = reward
-		if not pool.is_empty():
-			item = pool[i % pool.size()]
-		_set_roll_display(item, i == steps - 1)
-		_roll_panel.position.x = -190 + (-4 if i % 2 == 0 else 4)
-		await get_tree().create_timer(0.035 + float(i) * 0.008).timeout
-
-	if reward:
-		_set_roll_display(reward, true)
-		_roll_panel.position.x = -190
-		var flash := create_tween()
-		flash.tween_property(_roll_panel, "scale", Vector2(1.08, 1.08), 0.12)
-		flash.tween_property(_roll_panel, "scale", Vector2.ONE, 0.16)
-		await flash.finished
+	if reward and not pool.is_empty():
+		await _play_cs_roll_strip(pool, reward)
 	else:
 		_roll_name.text = "+%d ZLOTA" % BalanceData.BOSS_FALLBACK_GOLD_REWARD
 		_roll_rarity.text = "AWARYJNY DROP"
 		_roll_rarity.add_theme_color_override("font_color", Color(1.0, 0.86, 0.28))
 		await get_tree().create_timer(0.35).timeout
+
+func _play_cs_roll_strip(pool: Array[ItemBase], reward: ItemBase) -> void:
+	for child in _roll_panel.get_children():
+		child.queue_free()
+
+	_roll_panel.position = Vector2(-260, -210)
+	_roll_panel.size = Vector2(520, 122)
+	_roll_panel.scale = Vector2.ONE
+
+	var root := Control.new()
+	root.clip_contents = true
+	root.custom_minimum_size = Vector2(520, 122)
+	_roll_panel.add_child(root)
+
+	var title := Label.new()
+	title.text = "OTWIERANIE CACHE | LOSOWANIE NAGRODY"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_override("font", UI_FONT)
+	title.add_theme_font_size_override("font_size", 22)
+	title.add_theme_color_override("font_color", Color(0.62, 0.92, 1.0))
+	title.position = Vector2(0, 4)
+	title.size = Vector2(520, 24)
+	root.add_child(title)
+
+	var viewport := Control.new()
+	viewport.clip_contents = true
+	viewport.position = Vector2(16, 32)
+	viewport.size = Vector2(488, 76)
+	root.add_child(viewport)
+
+	var track := HBoxContainer.new()
+	track.add_theme_constant_override("separation", 8)
+	track.position = Vector2(250, 0)
+	viewport.add_child(track)
+
+	var sequence: Array[ItemBase] = []
+	var roll_count := 25
+	for i in range(roll_count - 1):
+		sequence.append(pool.pick_random())
+	sequence.append(reward)
+
+	for item in sequence:
+		track.add_child(_make_roll_card(item, _items_match(item, reward)))
+
+	var selector := ColorRect.new()
+	selector.color = Color(1.0, 0.86, 0.28, 0.95)
+	selector.position = Vector2(257, 30)
+	selector.size = Vector2(3, 82)
+	root.add_child(selector)
+
+	var card_width := 86.0
+	var final_center_x := float(sequence.size() - 1) * card_width + card_width * 0.5
+	var target_x := 244.0 - final_center_x
+	var roll_tween := create_tween()
+	roll_tween.tween_property(track, "position:x", target_x, 2.35).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	await roll_tween.finished
+
+	var flash := create_tween()
+	flash.tween_property(_roll_panel, "scale", Vector2(1.06, 1.06), 0.12)
+	flash.tween_property(_roll_panel, "scale", Vector2.ONE, 0.16)
+	await flash.finished
+
+func _make_roll_card(item: ItemBase, is_reward: bool = false) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(78, 74)
+	var border := item.get_rarity_color() if item and item.has_method("get_rarity_color") else Color(0.35, 0.94, 1.0)
+	card.add_theme_stylebox_override("panel", _make_box_style(Color(0.02, 0.04, 0.06, 0.96), border if is_reward else border.darkened(0.25)))
+
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 1)
+	card.add_child(box)
+
+	var icon := TextureRect.new()
+	icon.custom_minimum_size = Vector2(42, 38)
+	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	if item and "icon" in item:
+		icon.texture = item.icon
+	box.add_child(icon)
+
+	var name := Label.new()
+	name.text = item.item_name.to_upper() if item else "???"
+	name.clip_text = true
+	name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name.add_theme_font_override("font", UI_FONT)
+	name.add_theme_font_size_override("font_size", 14)
+	name.add_theme_color_override("font_color", border if is_reward else Color(0.86, 0.94, 1.0))
+	name.custom_minimum_size = Vector2(70, 18)
+	box.add_child(name)
+	return card
 
 func _set_roll_display(item: ItemBase, final_pick: bool = false) -> void:
 	if item == null:
@@ -239,13 +335,6 @@ func _get_reward_candidates() -> Array[ItemBase]:
 	var min_rarity_index := _get_min_rarity_index_for_wave(wave_number)
 	var player = get_tree().get_first_node_in_group("Player")
 	var weapon_count: int = player.get_weapon_count() if player and player.has_method("get_weapon_count") else 0
-	var build_system = get_tree().current_scene.get_node_or_null("BuildSystem")
-	var gd = get_node_or_null("/root/GameData")
-	var build_count := _get_current_build_count(build_system, gd)
-	var max_build_slots := _get_max_build_slots(build_system)
-
-	if build_count >= max_build_slots:
-		return candidates
 
 	if item_manager and "all_items" in item_manager:
 		for item: ItemBase in item_manager.all_items:
@@ -294,9 +383,6 @@ func _apply_reward(item: ItemBase) -> bool:
 	var build_system = main.get_node_or_null("BuildSystem")
 	var gd = get_node_or_null("/root/GameData")
 	var added_to_build := false
-
-	if _get_current_build_count(build_system, gd) >= _get_max_build_slots(build_system):
-		return false
 
 	if build_system:
 		if not build_system.add_item(item):
@@ -381,6 +467,11 @@ func _rarity_index(rarity: String) -> int:
 		_:
 			return 0
 
+func _items_match(left: ItemBase, right: ItemBase) -> bool:
+	if left == null or right == null:
+		return false
+	return left.item_name == right.item_name and left.item_type == right.item_type
+
 func _show_reward_text(text_value: String) -> void:
 	if _reward_label:
 		_reward_label.text = text_value
@@ -392,6 +483,10 @@ func _play_open_effect() -> void:
 			var rect := child as ColorRect
 			var tween := create_tween()
 			tween.tween_property(rect, "modulate:a", 0.0, 0.45)
+		elif child is Sprite2D:
+			var sprite := child as Sprite2D
+			var sprite_tween := create_tween()
+			sprite_tween.tween_property(sprite, "modulate:a", 0.0, 0.45).set_delay(0.2)
 
 	var label_tween := create_tween()
 	label_tween.tween_property(_reward_label, "position:y", _reward_label.position.y - 35.0, 0.9)

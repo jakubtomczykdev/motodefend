@@ -44,6 +44,8 @@ func _start_burst(target_pos: Vector2, weapon_data: WeaponBase) -> void:
 	_fire_burst_shot(target_pos, weapon_data)
 
 func _fire_burst_shot(target_pos: Vector2, weapon_data: WeaponBase) -> void:
+	if not is_bursting:
+		return
 	if not is_instance_valid(player_ref):
 		is_bursting = false
 		return
@@ -97,6 +99,7 @@ func _fire_burst_shot(target_pos: Vector2, weapon_data: WeaponBase) -> void:
 func _spawn_muzzle_flash(pos: Vector2, direction: Vector2) -> void:
 	# Tech-flash
 	var flash := ColorRect.new()
+	flash.add_to_group("WeaponEffects")
 	flash.size = Vector2(20, 20)
 	flash.color = Color(0.1, 0.8, 1.0, 0.8)
 	flash.global_position = pos - flash.size / 2
@@ -128,3 +131,7 @@ func _get_spread_angle(index: int, total: int) -> float:
 		return 0.0
 	var spread: float = minf(0.35, 0.08 * float(total - 1))
 	return lerpf(-spread, spread, float(index) / float(total - 1))
+
+func cleanup_for_wave_end() -> void:
+	is_bursting = false
+	burst_count = 0

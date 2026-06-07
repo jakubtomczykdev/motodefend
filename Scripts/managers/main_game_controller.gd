@@ -597,7 +597,7 @@ func _process(delta: float) -> void:
 	# Aktualizuj licznik wrogów
 	if should_update_hud and enemies_label and wave_manager:
 		if wave_manager.enemies_remaining != _last_enemy_remaining_display or wave_manager.enemies_in_wave != _last_enemy_total_display:
-			enemies_label.text = "HOSTY %d/%d" % [wave_manager.enemies_remaining, wave_manager.enemies_in_wave]
+			enemies_label.text = "WROGOWIE %d/%d" % [wave_manager.enemies_remaining, wave_manager.enemies_in_wave]
 			_last_enemy_remaining_display = wave_manager.enemies_remaining
 			_last_enemy_total_display = wave_manager.enemies_in_wave
 
@@ -981,11 +981,19 @@ func _on_lobby_requested() -> void:
 	call_deferred("_transition_to_hub")
 
 func _cleanup_battlefield() -> void:
+	if player and player.weapon_manager and player.weapon_manager.has_method("cleanup_for_wave_end"):
+		player.weapon_manager.cleanup_for_wave_end()
+
 	# Usuń wszystkie pociski
 	var projectiles = get_tree().get_nodes_in_group("Projectiles")
 	for p in projectiles:
 		if is_instance_valid(p):
 			p.queue_free()
+
+	var weapon_effects = get_tree().get_nodes_in_group("WeaponEffects")
+	for effect in weapon_effects:
+		if is_instance_valid(effect):
+			effect.queue_free()
 	
 	# Zatrzymaj animacje wrogów i usuń pozostałych wrogów (na wszelki wypadek)
 	var enemies = get_tree().get_nodes_in_group("Enemies")

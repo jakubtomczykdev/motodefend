@@ -39,7 +39,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a8ldq"]
-size = Vector2(66, 140)
+size = Vector2(88.2, 169)
 
 [node name="CybersecurityExpert" type="CharacterBody2D" unique_id=594552917]
 metadata/logic_bricks_graph = {
@@ -50,8 +50,8 @@ metadata/logic_bricks_graph = {
 metadata/logic_bricks_frames = []
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=665301189]
-position = Vector2(-6.5, 0.8)
-scale = Vector2(0.205, 0.205)
+position = Vector2(-10.85, 10.288439)
+scale = Vector2(0.23218751, 0.23218751)
 sprite_frames = SubResource("SpriteFrames_dv7a4")
 animation = &"standing"
 frame_progress = 0.08538636
@@ -77,7 +77,7 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" unique_id=1017292125]
-position = Vector2(-7.8, -4)
+position = Vector2(-18.900002, 10.5)
 shape = SubResource("RectangleShape2D_a8ldq")
 
 [node name="DialogLabel" type="Label" parent="." unique_id=947759222]
