@@ -6,6 +6,7 @@ const BossRewardChestScript := preload("res://Scripts/entities/boss_reward_chest
 signal wave_started(wave_number: int)
 signal wave_ended(wave_number: int)
 signal enemy_spawned(enemy: Node2D, enemy_type: String)
+signal quiz_enemy_defeated(topic: String)
 signal all_waves_completed
 signal game_over
 
@@ -15,6 +16,7 @@ const BOSS_EDUCATION_TYPES: Dictionary = {
 	"smurf_attack_boss": "smurf_attack",
 	"firewall_overload": "firewall_overload"
 }
+const QUIZ_WAVE_INTERVAL: int = 3
 
 # ---- Time‑based wave settings ----
 @export var wave_base_duration: float = 25.0       # wave 1 duration
@@ -41,9 +43,13 @@ var between_waves_timer: float = 0.0
 var reward_chests_pending: int = 0
 var boss_only_wave: bool = false
 var selected_boss_by_wave: Dictionary = {}
-var boss_rng := RandomNumberGenerator.new()
+var boss_rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var checkpoint_boss_bag: Array[String] = []
 var last_checkpoint_boss_type: String = ""
+var current_quiz_topic: String = ""
+var quiz_enemy_assigned: bool = false
+var quiz_enemy_spawn_countdown: int = -1
+var quiz_rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 # System rozłożonego spawnowania
 var spawn_queue: Array[String] = []
@@ -77,6 +83,7 @@ var enemy_scenes: Dictionary = {
 func _ready() -> void:
 	add_to_group("WaveManager")
 	boss_rng.randomize()
+	quiz_rng.randomize()
 	var gd := get_node_or_null("/root/GameData")
 	if gd and gd.has_meta("last_checkpoint_boss_type"):
 		last_checkpoint_boss_type = str(gd.get_meta("last_checkpoint_boss_type"))
@@ -189,11 +196,17 @@ func start_next_wave() -> void:
 	var initial_count := 0 if boss_only_wave else maxi(10, wave_config.enemy_count)
 	enemies_in_wave = initial_count + (1 if wave_config.has_boss else 0)
 	enemies_remaining = enemies_in_wave
+	var quiz_enabled: bool = _should_enable_quiz_for_wave(current_wave)
+	current_quiz_topic = _get_quiz_topic_for_wave(current_wave, wave_config) if quiz_enabled else ""
+	quiz_enemy_assigned = false
+	quiz_enemy_spawn_countdown = 0 if quiz_enabled and boss_only_wave else -1
 
 	# Oblicz interwał spawnu - przyspiesza z każdą falą
 	spawn_interval = _get_spawn_interval(current_wave)
 
 	_spawn_wave(wave_config, initial_count)
+	if quiz_enabled and not boss_only_wave and spawn_queue.size() > 0:
+		quiz_enemy_spawn_countdown = quiz_rng.randi_range(0, spawn_queue.size() - 1)
 	wave_started.emit(current_wave)
 	update_ui()
 
@@ -310,15 +323,18 @@ func _spawn_enemy(enemy_type: String) -> void:
 		push_warning("Brak sceny dla wroga: " + actual_enemy_type)
 		return
 
-	var scene := load(scene_path) as PackedScene
+	var scene: PackedScene = load(scene_path) as PackedScene
 	if not scene:
 		push_warning("Nie można załadować sceny: " + scene_path)
 		return
 
 	var enemy: Node2D = scene.instantiate()
-	var drops_boss_reward := is_giant_boss or CHECKPOINT_BOSSES.has(actual_enemy_type) or actual_enemy_type == "apt_boss"
+	var drops_boss_reward: bool = is_giant_boss or CHECKPOINT_BOSSES.has(actual_enemy_type) or actual_enemy_type == "apt_boss"
 	if drops_boss_reward:
 		enemy.set_meta("drops_boss_reward_chest", true)
+	if _should_assign_quiz_enemy():
+		enemy.set_meta("is_quiz_enemy", true)
+		enemy.set_meta("quiz_topic", current_quiz_topic)
 
 	var spawn_point: Node2D = spawn_points.pick_random()
 
@@ -336,6 +352,8 @@ func _spawn_enemy(enemy_type: String) -> void:
 		target_parent = get_tree().current_scene
 	if target_parent:
 		target_parent.add_child(enemy)
+		if enemy.get_meta("is_quiz_enemy", false):
+			_add_quiz_marker(enemy)
 		if enemy.has_method("scale_stats"):
 			enemy.scale_stats(current_wave)
 		if is_giant_boss and enemy.has_method("make_giant_boss"):
@@ -427,25 +445,74 @@ func _get_enemy_weights_for_wave(wave: int) -> Dictionary:
 	return {"worm": 0.07, "trojan": 0.12, "ransomware": 0.15, "spyware": 0.16, "phishing": 0.18, "sql": 0.18, "bot": 0.14}
 
 func _pick_weighted_enemy(weights: Dictionary) -> String:
-	var total := 0.0
+	var total: float = 0.0
 	for enemy_type in weights:
 		total += float(weights[enemy_type])
 
 	if total <= 0.0:
 		return "worm"
 
-	var roll := randf() * total
-	var cursor := 0.0
+	var roll: float = randf() * total
+	var cursor: float = 0.0
 	for enemy_type in weights:
 		cursor += float(weights[enemy_type])
 		if roll <= cursor:
 			return str(enemy_type)
 	return str(weights.keys()[0])
 
+func _should_enable_quiz_for_wave(wave: int) -> bool:
+	return wave > 0 and wave % QUIZ_WAVE_INTERVAL == 0
+
+func _get_quiz_topic_for_wave(wave: int, config: Dictionary) -> String:
+	if bool(config.get("boss_only", false)):
+		var boss_type: String = str(config.get("boss_type", "apt_boss"))
+		return str(BOSS_EDUCATION_TYPES.get(boss_type, "apt_boss"))
+
+	var weights: Dictionary = _get_enemy_weights_for_wave(wave)
+	var selected_topic: String = "worm"
+	var selected_weight: float = -1.0
+	for enemy_type in weights:
+		var weight: float = float(weights[enemy_type])
+		if weight > selected_weight:
+			selected_weight = weight
+			selected_topic = str(enemy_type)
+	return selected_topic
+
+func _should_assign_quiz_enemy() -> bool:
+	if quiz_enemy_assigned or current_quiz_topic == "":
+		return false
+	if quiz_enemy_spawn_countdown <= 0:
+		quiz_enemy_assigned = true
+		return true
+	quiz_enemy_spawn_countdown -= 1
+	return false
+
+func _add_quiz_marker(enemy: Node2D) -> void:
+	var marker: Label = Label.new()
+	marker.name = "QuizMarker"
+	marker.text = "?"
+	marker.position = Vector2(-12, -78)
+	marker.z_index = 30
+	marker.add_theme_font_size_override("font_size", 42)
+	marker.add_theme_color_override("font_color", Color(1.0, 0.84, 0.18))
+	marker.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.95))
+	marker.add_theme_constant_override("shadow_offset_x", 2)
+	marker.add_theme_constant_override("shadow_offset_y", 2)
+	enemy.add_child(marker)
+
+func apply_quiz_time_result(is_correct: bool, seconds: float = 3.0) -> void:
+	if is_correct:
+		wave_timer = minf(wave_max_time, wave_timer + seconds)
+	else:
+		wave_timer = maxf(0.0, wave_timer - seconds)
+	update_timer_ui()
+
 ## Called when an enemy dies — only decrements counter, does NOT end the wave
 func _on_enemy_died(enemy: Node2D = null) -> void:
 	if enemy and enemy.get_meta("drops_boss_reward_chest", false):
 		_spawn_boss_reward_chest(enemy.global_position)
+	if enemy and enemy.get_meta("is_quiz_enemy", false):
+		quiz_enemy_defeated.emit(str(enemy.get_meta("quiz_topic", current_quiz_topic)))
 
 	enemies_remaining = max(0, enemies_remaining - 1)
 	update_ui()
@@ -491,10 +558,6 @@ func end_wave() -> void:
 	else:
 		wave_ended.emit(current_wave)
 	update_ui()
-
-# check_wave_completion removed — timer handles wave end now
-func check_wave_completion() -> void:
-	pass
 
 func update_ui() -> void:
 	if wave_ui:

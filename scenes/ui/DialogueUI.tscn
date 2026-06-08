@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://cm266s3yivuqy"]
 
-[ext_resource type="Script" uid="uid://ga0r7hq58b3l" path="res://Scripts/ui/dialogue_ui.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://3d625kngyp51" path="res://Scripts/ui/dialogue_ui.gd" id="1_script"]
 [ext_resource type="FontFile" path="res://Assets/fonts/VT323-Regular.ttf" id="2_font"]
-[ext_resource type="Texture2D" uid="uid://mcyshkgbp8kb" path="res://Assets/Characters/cybersecuritySpecialist.png" id="3_rmr67"]
+[ext_resource type="Texture2D" uid="uid://fhcfm638dndj" path="res://Assets/Characters/cybersecuritySpecialist.png" id="3_rmr67"]
 
 [sub_resource type="StyleBoxFlat" id="style_dialogbox"]
 bg_color = Color(0.125, 0.157, 0.22, 1)

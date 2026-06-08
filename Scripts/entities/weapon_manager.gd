@@ -231,10 +231,6 @@ func update_weapon_sprites() -> void:
 		else:
 			slot.visible = false
 
-## Obraca sloty broni w kierunku celu (Legacy)
-func rotate_weapon_slots(_target_pos: Vector2) -> void:
-	pass
-
 ## Wołane co klatkę – aktywuje wszystkie gotowe bronie
 func activate_all_weapons(target_pos: Vector2 = Vector2.ZERO) -> void:
 	# Jeśli target_pos to ZERO, użyj pozycji myszy

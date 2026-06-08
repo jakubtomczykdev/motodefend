@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c08csr311bgr6"]
 
-[ext_resource type="Script" uid="uid://c0jrdyks2vydu" path="res://Scripts/ui/shop_screen.gd" id="1"]
+[ext_resource type="Script" uid="uid://bcbfkpri14n8o" path="res://Scripts/ui/shop_screen.gd" id="1"]
 
 [node name="ShopScreen" type="Control" unique_id=1491039742]
 process_mode = 3

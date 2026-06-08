@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://cckgmmm0u2wc1" path="res://Scripts/ui/start_game_trigger.gd" id="10_trigger"]
 [ext_resource type="PackedScene" uid="uid://bag1npbdd1mlm" path="res://scenes/world/Laptop.tscn" id="11_laptop"]
 [ext_resource type="Script" uid="uid://d2oe475xflfle" path="res://Scripts/managers/item_manager.gd" id="12_item"]
-[ext_resource type="Texture2D" uid="uid://clmj3llh55vu6" path="res://Assets/Lobby_bg.png" id="bg_tex"]
+[ext_resource type="Texture2D" uid="uid://bg4ia3v3cbgbx" path="res://Assets/Lobby_bg.png" id="bg_tex"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
 normal = Vector2(0, 1)

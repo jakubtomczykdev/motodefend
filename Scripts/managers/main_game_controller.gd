@@ -3,6 +3,7 @@ extends Node2D
 ## Główny kontroler gry - integruje wszystkie systemy
 
 const WeaponItemsClass := preload("res://Scripts/entities/weapon_items.gd")
+const QuizDataClass := preload("res://Scripts/managers/quiz_data.gd")
 const NORMAL_ARENA_TEXTURE := preload("res://Assets/normal_arena.png")
 const BOSS_ARENA_TEXTURE := preload("res://Assets/boss_arena.png")
 
@@ -17,6 +18,7 @@ var build_system: Node
 var item_manager: Node
 var shop_system: Control
 var educational_system: Control
+var quiz_popup: Control
 var transition_screen: Control
 var end_screen: Control
 var hud_layer: CanvasLayer
@@ -46,6 +48,7 @@ var active_boss: Node
 var _shop_opened_mid_wave: bool = false
 var _pending_level_ups: int = 0
 var _previous_state: String = ""
+var _quiz_previous_state: String = ""
 var game_state: String = "menu" # menu, playing, paused, shop, education, game_over, victory, transition, leveling
 var score: int = 0
 var kill_streak: int = 0
@@ -63,6 +66,7 @@ var _last_enemy_total_display: int = -1
 var _last_wave_display: int = -1
 var _last_wave_second_display: int = -1
 var _last_wave_progress_display: int = -1
+var _quiz_rng: RandomNumberGenerator = RandomNumberGenerator.new()
 ## Cached GameData reference for the gold property getter/setter
 var _game_data_ref = null
 
@@ -88,7 +92,6 @@ func gain_xp(amount: int) -> void:
 	if not gd: return
 	
 	gd.experience += amount
-	print("[MainGame] Gained %d XP. Total: %d/%d" % [amount, gd.experience, gd.experience_to_next_level])
 	
 	while gd.experience >= gd.experience_to_next_level:
 		gd.experience -= gd.experience_to_next_level
@@ -186,6 +189,7 @@ func _ready() -> void:
 	item_manager = get_node_or_null("ItemManager")
 	shop_system = get_node_or_null("ShopCanvasLayer/ShopScreen")
 	educational_system = get_node_or_null("EducationalLayer/EducationalSystem")
+	quiz_popup = get_node_or_null("QuizLayer/QuizPopup")
 	transition_screen = get_node_or_null("TransitionCanvasLayer/TransitionScreen")
 	end_screen = get_node_or_null("EndScreenCanvasLayer/EndScreen")
 	hud_layer = get_node_or_null("HUD") as CanvasLayer
@@ -201,8 +205,10 @@ func _ready() -> void:
 	stats_ui = get_node_or_null("StatsLayer/StatsUI")
 
 	_connect_signals()
+	_quiz_rng.randomize()
 
 	if educational_system: educational_system.visible = false
+	if quiz_popup: quiz_popup.visible = false
 	if transition_screen: transition_screen.visible = false
 
 	_setup_retro_hud()
@@ -726,14 +732,46 @@ func on_enemy_defeated(enemy: Node) -> void:
 	if enemy and enemy.get_meta("drops_boss_reward_chest", false):
 		_show_toast("BOSS ZNEUTRALIZOWANY  |  ODBIERZ SKRZYNIE", Color(1.0, 0.38, 0.72))
 
+func _on_quiz_enemy_defeated(topic: String) -> void:
+	if not quiz_popup:
+		return
+	if game_state != "playing" and game_state != "leveling":
+		return
+
+	_quiz_previous_state = game_state
+	game_state = "quiz"
+	get_tree().paused = true
+
+	var question: Dictionary = QuizDataClass.get_random_question(topic, _quiz_rng)
+	var topic_name: String = QuizDataClass.get_topic_label(topic)
+	quiz_popup.call("show_question", topic_name, question)
+
+func _on_quiz_answer_submitted(is_correct: bool) -> void:
+	if wave_manager and wave_manager.has_method("apply_quiz_time_result"):
+		wave_manager.call("apply_quiz_time_result", is_correct, 3.0)
+
+	game_state = _quiz_previous_state if _quiz_previous_state != "" else "playing"
+	_quiz_previous_state = ""
+	if game_state == "quiz":
+		game_state = "playing"
+	get_tree().paused = false
+
+	if is_correct:
+		_show_toast("DOBRA ODPOWIEDZ  |  -3s DO KONCA FALI", Color(0.35, 1.0, 0.58))
+	else:
+		_show_toast("ZLA ODPOWIEDZ  |  +3s DO KONCA FALI", Color(1.0, 0.32, 0.38))
+
 func _connect_signals() -> void:
 	if wave_manager:
+		var quiz_enemy_callable: Callable = Callable(self, "_on_quiz_enemy_defeated")
 		if not wave_manager.wave_started.is_connected(_on_wave_started):
 			wave_manager.wave_started.connect(_on_wave_started)
 		if not wave_manager.wave_ended.is_connected(_on_wave_ended):
 			wave_manager.wave_ended.connect(_on_wave_ended)
 		if wave_manager.has_signal("enemy_spawned") and not wave_manager.enemy_spawned.is_connected(_on_enemy_spawned):
 			wave_manager.enemy_spawned.connect(_on_enemy_spawned)
+		if wave_manager.has_signal("quiz_enemy_defeated") and not wave_manager.is_connected("quiz_enemy_defeated", quiz_enemy_callable):
+			wave_manager.connect("quiz_enemy_defeated", quiz_enemy_callable)
 		if not wave_manager.all_waves_completed.is_connected(_on_all_waves_completed):
 			wave_manager.all_waves_completed.connect(_on_all_waves_completed)
 		if not wave_manager.game_over.is_connected(_on_game_over):
@@ -748,6 +786,11 @@ func _connect_signals() -> void:
 	if educational_system:
 		if not educational_system.education_completed.is_connected(_on_education_completed):
 			educational_system.education_completed.connect(_on_education_completed)
+
+	if quiz_popup:
+		var quiz_answer_callable: Callable = Callable(self, "_on_quiz_answer_submitted")
+		if quiz_popup.has_signal("answer_submitted") and not quiz_popup.is_connected("answer_submitted", quiz_answer_callable):
+			quiz_popup.connect("answer_submitted", quiz_answer_callable)
 
 	if end_screen:
 		if not end_screen.restart_requested.is_connected(_on_restart_requested):
@@ -775,13 +818,10 @@ func _connect_signals() -> void:
 
 func start_game() -> void:
 	var gd := get_node_or_null("/root/GameData")
-	print("[MainGame] start_game BEGIN")
 	if build_system:
-		print("[MainGame] build_system.clear_build()...")
 		build_system.clear_build()
 		if build_system.has_method("sync_max_item_slots_from_game_data"):
 			build_system.sync_max_item_slots_from_game_data()
-		print("[MainGame] build cleared OK")
 
 	# Jeśli GameData nie ma złota, ustaw wartość startową z balansu.
 	if gd and gd.gold <= 0:
@@ -796,7 +836,6 @@ func start_game() -> void:
 			player.current_health = gd.player_hp
 		elif wave_manager:
 			var wave_hp: int = 9 + wave_manager.current_wave
-			print("[MainGame] setting HP=%d for wave %d" % [wave_hp, wave_manager.current_wave])
 			player.max_health = wave_hp
 			player.current_health = wave_hp
 		player.health_changed.emit(player.current_health, player.max_health)
@@ -805,7 +844,6 @@ func start_game() -> void:
 	items_collected.clear()
 
 	# System edukacyjny tymczasowo wyłączony – przechodzimy od razu do gry
-	print("[MainGame] starting wave manager...")
 	game_state = "playing"
 	AudioManager.play_music(AudioManager.MUSIC_BATTLE)
 	
@@ -824,7 +862,6 @@ func start_game() -> void:
 
 	if wave_manager:
 		wave_manager.start_game()
-		print("[MainGame] wave_manager.start_game() OK")
 
 	# Equip permanent weapons and items from GameData
 	if gd and player:
@@ -860,7 +897,6 @@ func start_game() -> void:
 
 	game_start_time = Time.get_unix_time_from_system()
 	game_started.emit()
-	print("[MainGame] start_game END")
 
 func _on_education_completed() -> void:
 	if game_state == "education_intro":

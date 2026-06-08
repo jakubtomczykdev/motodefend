@@ -37,8 +37,6 @@ func _physics_process(_delta):
 	update_animations(direction)
 	
 	if Input.is_action_just_pressed("interact") and current_interactable != null:
-		print("[DEBUG] E pressed, current_interactable=", current_interactable)
-		print("[DEBUG] Trying interact() on ", current_interactable, " has_method=", current_interactable.has_method("interact"))
 		if current_interactable.has_method("interact"):
 			current_interactable.interact()
 		elif current_interactable.get_parent() and current_interactable.get_parent().has_method("interact"):
@@ -88,7 +86,6 @@ func update_animations(direction):
 		_animated_sprite.frame = 0
 
 func _on_interaction_area_area_entered(area):
-	print("[DEBUG] area_entered: ", area.name, " parent: ", area.get_parent().name)
 	if area.is_in_group("Interactable"):
 		current_interactable = area
 		var prompt_text = "[E] Interakcja"

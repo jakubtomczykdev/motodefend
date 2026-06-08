@@ -476,7 +476,7 @@ animations = [
 ]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u8vrl"]
-size = Vector2(35, 76)
+size = Vector2(28, 44)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_interact"]
 size = Vector2(130, 200)
@@ -503,7 +503,7 @@ metadata/logic_bricks_graph = {
 metadata/logic_bricks_frames = []
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=598137194]
-position = Vector2(-0.5, 9.5)
+position = Vector2(0, 24)
 shape = SubResource("RectangleShape2D_u8vrl")
 metadata/logic_bricks_graph = {
 "connections": [],

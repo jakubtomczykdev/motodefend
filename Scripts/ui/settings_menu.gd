@@ -328,7 +328,6 @@ func _on_add_gold_pressed() -> void:
 	var gd := get_node_or_null("/root/GameData")
 	if gd:
 		gd.gold += amount
-		print("[Settings] Dodano %d golda. Stan: %d" % [amount, gd.gold])
 		if gold_input: gold_input.text = ""
 		_update_gold_display()
 

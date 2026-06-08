@@ -2,19 +2,20 @@
 
 [ext_resource type="Script" path="res://Scripts/managers/main_game_controller.gd" id="1_main"]
 [ext_resource type="PackedScene" uid="uid://dxqcwr5onpo55" path="res://scenes/world/playerScene.tscn" id="2_player"]
-[ext_resource type="Script" uid="uid://crywefm1t8alb" path="res://Scripts/managers/wave_manager.gd" id="3_wave"]
-[ext_resource type="Script" uid="uid://0df6kxv6usef" path="res://Scripts/managers/build_system.gd" id="4_build"]
-[ext_resource type="Script" uid="uid://dailkyrs24a4o" path="res://Scripts/managers/item_manager.gd" id="5_item"]
-[ext_resource type="Shader" uid="uid://dfrrjtrlc4mmk" path="res://Assets/shaders/matrix.gdshader" id="6_matrix"]
-[ext_resource type="Texture2D" uid="uid://u7e10csgef6y" path="res://Assets/sprites/icon_tex.png" id="7_icon"]
+[ext_resource type="Script" uid="uid://c2an37cy5y4ct" path="res://Scripts/managers/wave_manager.gd" id="3_wave"]
+[ext_resource type="Script" uid="uid://ckpetfikyhhvn" path="res://Scripts/managers/build_system.gd" id="4_build"]
+[ext_resource type="Script" uid="uid://d2oe475xflfle" path="res://Scripts/managers/item_manager.gd" id="5_item"]
+[ext_resource type="Shader" uid="uid://bpfodkq5onynm" path="res://Assets/shaders/matrix.gdshader" id="6_matrix"]
+[ext_resource type="Texture2D" uid="uid://cfn3b12w7r8ww" path="res://Assets/sprites/icon_tex.png" id="7_icon"]
 [ext_resource type="PackedScene" path="res://scenes/ui/EducationalPopup.tscn" id="8_edu"]
 [ext_resource type="PackedScene" path="res://scenes/ui/EndScreen.tscn" id="9_end"]
 [ext_resource type="PackedScene" path="res://scenes/ui/InventoryUI.tscn" id="10_inv"]
 [ext_resource type="PackedScene" uid="uid://c08csr311bgr6" path="res://scenes/ui/Shop.tscn" id="11_shop"]
 [ext_resource type="PackedScene" uid="uid://cx6y8v2u7k7m2" path="res://scenes/ui/TransitionScreen.tscn" id="12_transition"]
+[ext_resource type="PackedScene" uid="uid://bqzpquizpopup" path="res://scenes/ui/QuizPopup.tscn" id="13_quiz"]
 [ext_resource type="Texture2D" uid="uid://bt7inxt5w2s0s" path="res://Assets/normal_arena.png" id="normal_arena_tex"]
-[ext_resource type="Script" uid="uid://dgjcr1akb1ul0" path="res://Scripts/ui/level_up_ui.gd" id="Script_LevelUp"]
-[ext_resource type="Script" uid="uid://c5uc40nakdcrk" path="res://Scripts/ui/stats_ui.gd" id="Script_Stats"]
+[ext_resource type="Script" uid="uid://b2uymjanj1oqi" path="res://Scripts/ui/level_up_ui.gd" id="Script_LevelUp"]
+[ext_resource type="Script" uid="uid://on4yqxqwxoxr" path="res://Scripts/ui/stats_ui.gd" id="Script_Stats"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
 normal = Vector2(0, 1)
@@ -93,117 +94,50 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0.4, 0.4, 0.4, 1)
 
-[node name="Obstacle1" type="StaticBody2D" parent="." unique_id=986960969]
-visible = false
-position = Vector2(126, 131)
-scale = Vector2(3.639999, 3.1599994)
-collision_layer = 1
-collision_mask = 0
-
-[node name="ColorRect" type="ColorRect" parent="Obstacle1" unique_id=377441347]
-offset_left = -40.0
-offset_top = -40.0
-offset_right = 40.0
-offset_bottom = 40.0
-color = Color(0.4, 0.4, 0.4, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle1" unique_id=154594251]
-shape = SubResource("RectangleShape2D_obstacle")
-
-[node name="Obstacle2" type="StaticBody2D" parent="." unique_id=1863347915]
-visible = false
-position = Vector2(1797, 113)
-scale = Vector2(3.037525, 2.8185234)
-collision_layer = 1
-collision_mask = 0
-
-[node name="ColorRect" type="ColorRect" parent="Obstacle2" unique_id=367583989]
-offset_left = -40.0
-offset_top = -40.0
-offset_right = 40.0
-offset_bottom = 40.0
-color = Color(0.4, 0.4, 0.4, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle2" unique_id=580146833]
-shape = SubResource("RectangleShape2D_obstacle")
-
-[node name="Obstacle3" type="StaticBody2D" parent="." unique_id=1223617348]
-visible = false
-position = Vector2(131, 931)
-scale = Vector2(3.5672793, 3.463604)
-collision_layer = 1
-collision_mask = 0
-
-[node name="ColorRect" type="ColorRect" parent="Obstacle3" unique_id=1738415684]
-offset_left = -40.0
-offset_top = -40.0
-offset_right = 40.0
-offset_bottom = 40.0
-color = Color(0.4, 0.4, 0.4, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle3" unique_id=1837575861]
-shape = SubResource("RectangleShape2D_obstacle")
-
-[node name="Obstacle4" type="StaticBody2D" parent="." unique_id=1273217686]
-visible = false
-position = Vector2(1780, 925)
-scale = Vector2(3.32, 4.0399976)
-collision_layer = 1
-collision_mask = 0
-
-[node name="ColorRect" type="ColorRect" parent="Obstacle4" unique_id=43593299]
-offset_left = -40.0
-offset_top = -40.0
-offset_right = 40.0
-offset_bottom = 40.0
-color = Color(0.4, 0.4, 0.4, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle4" unique_id=1276719268]
-shape = SubResource("RectangleShape2D_obstacle")
-
 [node name="ArenaMapCollisions" type="StaticBody2D" parent="." unique_id=1669327044]
 collision_layer = 1
 collision_mask = 0
 
 [node name="TopWall" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1439893392]
-position = Vector2(960, 58)
-scale = Vector2(24, 1.45)
+position = Vector2(960, 54)
+scale = Vector2(24, 1.35)
 shape = SubResource("RectangleShape2D_obstacle")
 
 [node name="BottomWall" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1111792426]
-position = Vector2(960, 1022)
-scale = Vector2(24, 1.45)
+position = Vector2(960, 1026)
+scale = Vector2(24, 1.35)
 shape = SubResource("RectangleShape2D_obstacle")
 
 [node name="LeftWall" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1112716962]
-position = Vector2(52, 540)
-scale = Vector2(1.3, 13.5)
+position = Vector2(50, 540)
+scale = Vector2(1.2, 13.5)
 shape = SubResource("RectangleShape2D_obstacle")
 
 [node name="RightWall" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1104198931]
-position = Vector2(1868, 540)
-scale = Vector2(1.3, 13.5)
+position = Vector2(1870, 540)
+scale = Vector2(1.2, 13.5)
 shape = SubResource("RectangleShape2D_obstacle")
 
-[node name="TopLeftPad" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1492103668]
+[node name="TopLogoPanel" type="CollisionShape2D" parent="ArenaMapCollisions"]
+position = Vector2(960, 120)
+scale = Vector2(5.4, 0.75)
+shape = SubResource("RectangleShape2D_obstacle")
+
+[node name="TopLeftPad" type="CollisionPolygon2D" parent="ArenaMapCollisions" unique_id=1492103668]
 position = Vector2(132, 118)
-scale = Vector2(2.55, 2.2)
-shape = SubResource("RectangleShape2D_obstacle")
+polygon = PackedVector2Array(-70, -88, 70, -88, 105, -52, 105, 52, 70, 88, -70, 88, -105, 52, -105, -52)
 
-[node name="TopRightPad" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1892928214]
+[node name="TopRightPad" type="CollisionPolygon2D" parent="ArenaMapCollisions" unique_id=1892928214]
 position = Vector2(1788, 118)
-scale = Vector2(2.55, 2.2)
-shape = SubResource("RectangleShape2D_obstacle")
+polygon = PackedVector2Array(-70, -88, 70, -88, 105, -52, 105, 52, 70, 88, -70, 88, -105, 52, -105, -52)
 
-[node name="BottomLeftPad" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=212260832]
+[node name="BottomLeftPad" type="CollisionPolygon2D" parent="ArenaMapCollisions" unique_id=212260832]
 position = Vector2(132, 962)
-scale = Vector2(2.55, 2.2)
-shape = SubResource("RectangleShape2D_obstacle")
+polygon = PackedVector2Array(-70, -88, 70, -88, 105, -52, 105, 52, 70, 88, -70, 88, -105, 52, -105, -52)
 
-[node name="BottomRightPad" type="CollisionShape2D" parent="ArenaMapCollisions" unique_id=1461868318]
+[node name="BottomRightPad" type="CollisionPolygon2D" parent="ArenaMapCollisions" unique_id=1461868318]
 position = Vector2(1788, 962)
-scale = Vector2(2.55, 2.2)
-shape = SubResource("RectangleShape2D_obstacle")
+polygon = PackedVector2Array(-70, -88, 70, -88, 105, -52, 105, 52, 70, 88, -70, 88, -105, 52, -105, -52)
 
 [node name="MenuBackground" type="CanvasLayer" parent="." unique_id=1708269400]
 layer = -2
@@ -330,6 +264,13 @@ process_mode = 3
 layer = 12
 
 [node name="TransitionScreen" parent="TransitionCanvasLayer" unique_id=225832302 instance=ExtResource("12_transition")]
+visible = false
+
+[node name="QuizLayer" type="CanvasLayer" parent="."]
+process_mode = 3
+layer = 18
+
+[node name="QuizPopup" parent="QuizLayer" instance=ExtResource("13_quiz")]
 visible = false
 
 [node name="InventoryUI" parent="." unique_id=1919843291 instance=ExtResource("10_inv")]

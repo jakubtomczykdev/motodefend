@@ -45,10 +45,10 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 	var swing_origin := player_body.global_position + direction * 20
 	var start_angle := direction.angle() - 1.2
 	var end_angle := direction.angle() + 1.2
-	var arc_length := 60.0
 
-	if current_swing_area:
+	if is_instance_valid(current_swing_area):
 		current_swing_area.queue_free()
+	current_swing_area = null
 
 	var swing_area: Area2D = Area2D.new()
 	swing_area.add_to_group("WeaponEffects")
@@ -80,6 +80,7 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 		seg.rotation = direction.angle()
 		get_tree().root.add_child(seg)
 		var seg_tween := create_tween()
+		seg_tween.bind_node(seg)
 		seg_tween.tween_property(seg, "modulate:a", 0.0, 0.2 + i * 0.03)
 		seg_tween.tween_callback(seg.queue_free)
 
@@ -102,6 +103,7 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 	flash.rotation = start_angle
 	get_tree().root.add_child(flash)
 	var flash_tween := create_tween()
+	flash_tween.bind_node(flash)
 	flash_tween.tween_property(flash, "scale", Vector2(0.2, 0.05), 0.12)
 	flash_tween.parallel().tween_property(flash, "modulate:a", 0.0, 0.12)
 	flash_tween.tween_callback(flash.queue_free)
@@ -109,11 +111,15 @@ func swing(player_body: CharacterBody2D, direction: Vector2, weapon_data: Weapon
 	# Animacja zamachu
 	swing_area.rotation = start_angle
 	var swing_tween := create_tween()
+	swing_tween.bind_node(swing_area)
+	var swing_area_ref: WeakRef = weakref(swing_area) as WeakRef
 	swing_tween.tween_property(swing_area, "rotation", end_angle, 0.12)
 	swing_tween.tween_callback(func():
-		if current_swing_area == swing_area:
+		var area: Area2D = swing_area_ref.get_ref() as Area2D
+		if current_swing_area == area:
 			current_swing_area = null
-		swing_area.queue_free()
+		if is_instance_valid(area):
+			area.queue_free()
 	)
 
 	can_attack = false

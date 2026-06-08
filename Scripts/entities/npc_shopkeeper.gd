@@ -23,7 +23,6 @@ func _ready() -> void:
 ## przez shop_screen.gd property getter → GameData.gold.
 func interact() -> void:
 	var main: Node = get_tree().current_scene
-	print("[DEBUG] Shopkeeper interact called. current_scene=", main.name)
 	if main and main.has_method("_open_shop"):
 		main._open_shop()
 	else:

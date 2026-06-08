@@ -141,7 +141,6 @@ func _physics_process(delta: float) -> void:
 	if is_rolling:
 		handle_roll(delta)
 	else:
-		handle_movement(delta)
 		_handle_footsteps(delta)
 	
 	# Apply knockback
@@ -250,10 +249,6 @@ func handle_roll(delta: float) -> void:
 	
 	if roll_timer <= 0:
 		is_rolling = false
-
-func handle_movement(_delta: float) -> void:
-	# Ruch jest obsługiwany w handle_input
-	pass
 
 func handle_cooldown(delta: float) -> void:
 	if not can_shoot:
@@ -509,9 +504,7 @@ func interact() -> void:
 
 func add_weapon(weapon: WeaponBase) -> bool:
 	if weapon_manager and weapon_manager.has_method("add_weapon"):
-		var result: bool = weapon_manager.add_weapon(weapon)
-		print("[DEBUG] player_combat.add_weapon called for ", weapon.item_name, " result=", result)
-		return result
+		return weapon_manager.add_weapon(weapon)
 	return false
 
 func get_weapon_count() -> int:
