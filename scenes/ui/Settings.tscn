@@ -1,0 +1,474 @@
+[gd_scene format=3 uid="uid://motodefendsettings"]
+
+[ext_resource type="Script" path="res://Scripts/ui/settings_menu.gd" id="1_settings"]
+[ext_resource type="Shader" path="res://Assets/shaders/matrix.gdshader" id="2"]
+[ext_resource type="Texture2D" path="res://Assets/sprites/icon_tex.png" id="3"]
+[ext_resource type="FontFile" path="res://Assets/fonts/VT323-Regular.ttf" id="4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_01"]
+shader = ExtResource("2")
+shader_parameter/icon_tex = ExtResource("3")
+shader_parameter/speed = 0.2
+shader_parameter/columns = 18.0
+shader_parameter/intensity = 1.0
+shader_parameter/glitch_strength = 0.02
+
+[node name="Settings" type="Control" unique_id=440100]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings")
+
+[node name="Background" type="ColorRect" parent="." unique_id=441101]
+material = SubResource("ShaderMaterial_01")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=441102]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=441103]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=441104]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 86
+text = "USTAWIENIA"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=441105]
+layout_mode = 2
+
+[node name="AudioLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=441106]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.278, 0.549, 0.749, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 42
+text = "DZWIEK"
+horizontal_alignment = 1
+
+[node name="MasterRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441107]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MasterText" type="Label" parent="CenterContainer/VBoxContainer/MasterRow" unique_id=441108]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+text = "Glowna"
+custom_minimum_size = Vector2(200, 0)
+
+[node name="MasterSlider" type="HSlider" parent="CenterContainer/VBoxContainer/MasterRow" unique_id=441109]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(400, 0)
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 100.0
+
+[node name="MasterLabel" type="Label" parent="CenterContainer/VBoxContainer/MasterRow" unique_id=441110]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+text = "100%"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="MusicRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441111]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MusicText" type="Label" parent="CenterContainer/VBoxContainer/MusicRow" unique_id=441112]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+text = "Muzyka"
+custom_minimum_size = Vector2(200, 0)
+
+[node name="MusicSlider" type="HSlider" parent="CenterContainer/VBoxContainer/MusicRow" unique_id=441113]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(400, 0)
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 80.0
+
+[node name="MusicLabel" type="Label" parent="CenterContainer/VBoxContainer/MusicRow" unique_id=441114]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+text = "80%"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="SfxRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441115]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SfxText" type="Label" parent="CenterContainer/VBoxContainer/SfxRow" unique_id=441116]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+text = "Efekty (SFX)"
+custom_minimum_size = Vector2(200, 0)
+
+[node name="SfxSlider" type="HSlider" parent="CenterContainer/VBoxContainer/SfxRow" unique_id=441117]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(400, 0)
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 100.0
+
+[node name="SfxLabel" type="Label" parent="CenterContainer/VBoxContainer/SfxRow" unique_id=441118]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+text = "100%"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="UiRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441119]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="UiText" type="Label" parent="CenterContainer/VBoxContainer/UiRow" unique_id=441120]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+text = "Interfejs (UI)"
+custom_minimum_size = Vector2(200, 0)
+
+[node name="UiSlider" type="HSlider" parent="CenterContainer/VBoxContainer/UiRow" unique_id=441121]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(400, 0)
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 100.0
+
+[node name="UiLabel" type="Label" parent="CenterContainer/VBoxContainer/UiRow" unique_id=441122]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+text = "100%"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="HSeparator2" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=441123]
+layout_mode = 2
+
+[node name="VideoLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=441124]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.278, 0.549, 0.749, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 42
+text = "WIDEO"
+horizontal_alignment = 1
+
+[node name="ResolutionRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441125]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ResolutionText" type="Label" parent="CenterContainer/VBoxContainer/ResolutionRow" unique_id=441126]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+text = "Rozdzielczosc"
+custom_minimum_size = Vector2(200, 0)
+
+[node name="ResolutionDropdown" type="OptionButton" parent="CenterContainer/VBoxContainer/ResolutionRow" unique_id=441127]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(400, 0)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 28
+
+[node name="FullscreenRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441128]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FullscreenLabel" type="Label" parent="CenterContainer/VBoxContainer/FullscreenRow" unique_id=441129]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+text = "Pelny ekran"
+custom_minimum_size = Vector2(200, 0)
+
+[node name="FullscreenCheckBox" type="CheckBox" parent="CenterContainer/VBoxContainer/FullscreenRow" unique_id=441130]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+
+[node name="VsyncRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441131]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VsyncLabel" type="Label" parent="CenterContainer/VBoxContainer/VsyncRow" unique_id=441132]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+text = "V-Sync"
+custom_minimum_size = Vector2(200, 0)
+
+[node name="VsyncCheckBox" type="CheckBox" parent="CenterContainer/VBoxContainer/VsyncRow" unique_id=441133]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 30
+
+[node name="HSeparatorControls" type="HSeparator" parent="CenterContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="ControlsLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.278, 0.549, 0.749, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 56
+text = "STEROWANIE"
+horizontal_alignment = 1
+
+[node name="ControlsGrid" type="GridContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 44
+theme_override_constants/v_separation = 12
+columns = 2
+
+[node name="MoveKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "WASD / STRZALKI"
+custom_minimum_size = Vector2(300, 0)
+
+[node name="MoveAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "Ruch"
+custom_minimum_size = Vector2(320, 0)
+
+[node name="InteractKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "E"
+custom_minimum_size = Vector2(300, 0)
+
+[node name="InteractAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "Interakcja"
+custom_minimum_size = Vector2(320, 0)
+
+[node name="DodgeKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "SPACJA / ENTER"
+custom_minimum_size = Vector2(300, 0)
+
+[node name="DodgeAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "Unik"
+custom_minimum_size = Vector2(320, 0)
+
+[node name="AttackKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "MYSZ"
+custom_minimum_size = Vector2(300, 0)
+
+[node name="AttackAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "Celowanie"
+custom_minimum_size = Vector2(320, 0)
+
+[node name="StatsKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "TAB"
+custom_minimum_size = Vector2(300, 0)
+
+[node name="StatsAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "Statystyki"
+custom_minimum_size = Vector2(320, 0)
+
+[node name="InventoryKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "I"
+custom_minimum_size = Vector2(300, 0)
+
+[node name="InventoryAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "Ekwipunek"
+custom_minimum_size = Vector2(320, 0)
+
+[node name="PauseKey" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.482, 0.722, 0.878, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "ESC"
+custom_minimum_size = Vector2(300, 0)
+
+[node name="PauseAction" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 38
+text = "Menu pauzy"
+custom_minimum_size = Vector2(320, 0)
+
+[node name="HSeparator3" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=441134]
+layout_mode = 2
+
+[node name="TestLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.278, 0.549, 0.749, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 56
+text = "TEST"
+horizontal_alignment = 1
+
+[node name="TestWave5Button" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(360, 56)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 34
+text = "URUCHOM FALE 5"
+
+[node name="GoldSection" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 20
+
+[node name="GoldSectionLabel" type="Label" parent="CenterContainer/VBoxContainer/GoldSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.839, 0.933, 0.961, 1)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 32
+text = "GOLD:"
+
+[node name="GoldInput" type="LineEdit" parent="CenterContainer/VBoxContainer/GoldSection"]
+layout_mode = 2
+custom_minimum_size = Vector2(80, 0)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 28
+placeholder_text = "9999"
+
+[node name="AddGoldBtn" type="Button" parent="CenterContainer/VBoxContainer/GoldSection"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 40)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 28
+text = "DODAJ ZŁOTO"
+
+[node name="CurrentGoldLabel" type="Label" parent="CenterContainer/VBoxContainer/GoldSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+theme_override_font_sizes/font_size = 29
+text = "ZLOTO: 0"
+
+[node name="ButtonsRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=441135]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 30
+
+[node name="ApplyButton" type="Button" parent="CenterContainer/VBoxContainer/ButtonsRow" unique_id=441136]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(220, 56)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 36
+text = "Zastosuj"
+
+[node name="ResetButton" type="Button" parent="CenterContainer/VBoxContainer/ButtonsRow" unique_id=441137]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(260, 56)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 36
+text = "Domyslne"
+
+[node name="BackButton" type="Button" parent="CenterContainer/VBoxContainer/ButtonsRow" unique_id=441138]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(220, 56)
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 36
+text = "Powrot"

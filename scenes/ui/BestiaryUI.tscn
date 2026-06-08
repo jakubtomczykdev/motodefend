@@ -1,0 +1,496 @@
+[gd_scene load_steps=8 format=3 uid="uid://bestiary_ui"]
+
+[ext_resource type="Script" path="res://Scripts/ui/bestiary_ui_logic.gd" id="1_script"]
+[ext_resource type="FontFile" path="res://Assets/fonts/VT323-Regular.ttf" id="2_font"]
+
+[sub_resource type="StyleBoxFlat" id="panel_bg"]
+bg_color = Color(0.055, 0.075, 0.18, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.941, 1, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_left = 6
+corner_radius_bottom_right = 6
+shadow_size = 24
+shadow_color = Color(0, 0.941, 1, 0.2)
+shadow_offset = Vector2(0, 0)
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="terminal_bg"]
+bg_color = Color(0.035, 0.05, 0.1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 1, 0.533, 0.45)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="sprite_frame"]
+bg_color = Color(0.055, 0.075, 0.18, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.176, 0.584, 0.55)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="tab_normal"]
+bg_color = Color(0.09, 0.11, 0.16, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0.941, 1, 0.25)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 0
+corner_radius_bottom_right = 0
+content_margin_left = 18.0
+content_margin_top = 6.0
+content_margin_right = 18.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="tab_active"]
+bg_color = Color(0.12, 0.14, 0.2, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 1, 0.533, 0.8)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 0
+corner_radius_bottom_right = 0
+content_margin_left = 18.0
+content_margin_top = 6.0
+content_margin_right = 18.0
+content_margin_bottom = 6.0
+
+[node name="BestiaryUI" type="CanvasLayer"]
+layer = 10
+process_mode = 3
+script = ExtResource("1_script")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DimOverlay" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.55)
+mouse_filter = 1
+
+[node name="MainPanel" type="Panel" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -640.0
+offset_top = -460.0
+offset_right = 640.0
+offset_bottom = 460.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+theme_override_styles/panel = SubResource("panel_bg")
+
+[node name="MainLayout" type="VBoxContainer" parent="Control/MainPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="TopBar" type="HBoxContainer" parent="Control/MainPanel/MainLayout"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="LeftAccent" type="ColorRect" parent="Control/MainPanel/MainLayout/TopBar"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0, 0.941, 1, 0.8)
+mouse_filter = 2
+
+[node name="TitleSection" type="VBoxContainer" parent="Control/MainPanel/MainLayout/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="TitleLabel" type="Label" parent="Control/MainPanel/MainLayout/TopBar/TitleSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.941, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 50
+text = "BESTIARIUSZ WIRUSÓW"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="Control/MainPanel/MainLayout/TopBar/TitleSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.941, 1, 0.4)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "CYBER-ZAGROŻENIA: KOMPENDIUM WIEDZY"
+horizontal_alignment = 1
+
+[node name="RightAccent" type="ColorRect" parent="Control/MainPanel/MainLayout/TopBar"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0, 0.941, 1, 0.8)
+mouse_filter = 2
+
+[node name="CloseButton" type="Button" parent="Control/MainPanel/MainLayout/TopBar"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.176, 0.584, 0.7)
+theme_override_colors/font_hover_color = Color(1, 0.176, 0.584, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.4, 0.7, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("tab_normal")
+theme_override_styles/hover = SubResource("tab_active")
+theme_override_styles/pressed = SubResource("tab_active")
+text = "[X]"
+
+[node name="Separator1" type="ColorRect" parent="Control/MainPanel/MainLayout"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0, 0.941, 1, 0.35)
+mouse_filter = 2
+
+[node name="CategoryTabs" type="HBoxContainer" parent="Control/MainPanel/MainLayout"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TabSpacer" type="Control" parent="Control/MainPanel/MainLayout/CategoryTabs"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TabAll" type="Button" parent="Control/MainPanel/MainLayout/CategoryTabs"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0.533, 0.9)
+theme_override_colors/font_hover_color = Color(0, 1, 0.533, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("tab_normal")
+theme_override_styles/hover = SubResource("tab_active")
+theme_override_styles/pressed = SubResource("tab_active")
+flat = true
+text = "WSZYSTKIE"
+
+[node name="TabWorms" type="Button" parent="Control/MainPanel/MainLayout/CategoryTabs"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.498, 0.549, 0.553, 1)
+theme_override_colors/font_hover_color = Color(0, 0.941, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("tab_normal")
+theme_override_styles/hover = SubResource("tab_active")
+theme_override_styles/pressed = SubResource("tab_active")
+flat = true
+text = "ROBACTWO"
+
+[node name="TabMalicious" type="Button" parent="Control/MainPanel/MainLayout/CategoryTabs"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.498, 0.549, 0.553, 1)
+theme_override_colors/font_hover_color = Color(0, 0.941, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("tab_normal")
+theme_override_styles/hover = SubResource("tab_active")
+theme_override_styles/pressed = SubResource("tab_active")
+flat = true
+text = "ZŁOŚLIWE"
+
+[node name="TabNetwork" type="Button" parent="Control/MainPanel/MainLayout/CategoryTabs"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.498, 0.549, 0.553, 1)
+theme_override_colors/font_hover_color = Color(0, 0.941, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("tab_normal")
+theme_override_styles/hover = SubResource("tab_active")
+theme_override_styles/pressed = SubResource("tab_active")
+flat = true
+text = "ATAKI SIECIOWE"
+
+[node name="TabBosses" type="Button" parent="Control/MainPanel/MainLayout/CategoryTabs"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.498, 0.549, 0.553, 1)
+theme_override_colors/font_hover_color = Color(1, 0.843, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("tab_normal")
+theme_override_styles/hover = SubResource("tab_active")
+theme_override_styles/pressed = SubResource("tab_active")
+flat = true
+text = "BOSSY"
+
+[node name="Separator2" type="ColorRect" parent="Control/MainPanel/MainLayout"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0, 0.941, 1, 0.25)
+mouse_filter = 2
+
+[node name="ContentArea" type="HBoxContainer" parent="Control/MainPanel/MainLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="EnemyPanel" type="PanelContainer" parent="Control/MainPanel/MainLayout/ContentArea"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("terminal_bg")
+
+[node name="EnemyVBox" type="VBoxContainer" parent="Control/MainPanel/MainLayout/ContentArea/EnemyPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ListHeader" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/EnemyPanel/EnemyVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0.533, 0.8)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "> REJESTR ZAGROŻEN_"
+horizontal_alignment = 0
+
+[node name="EnemyList" type="ItemList" parent="Control/MainPanel/MainLayout/ContentArea/EnemyPanel/EnemyVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.816, 1, 1, 0.85)
+theme_override_colors/font_selected_color = Color(0.02, 0.031, 0.078, 1)
+theme_override_colors/font_hovered_color = Color(0, 1, 0.533, 1)
+theme_override_colors/guide_color = Color(0, 0.941, 1, 0.2)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+allow_reselect = true
+auto_height = false
+
+[node name="DetailsContainer" type="VBoxContainer" parent="Control/MainPanel/MainLayout/ContentArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="TopDetails" type="HBoxContainer" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SpriteFrame" type="PanelContainer" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails"]
+custom_minimum_size = Vector2(210, 210)
+layout_mode = 2
+theme_override_styles/panel = SubResource("sprite_frame")
+
+[node name="EnemySprite" type="TextureRect" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/SpriteFrame"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="InfoColumn" type="VBoxContainer" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="EnemyName" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843, 0, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 34
+text = "Nazwa Wirusa"
+
+[node name="LoreLabel" type="RichTextLabel" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.816, 1, 1, 0.85)
+theme_override_fonts/normal_font = ExtResource("2_font")
+theme_override_font_sizes/normal_font_size = 19
+bbcode_enabled = true
+scroll_active = false
+fit_content = true
+text = "Opis fabularny wirusa w swiecie gry..."
+
+[node name="StatsGrid" type="GridContainer" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn"]
+layout_mode = 2
+columns = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 4
+
+[node name="StatLabelHP" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.941, 1, 0.7)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "HP:"
+horizontal_alignment = 2
+
+[node name="StatValueHP" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "---"
+
+[node name="StatLabelSpeed" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.941, 1, 0.7)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "PREDKOSC:"
+horizontal_alignment = 2
+
+[node name="StatValueSpeed" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "---"
+
+[node name="StatLabelAttack" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.941, 1, 0.7)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "ATAK:"
+horizontal_alignment = 2
+
+[node name="StatValueAttack" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "---"
+
+[node name="StatLabelWave" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.941, 1, 0.7)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "FALA:"
+horizontal_alignment = 2
+
+[node name="StatValueWave" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "---"
+
+[node name="StatLabelType" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.941, 1, 0.7)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "TYP:"
+horizontal_alignment = 2
+
+[node name="StatValueType" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer/TopDetails/InfoColumn/StatsGrid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843, 0, 0.9)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "---"
+
+[node name="DetailsSeparator" type="ColorRect" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(1, 0.176, 0.584, 0.35)
+mouse_filter = 2
+
+[node name="DefinitionTitle" type="Label" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.176, 0.584, 0.9)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 19
+text = "[ DEFINICJA REALNA ]"
+
+[node name="DefinitionLabel" type="RichTextLabel" parent="Control/MainPanel/MainLayout/ContentArea/DetailsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.816, 1, 1, 0.85)
+theme_override_fonts/normal_font = ExtResource("2_font")
+theme_override_font_sizes/normal_font_size = 22
+bbcode_enabled = true
+scroll_active = false
+fit_content = true
+text = "Realna definicja zagrozenia IT..."
+
+[node name="Separator3" type="ColorRect" parent="Control/MainPanel/MainLayout"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(0, 0.941, 1, 0.2)
+mouse_filter = 2
+
+[node name="FooterBar" type="HBoxContainer" parent="Control/MainPanel/MainLayout"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="FooterSpacerLeft" type="Control" parent="Control/MainPanel/MainLayout/FooterBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="FooterLabel" type="Label" parent="Control/MainPanel/MainLayout/FooterBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.941, 1, 0.35)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 15
+text = "MOTODEFEND CYBER-BESTIARIUSZ v3.0  //  KLASYFIKACJA: SCISLE TAJNE"
+horizontal_alignment = 1
+
+[node name="FooterSpacerRight" type="Control" parent="Control/MainPanel/MainLayout/FooterBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[connection signal="item_selected" from="Control/MainPanel/MainLayout/ContentArea/EnemyPanel/EnemyVBox/EnemyList" to="." method="_on_enemy_list_item_selected"]
+[connection signal="pressed" from="Control/MainPanel/MainLayout/TopBar/CloseButton" to="." method="_on_close_button_pressed"]

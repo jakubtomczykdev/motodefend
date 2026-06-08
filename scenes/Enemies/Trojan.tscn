@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://trojan_enemy"]
+
+[ext_resource type="Script" path="res://Scripts/entities/trojan_enemy.gd" id="1"]
+[ext_resource type="Texture2D" path="res://Assets/Characters/Trojan.png" id="2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(32, 32)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2"]
+radius = 30.0
+
+[node name="Trojan" type="CharacterBody2D"]
+script = ExtResource("1")
+max_health = 60
+damage = 15
+move_speed = 120.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="AttackArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+shape = SubResource("CircleShape2D_2")
