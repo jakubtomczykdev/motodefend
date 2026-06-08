@@ -37,6 +37,7 @@ var player_hp: int = 100
 var player_max_hp: int = 100
 var run_started: bool = false
 var play_menu_spawn_intro: bool = false
+var identity_trap_seen: bool = false
 var return_scene: String = ""
 var level_upgrade_flat_bonuses: Dictionary = {}
 var level_upgrade_multiplier_bonuses: Dictionary = {}
@@ -81,6 +82,7 @@ func load_settings() -> void:
 	current_level = config.get_value("game", "current_level", 1)
 	experience = config.get_value("game", "experience", 0)
 	experience_to_next_level = config.get_value("game", "experience_to_next_level", 100)
+	identity_trap_seen = config.get_value("game", "identity_trap_seen", false)
 	level_upgrade_flat_bonuses = config.get_value("game", "level_upgrade_flat_bonuses", {})
 	level_upgrade_multiplier_bonuses = config.get_value("game", "level_upgrade_multiplier_bonuses", {})
 
@@ -106,6 +108,7 @@ func save_settings() -> void:
 	config.set_value("game", "current_level", current_level)
 	config.set_value("game", "experience", experience)
 	config.set_value("game", "experience_to_next_level", experience_to_next_level)
+	config.set_value("game", "identity_trap_seen", identity_trap_seen)
 	config.set_value("game", "level_upgrade_flat_bonuses", level_upgrade_flat_bonuses)
 	config.set_value("game", "level_upgrade_multiplier_bonuses", level_upgrade_multiplier_bonuses)
 
@@ -144,6 +147,7 @@ func reset_to_defaults() -> void:
 	particles_enabled = true
 	shadows_enabled = true
 	screen_shake = true
+	identity_trap_seen = false
 	max_item_slots_bonus = 0
 	clear_level_upgrades()
 
